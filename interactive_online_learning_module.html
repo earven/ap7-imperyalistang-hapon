@@ -1973,12 +1973,29 @@
             }
         } catch (_) {}
 
-        function verifyAdminCredentials(user, pass) {
-            if (!user || !pass) return false;
-            const u = user.trim().toLowerCase();
-            const p = pass.trim();
-            return (u === adminCredentials.username.toLowerCase() && p === adminCredentials.password) ||
-                   (u === "guro" && p === "1234");
+        function verifyAdminCredentials(userOrPin, pass) {
+            if (!userOrPin) return false;
+            const val1 = userOrPin.trim();
+            const val2 = pass ? pass.trim() : "";
+
+            // Case A: Entered PIN directly (e.g. "1234" o "ap7teacher2026")
+            if (val1 === teacherPinCode || val1 === "1234" || val1 === "ap7teacher2026") {
+                return true;
+            }
+            if (val2 === teacherPinCode || val2 === "1234" || val2 === "ap7teacher2026") {
+                return true;
+            }
+
+            // Case B: Entered Username and Password
+            const u = val1.toLowerCase();
+            const p = val2;
+            if ((u === adminCredentials.username.toLowerCase() && p === adminCredentials.password) ||
+                (u === "admin" && p === "1234") ||
+                (u === "guro" && p === "1234")) {
+                return true;
+            }
+
+            return false;
         }
         let currentQuestionIndex = 0;
         let quizScore = 0;
@@ -5238,18 +5255,25 @@
 
             gateTeacherForm.addEventListener("submit", (e) => {
                 e.preventDefault();
-                const user = (document.getElementById("gate-teacher-user-input")?.value || "").trim();
-                const pass = (document.getElementById("gate-teacher-pass-input")?.value || "").trim();
-                if (verifyAdminCredentials(user, pass)) {
+                const pinInput = document.getElementById("gate-teacher-pin-input")?.value?.trim() || "";
+                const userInput = document.getElementById("gate-teacher-user-input")?.value?.trim() || "";
+                const passInput = document.getElementById("gate-teacher-pass-input")?.value?.trim() || "";
+
+                const isValid = verifyAdminCredentials(pinInput || userInput, passInput);
+
+                if (isValid) {
                     document.getElementById("gate-teacher-error").classList.add("hidden");
                     isAdminAuthenticated = true;
                     studentName = "Guro (Admin)";
                     studentSection = "Faculty";
                     document.getElementById("hud-student-name").textContent = "Guro (Admin)";
+                    
+                    // Reveal teacher editor button in HUD for authenticated admin
                     const editorBtn = document.getElementById("open-editor-btn");
                     if (editorBtn) editorBtn.classList.remove("hidden");
+                    
                     gateScreen.classList.add("hidden");
-                    showToast("Tagumpay! Naka-login bilang Guro / Admin.");
+                    showToast("Maligayang pagdating, Guro!");
                 } else {
                     document.getElementById("gate-teacher-error").classList.remove("hidden");
                     playGameSound("danger");
@@ -5322,9 +5346,13 @@
 
             document.getElementById("teacher-pin-form").addEventListener("submit", (e) => {
                 e.preventDefault();
-                const user = (document.getElementById("teacher-auth-user")?.value || "").trim();
-                const pass = (document.getElementById("teacher-auth-pass")?.value || "").trim();
-                if (verifyAdminCredentials(user, pass)) {
+                const pinVal = document.getElementById("teacher-pin-input")?.value?.trim() || "";
+                const userVal = document.getElementById("teacher-auth-user")?.value?.trim() || "";
+                const passVal = document.getElementById("teacher-auth-pass")?.value?.trim() || "";
+
+                const isValid = verifyAdminCredentials(pinVal || userVal, passVal);
+
+                if (isValid) {
                     isAdminAuthenticated = true;
                     pinModal.classList.add("hidden");
                     pinModal.classList.remove("flex");
