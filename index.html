@@ -834,6 +834,9 @@
                             <button id="leaderboard-stats-btn" class="hidden px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 transition-colors flex items-center gap-1.5 cursor-pointer">
                                 <i class="ph-fill ph-chart-bar text-sm"></i> Estadistika
                             </button>
+                            <button id="leaderboard-clear-btn" class="hidden px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 transition-colors flex items-center gap-1.5 cursor-pointer" title="Burahin ang Lahat ng Resulta">
+                                <i class="ph-fill ph-trash text-rose-600 text-sm"></i> I-reset ang Ranggo
+                            </button>
                             <button id="leaderboard-back-study-btn" class="px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-slate-600 hover:bg-slate-100 border border-slate-200 transition-colors">
                                 Aralin
                             </button>
@@ -907,6 +910,9 @@
                             <p class="text-xs sm:text-sm text-slate-500 mt-1">Komprehensibong pagsusuri sa resulta ng mga mag-aaral sa Boss Quiz at antas ng pagkaunawa sa bawat aralin.</p>
                         </div>
                         <div class="flex flex-wrap items-center gap-2 no-print">
+                            <button id="stats-clear-all-btn" class="px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 flex items-center gap-1.5 transition-colors cursor-pointer" title="Burahin ang lahat ng resulta upang magsimula ang bagong klase">
+                                <i class="ph-fill ph-trash text-rose-600 text-base"></i> Burahin ang Lahat ng Resulta
+                            </button>
                             <button id="stats-export-csv-btn" class="px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 flex items-center gap-1.5 transition-colors cursor-pointer" title="I-download bilang CSV Spreadsheet">
                                 <i class="ph-bold ph-microsoft-excel-logo text-emerald-600 text-base"></i> I-export (CSV)
                             </button>
@@ -1098,6 +1104,7 @@
                                     <th class="py-3 px-3 text-center">Oras</th>
                                     <th class="py-3 px-3 text-center">Petsa</th>
                                     <th class="py-3 px-3 text-center">Katayuan</th>
+                                    <th class="py-3 px-3 text-center no-print w-16">Aksyon</th>
                                 </tr>
                             </thead>
                             <tbody id="stats-student-roster-tbody" class="divide-y divide-slate-100 font-medium">
@@ -2828,7 +2835,7 @@
         let currentStatsSearchQuery = "";
 
         function revealTeacherUI() {
-            const ids = ["open-editor-btn", "open-stats-btn", "sidebar-stats-btn", "leaderboard-stats-btn"];
+            const ids = ["open-editor-btn", "open-stats-btn", "sidebar-stats-btn", "leaderboard-stats-btn", "leaderboard-clear-btn"];
             ids.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.classList.remove("hidden");
@@ -3075,7 +3082,7 @@
             if (filtered.length === 0) {
                 rosterTbody.innerHTML = `
                     <tr>
-                        <td colspan="9" class="py-10 text-center text-slate-400">
+                        <td colspan="10" class="py-10 text-center text-slate-400">
                             Walang tala ng mag-aaral na tumugma sa filter.
                         </td>
                     </tr>
@@ -3111,10 +3118,91 @@
                             <td class="py-3 px-3 text-center text-slate-500 font-medium">${timeStr}</td>
                             <td class="py-3 px-3 text-center text-slate-400 text-[11px]">${dateStr}</td>
                             <td class="py-3 px-3 text-center">${statusBadge}</td>
+                            <td class="py-3 px-3 text-center no-print">
+                                <button type="button" class="btn-delete-single-entry p-1.5 rounded-lg text-rose-500 hover:text-rose-700 hover:bg-rose-50 border border-rose-200 transition-colors cursor-pointer" title="Alisin ang tala na ito" data-id="${entry.id || ''}" data-idx="${idx}">
+                                    <i class="ph-fill ph-trash text-sm"></i>
+                                </button>
+                            </td>
                         </tr>
                     `;
                 }).join("");
+
+                // Bind single entry delete buttons
+                rosterTbody.querySelectorAll(".btn-delete-single-entry").forEach(btn => {
+                    btn.addEventListener("click", () => {
+                        const targetId = btn.getAttribute("data-id") || "";
+                        const targetIdx = parseInt(btn.getAttribute("data-idx"), 10);
+                        deleteSingleQuizResult(targetId, targetIdx);
+                    });
+                });
             }
+        }
+
+        /**
+         * Delete All Quiz Results (For Resetting after Testing Phase)
+         */
+        async function clearAllQuizResults() {
+            showConfirmDialog(
+                "Burahin ang Lahat ng Resulta?",
+                "Sigurado ka bang nais mong burahin ang lahat ng nakatalang resulta ng pagsusulit? Mainam ito kung tapos na ang testing phase upang maging malinis ang talaan para sa mga tunay na mag-aaral.",
+                async () => {
+                    try {
+                        if (db && currentUser) {
+                            const scoresColRef = collection(db, 'artifacts', appId, 'public', 'data', 'quiz_rankings');
+                            const snap = await getDocs(scoresColRef);
+                            const deletes = [];
+                            snap.forEach((d) => deletes.push(deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'quiz_rankings', d.id))));
+                            await Promise.all(deletes);
+                        }
+                        leaderboardEntries = [];
+                        try {
+                            localStorage.removeItem("ap7_local_leaderboard");
+                        } catch (_) {}
+                        renderLeaderboard();
+                        const statsEl = document.getElementById("stats-view");
+                        if (statsEl && !statsEl.classList.contains("hidden")) {
+                            renderStatsDashboard();
+                        }
+                        showToast("Matagumpay na nabura ang lahat ng resulta!");
+                    } catch (err) {
+                        console.error("Failed to clear leaderboard:", err);
+                        showToast("Nagkaroon ng aberya sa pagbura: " + err.message);
+                    }
+                }
+            );
+        }
+
+        /**
+         * Delete Single Quiz Result by ID or Index
+         */
+        async function deleteSingleQuizResult(targetId, targetIndex) {
+            showConfirmDialog(
+                "Alisin ang Tala na Ito?",
+                "Sigurado ka bang nais mong alisin ang partikular na resulta na ito mula sa talaan?",
+                async () => {
+                    try {
+                        if (targetId && db && currentUser) {
+                            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'quiz_rankings', targetId);
+                            await deleteDoc(docRef);
+                        }
+                        if (targetIndex !== undefined && !isNaN(targetIndex) && targetIndex >= 0 && targetIndex < leaderboardEntries.length) {
+                            leaderboardEntries.splice(targetIndex, 1);
+                            try {
+                                localStorage.setItem("ap7_local_leaderboard", JSON.stringify(leaderboardEntries));
+                            } catch (_) {}
+                        }
+                        renderLeaderboard();
+                        const statsEl = document.getElementById("stats-view");
+                        if (statsEl && !statsEl.classList.contains("hidden")) {
+                            renderStatsDashboard();
+                        }
+                        showToast("Naalis na ang napiling tala!");
+                    } catch (err) {
+                        console.error("Failed to delete entry:", err);
+                        showToast("Hindi maalis ang tala: " + err.message);
+                    }
+                }
+            );
         }
 
         function renderLeaderboard() {
@@ -5904,6 +5992,13 @@
 
             
             // Teacher Statistics Dashboard Event Listeners
+            
+            const statsClearAllBtn = document.getElementById("stats-clear-all-btn");
+            if (statsClearAllBtn) statsClearAllBtn.addEventListener("click", clearAllQuizResults);
+
+            const lbClearBtn = document.getElementById("leaderboard-clear-btn");
+            if (lbClearBtn) lbClearBtn.addEventListener("click", clearAllQuizResults);
+
             const openStatsBtn = document.getElementById("open-stats-btn");
             if (openStatsBtn) openStatsBtn.addEventListener("click", openStatsPortal);
 
