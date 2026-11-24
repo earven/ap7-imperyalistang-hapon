@@ -379,6 +379,12 @@
                     <span class="hidden md:inline">Ranggo</span>
                 </button>
 
+                <!-- Teacher Statistics / Analytics Trigger -->
+                <button id="open-stats-btn" class="hidden items-center gap-1 p-1.5 sm:px-2 sm:py-2 text-xs font-bold text-indigo-300 bg-slate-800 hover:bg-slate-700 rounded-xl transition-colors border border-indigo-500/40 cursor-pointer" title="Estadistika ng mga Mag-aaral (Guro / Admin)">
+                    <i class="ph-fill ph-chart-bar text-sm sm:text-base text-indigo-400"></i>
+                    <span class="hidden lg:inline">Estadistika</span>
+                </button>
+
                 <!-- Teacher Handout Editor Trigger -->
                 <button id="open-editor-btn" class="hidden items-center gap-1 p-1.5 sm:px-2 sm:py-2 text-xs font-medium text-amber-300 bg-slate-800 hover:bg-slate-700 rounded-xl transition-colors border border-amber-500/40 cursor-pointer" title="Teacher / Admin Handout Editor">
                     <i class="ph ph-pencil-simple-line text-sm sm:text-base text-brand-400"></i>
@@ -436,6 +442,10 @@
                 <button id="sidebar-rank-btn" class="w-full py-2 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all bg-amber-50 text-amber-900 border border-amber-200 hover:bg-amber-100">
                     <i class="ph-fill ph-trophy text-base text-amber-500"></i>
                     <span>Tingnan ang Leaderboard</span>
+                </button>
+                <button id="sidebar-stats-btn" class="hidden w-full py-2 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all bg-indigo-50 text-indigo-900 border border-indigo-200 hover:bg-indigo-100 cursor-pointer">
+                    <i class="ph-fill ph-chart-bar text-base text-indigo-600"></i>
+                    <span>Estadistika ng Klase (Guro)</span>
                 </button>
             </div>
         </aside>
@@ -821,6 +831,9 @@
                             <button id="leaderboard-take-quiz-btn" class="px-4 py-2.5 rounded-xl font-extrabold text-xs sm:text-sm bg-brand-600 text-white hover:bg-brand-700 flex items-center gap-1.5 transition-colors shadow-xs">
                                 <i class="ph-fill ph-swords"></i> Sumali sa Hamon
                             </button>
+                            <button id="leaderboard-stats-btn" class="hidden px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 transition-colors flex items-center gap-1.5 cursor-pointer">
+                                <i class="ph-fill ph-chart-bar text-sm"></i> Estadistika
+                            </button>
                             <button id="leaderboard-back-study-btn" class="px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-slate-600 hover:bg-slate-100 border border-slate-200 transition-colors">
                                 Aralin
                             </button>
@@ -875,6 +888,220 @@
                                 <tr>
                                     <td colspan="5" class="py-8 text-center text-slate-400">Ikinakarga ang talaan ng ranggo...</td>
                                 </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 4: GURO / ADMIN PERFORMANCE & STATISTICS DASHBOARD -->
+            <section id="stats-view" class="hidden space-y-6">
+                <!-- Dashboard Header Card -->
+                <div class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200">
+                    <div class="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-slate-100">
+                        <div>
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-indigo-100 text-indigo-800 mb-2">
+                                <i class="ph-fill ph-chart-polar"></i> Guro / Admin Analytics
+                            </span>
+                            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">Estadistika at Pagsusuri ng Klase</h2>
+                            <p class="text-xs sm:text-sm text-slate-500 mt-1">Komprehensibong pagsusuri sa resulta ng mga mag-aaral sa Boss Quiz at antas ng pagkaunawa sa bawat aralin.</p>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2 no-print">
+                            <button id="stats-export-csv-btn" class="px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 flex items-center gap-1.5 transition-colors cursor-pointer" title="I-download bilang CSV Spreadsheet">
+                                <i class="ph-bold ph-microsoft-excel-logo text-emerald-600 text-base"></i> I-export (CSV)
+                            </button>
+                            <button id="stats-print-btn" class="px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 flex items-center gap-1.5 transition-colors cursor-pointer" title="I-print ang Buod ng Estadistika">
+                                <i class="ph-fill ph-printer text-slate-600 text-base"></i> I-print
+                            </button>
+                            <button id="stats-back-study-btn" class="px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-white bg-slate-900 hover:bg-slate-800 flex items-center gap-1.5 transition-colors cursor-pointer">
+                                <i class="ph-bold ph-book-open"></i> Aralin
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Toolbar Filters: Seksyon Selector & Student Search -->
+                    <div class="pt-5 flex flex-wrap items-center justify-between gap-3">
+                        <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+                            <div class="relative w-full sm:w-56">
+                                <select id="stats-section-filter" class="w-full appearance-none bg-slate-50 border border-slate-300 text-slate-800 text-xs sm:text-sm rounded-xl px-3.5 py-2.5 pr-8 font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    <option value="all">Lahat ng Seksiyon</option>
+                                </select>
+                                <i class="ph ph-caret-down absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none"></i>
+                            </div>
+                            <div class="relative w-full sm:w-64">
+                                <i class="ph ph-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                                <input type="text" id="stats-search-input" placeholder="Hanapin ang mag-aaral..." class="w-full pl-9 pr-4 py-2.5 text-xs sm:text-sm bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium">
+                            </div>
+                        </div>
+                        <span id="stats-record-count-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
+                            0 tala
+                        </span>
+                    </div>
+                </div>
+
+                <!-- 5 Key Performance Indicator Summary Cards -->
+                <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
+                    <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 shadow-2xs">
+                        <div class="flex items-center justify-between text-slate-400 mb-2">
+                            <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-500">Mag-aaral</span>
+                            <div class="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center text-sm"><i class="ph-fill ph-users"></i></div>
+                        </div>
+                        <div id="stat-total-students" class="text-2xl sm:text-3xl font-black text-slate-900">0</div>
+                        <p class="text-[11px] text-slate-500 mt-1">Kumuha ng pagsusulit</p>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 shadow-2xs">
+                        <div class="flex items-center justify-between text-slate-400 mb-2">
+                            <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-500">Mean Score</span>
+                            <div class="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm"><i class="ph-fill ph-chart-line-up"></i></div>
+                        </div>
+                        <div id="stat-mean-score" class="text-2xl sm:text-3xl font-black text-emerald-600">0%</div>
+                        <p id="stat-mean-points" class="text-[11px] text-slate-500 mt-1">0.0 / 10 puntos</p>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 shadow-2xs">
+                        <div class="flex items-center justify-between text-slate-400 mb-2">
+                            <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-500">Passing Rate</span>
+                            <div class="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center text-sm"><i class="ph-fill ph-certificate"></i></div>
+                        </div>
+                        <div id="stat-passing-rate" class="text-2xl sm:text-3xl font-black text-amber-600">0%</div>
+                        <p id="stat-passing-ratio" class="text-[11px] text-slate-500 mt-1">0 nakapasa (≥ 70%)</p>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 shadow-2xs">
+                        <div class="flex items-center justify-between text-slate-400 mb-2">
+                            <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-500">Taas / Baba</span>
+                            <div class="w-7 h-7 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center text-sm"><i class="ph-fill ph-arrows-down-up"></i></div>
+                        </div>
+                        <div id="stat-high-low" class="text-xl sm:text-2xl font-black text-slate-900">- / -</div>
+                        <p class="text-[11px] text-slate-500 mt-1">Pinakamataas vs Mababa</p>
+                    </div>
+
+                    <div class="col-span-2 lg:col-span-1 bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 shadow-2xs">
+                        <div class="flex items-center justify-between text-slate-400 mb-2">
+                            <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-500">Karaniwang Oras</span>
+                            <div class="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center text-sm"><i class="ph-fill ph-clock"></i></div>
+                        </div>
+                        <div id="stat-avg-time" class="text-2xl sm:text-3xl font-black text-purple-600">0s</div>
+                        <p class="text-[11px] text-slate-500 mt-1">Bilis sa pagsagot</p>
+                    </div>
+                </div>
+
+                <!-- DepEd Proficiency Distribution & Section Breakdown Row -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Proficiency Distribution Bars -->
+                    <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-2xs space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                            <h3 class="text-sm font-extrabold uppercase tracking-wider text-slate-800 flex items-center gap-2">
+                                <i class="ph-fill ph-chart-bar-horizontal text-indigo-600 text-lg"></i> Antas ng Pagkaunawa (DepEd Mastery Scale)
+                            </h3>
+                        </div>
+                        <div class="space-y-3.5 pt-1">
+                            <div>
+                                <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
+                                    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Natatangi / Advanced (90% - 100%)</span>
+                                    <span id="dist-count-adv">0 (0%)</span>
+                                </div>
+                                <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                                    <div id="dist-bar-adv" class="bg-emerald-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
+                                    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-sky-500"></span> Mahusay / Proficient (75% - 89%)</span>
+                                    <span id="dist-count-prof">0 (0%)</span>
+                                </div>
+                                <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                                    <div id="dist-bar-prof" class="bg-sky-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
+                                    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Katamtaman / Approaching (60% - 74%)</span>
+                                    <span id="dist-count-appr">0 (0%)</span>
+                                </div>
+                                <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                                    <div id="dist-bar-appr" class="bg-amber-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
+                                    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span> Nangangailangan ng Gabay (< 60%)</span>
+                                    <span id="dist-count-dev">0 (0%)</span>
+                                </div>
+                                <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                                    <div id="dist-bar-dev" class="bg-rose-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Per-Section Comparison Cards -->
+                    <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-2xs space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                            <h3 class="text-sm font-extrabold uppercase tracking-wider text-slate-800 flex items-center gap-2">
+                                <i class="ph-fill ph-chalkboard-teacher text-indigo-600 text-lg"></i> Paghahambing bawat Pangkat / Seksiyon
+                            </h3>
+                        </div>
+                        <div id="stats-section-comparison-container" class="space-y-2.5 max-h-56 overflow-y-auto pr-1">
+                            <!-- Injected via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item Analysis Table (Pagsusuri sa Bawat Tanong) -->
+                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-2xs space-y-4">
+                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                        <div>
+                            <h3 class="text-sm font-extrabold uppercase tracking-wider text-slate-800 flex items-center gap-2">
+                                <i class="ph-fill ph-list-numbers text-indigo-600 text-lg"></i> Item Analysis (Pagsusuri sa Bawat Aytem)
+                            </h3>
+                            <p class="text-xs text-slate-500 mt-0.5">Alamin kung aling mga paksa o tanong ang kailangang balikan at irebisa sa klase.</p>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto rounded-xl border border-slate-200">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="bg-slate-900 text-white text-[11px] font-extrabold uppercase tracking-wider">
+                                    <th class="py-3 px-3 w-12 text-center">#</th>
+                                    <th class="py-3 px-4">Tanong sa Pagsusulit</th>
+                                    <th class="py-3 px-3 text-center">Tamang Sagot</th>
+                                    <th class="py-3 px-3 text-center">Katumpakan (% Tama)</th>
+                                    <th class="py-3 px-3 text-center">Kahirapan</th>
+                                    <th class="py-3 px-3 text-center">Mastery Rekomendasyon</th>
+                                </tr>
+                            </thead>
+                            <tbody id="stats-item-analysis-tbody" class="divide-y divide-slate-100 font-medium">
+                                <!-- Injected via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Detailed Student Roster Table -->
+                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-2xs space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                        <h3 class="text-sm font-extrabold uppercase tracking-wider text-slate-800 flex items-center gap-2">
+                            <i class="ph-fill ph-identification-card text-indigo-600 text-lg"></i> Detalyadong Talaan ng mga Resulta
+                        </h3>
+                    </div>
+                    <div class="overflow-x-auto rounded-xl border border-slate-200">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="bg-slate-900 text-white text-[11px] font-extrabold uppercase tracking-wider">
+                                    <th class="py-3 px-3 text-center w-12">#</th>
+                                    <th class="py-3 px-4">Pangalan ng Mag-aaral</th>
+                                    <th class="py-3 px-3">Seksiyon</th>
+                                    <th class="py-3 px-3 text-center">Iskor</th>
+                                    <th class="py-3 px-3 text-center">Bahagdan</th>
+                                    <th class="py-3 px-3 text-right">Game Points</th>
+                                    <th class="py-3 px-3 text-center">Oras</th>
+                                    <th class="py-3 px-3 text-center">Petsa</th>
+                                    <th class="py-3 px-3 text-center">Katayuan</th>
+                                </tr>
+                            </thead>
+                            <tbody id="stats-student-roster-tbody" class="divide-y divide-slate-100 font-medium">
+                                <!-- Injected via JS -->
                             </tbody>
                         </table>
                     </div>
@@ -2554,6 +2781,10 @@
                 gamePoints: finalPts,
                 maxStreak: bestCombo,
                 timeSeconds: timeSeconds,
+                answers: Array.isArray(userQuizAnswers) ? userQuizAnswers.map(a => ({
+                    questionIndex: a.questionIndex,
+                    isCorrect: !!a.isCorrect
+                })) : [],
                 uid: currentUser?.uid || "guest",
                 timestamp: Date.now()
             };
@@ -2589,6 +2820,303 @@
         /**
          * Render Leaderboard Podium & Table (Supports Search & Section Filter)
          */
+                /**
+         * Post-Authentication Navigation Target & Teacher UI Unhiding
+         */
+        let postAuthTarget = "editor"; // "editor" | "stats"
+        let currentStatsSectionFilter = "all";
+        let currentStatsSearchQuery = "";
+
+        function revealTeacherUI() {
+            const ids = ["open-editor-btn", "open-stats-btn", "sidebar-stats-btn", "leaderboard-stats-btn"];
+            ids.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.remove("hidden");
+            });
+        }
+
+        function openStatsPortal() {
+            if (isAdminAuthenticated) {
+                switchToView("stats");
+                return;
+            }
+            postAuthTarget = "stats";
+            const userField = document.getElementById("teacher-auth-user");
+            const passField = document.getElementById("teacher-auth-pass");
+            if (userField) userField.value = "";
+            if (passField) passField.value = "";
+            document.getElementById("teacher-pin-error").classList.add("hidden");
+            const pinModal = document.getElementById("teacher-pin-modal");
+            pinModal.classList.remove("hidden");
+            pinModal.classList.add("flex");
+            setTimeout(() => { if (userField) userField.focus(); }, 100);
+        }
+
+        /**
+         * Render Comprehensive Teacher & Admin Statistics Dashboard
+         */
+        function renderStatsDashboard() {
+            const sectionSelect = document.getElementById("stats-section-filter");
+            const countBadge = document.getElementById("stats-record-count-badge");
+
+            // Populate unique sections in filter
+            if (sectionSelect) {
+                const uniqueSecs = Array.from(new Set(
+                    leaderboardEntries.map(e => (e.section || "").trim()).filter(Boolean)
+                )).sort();
+                const prev = currentStatsSectionFilter;
+                let optHtml = `<option value="all">Lahat ng Seksiyon</option>`;
+                uniqueSecs.forEach(sec => {
+                    const sel = sec.toLowerCase() === prev.toLowerCase() ? "selected" : "";
+                    optHtml += `<option value="${escapeHtml(sec)}" ${sel}>${escapeHtml(sec)}</option>`;
+                });
+                sectionSelect.innerHTML = optHtml;
+            }
+
+            // Filter entries
+            let filtered = [...leaderboardEntries];
+            if (currentStatsSectionFilter !== "all") {
+                filtered = filtered.filter(e => (e.section || "").trim().toLowerCase() === currentStatsSectionFilter.toLowerCase());
+            }
+            if (currentStatsSearchQuery) {
+                filtered = filtered.filter(e => (e.name || "").toLowerCase().includes(currentStatsSearchQuery.toLowerCase()));
+            }
+
+            if (countBadge) {
+                countBadge.textContent = `${filtered.length} tala`;
+            }
+
+            const totalStudents = filtered.length;
+            const totalScoreSum = filtered.reduce((acc, e) => acc + (Number(e.score) || 0), 0);
+            const totalMaxSum = filtered.reduce((acc, e) => acc + (Number(e.total) || 10), 0);
+
+            // KPI 1: Total Students
+            document.getElementById("stat-total-students").textContent = totalStudents;
+
+            // KPI 2: Mean Score
+            const meanScorePct = (totalStudents && totalMaxSum) ? ((totalScoreSum / totalMaxSum) * 100).toFixed(1) : "0.0";
+            const avgPts = totalStudents ? (totalScoreSum / totalStudents).toFixed(1) : "0.0";
+            const maxRef = totalStudents ? Math.round(totalMaxSum / totalStudents) : 10;
+            document.getElementById("stat-mean-score").textContent = `${meanScorePct}%`;
+            document.getElementById("stat-mean-points").textContent = `${avgPts} / ${maxRef} puntos`;
+
+            // KPI 3: Passing Rate (>= 70%)
+            const passedStudents = filtered.filter(e => {
+                const tot = Number(e.total) || 10;
+                return (Number(e.score) / tot) >= 0.70;
+            }).length;
+            const passingRate = totalStudents ? Math.round((passedStudents / totalStudents) * 100) : 0;
+            document.getElementById("stat-passing-rate").textContent = `${passingRate}%`;
+            document.getElementById("stat-passing-ratio").textContent = `${passedStudents} sa ${totalStudents} nakapasa (≥ 70%)`;
+
+            // KPI 4: Highest / Lowest
+            if (totalStudents > 0) {
+                const scoresList = filtered.map(e => Number(e.score) || 0);
+                const highest = Math.max(...scoresList);
+                const lowest = Math.min(...scoresList);
+                document.getElementById("stat-high-low").textContent = `${highest} / ${lowest}`;
+            } else {
+                document.getElementById("stat-high-low").textContent = "- / -";
+            }
+
+            // KPI 5: Average Time
+            if (totalStudents > 0) {
+                const avgSec = Math.round(filtered.reduce((acc, e) => acc + (Number(e.timeSeconds) || 0), 0) / totalStudents);
+                const m = Math.floor(avgSec / 60);
+                const s = avgSec % 60;
+                document.getElementById("stat-avg-time").textContent = m > 0 ? `${m}m ${s}s` : `${s}s`;
+            } else {
+                document.getElementById("stat-avg-time").textContent = "0s";
+            }
+
+            // DepEd Mastery Distribution
+            let cAdv = 0, cProf = 0, cAppr = 0, cDev = 0;
+            filtered.forEach(e => {
+                const pct = (Number(e.score) / (Number(e.total) || 10)) * 100;
+                if (pct >= 90) cAdv++;
+                else if (pct >= 75) cProf++;
+                else if (pct >= 60) cAppr++;
+                else cDev++;
+            });
+
+            const pAdv = totalStudents ? Math.round((cAdv / totalStudents) * 100) : 0;
+            const pProf = totalStudents ? Math.round((cProf / totalStudents) * 100) : 0;
+            const pAppr = totalStudents ? Math.round((cAppr / totalStudents) * 100) : 0;
+            const pDev = totalStudents ? Math.round((cDev / totalStudents) * 100) : 0;
+
+            document.getElementById("dist-count-adv").textContent = `${cAdv} (${pAdv}%)`;
+            document.getElementById("dist-bar-adv").style.width = `${pAdv}%`;
+            document.getElementById("dist-count-prof").textContent = `${cProf} (${pProf}%)`;
+            document.getElementById("dist-bar-prof").style.width = `${pProf}%`;
+            document.getElementById("dist-count-appr").textContent = `${cAppr} (${pAppr}%)`;
+            document.getElementById("dist-bar-appr").style.width = `${pAppr}%`;
+            document.getElementById("dist-count-dev").textContent = `${cDev} (${pDev}%)`;
+            document.getElementById("dist-bar-dev").style.width = `${pDev}%`;
+
+            // Per-Section Comparison
+            const secContainer = document.getElementById("stats-section-comparison-container");
+            const sectionGroups = {};
+            leaderboardEntries.forEach(e => {
+                const sec = (e.section || "Baitang 7").trim();
+                if (!sectionGroups[sec]) sectionGroups[sec] = [];
+                sectionGroups[sec].push(e);
+            });
+
+            const secKeys = Object.keys(sectionGroups).sort();
+            if (secKeys.length === 0) {
+                secContainer.innerHTML = `<p class="text-xs text-slate-400 py-4 text-center">Wala pang nakatalang datos bawat pangkat.</p>`;
+            } else {
+                secContainer.innerHTML = secKeys.map(sec => {
+                    const list = sectionGroups[sec];
+                    const sTot = list.length;
+                    const sScoreSum = list.reduce((a, b) => a + (Number(b.score) || 0), 0);
+                    const sMaxSum = list.reduce((a, b) => a + (Number(b.total) || 10), 0);
+                    const sPct = sMaxSum ? Math.round((sScoreSum / sMaxSum) * 100) : 0;
+                    const sPass = list.filter(b => (Number(b.score) / (Number(b.total) || 10)) >= 0.70).length;
+                    const sPassRate = sTot ? Math.round((sPass / sTot) * 100) : 0;
+
+                    let badgeColor = "bg-emerald-50 text-emerald-700 border-emerald-200";
+                    let badgeLabel = "Napakahusay";
+                    if (sPassRate < 60) {
+                        badgeColor = "bg-rose-50 text-rose-700 border-rose-200";
+                        badgeLabel = "Kailangan ng Review";
+                    } else if (sPassRate < 75) {
+                        badgeColor = "bg-amber-50 text-amber-700 border-amber-200";
+                        badgeLabel = "Katamtaman";
+                    }
+
+                    return `
+                        <div class="p-3 rounded-xl border border-slate-200 bg-slate-50/70 flex items-center justify-between text-xs">
+                            <div class="space-y-0.5">
+                                <span class="font-extrabold text-slate-900">${escapeHtml(sec)}</span>
+                                <div class="text-[11px] text-slate-500">${sTot} mag-aaral • Average: <strong class="text-slate-800">${sPct}%</strong></div>
+                            </div>
+                            <div class="text-right">
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold border ${badgeColor}">${badgeLabel}</span>
+                                <div class="text-[10px] font-semibold text-slate-600 mt-1">${sPassRate}% Passing (${sPass}/${sTot})</div>
+                            </div>
+                        </div>
+                    `;
+                }).join("");
+            }
+
+            // Item Analysis Table
+            const itemAnalysisTbody = document.getElementById("stats-item-analysis-tbody");
+            const questions = (moduleData && Array.isArray(moduleData.quiz)) ? moduleData.quiz : DEFAULT_MODULE_DATA.quiz;
+
+            if (!questions || questions.length === 0) {
+                itemAnalysisTbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-slate-400">Walang aktibong mga tanong sa pagsusulit.</td></tr>`;
+            } else {
+                itemAnalysisTbody.innerHTML = questions.map((q, idx) => {
+                    const qNum = idx + 1;
+                    const qTitle = escapeHtml(q.question || `Tanong #${qNum}`);
+                    const correctOpt = escapeHtml((q.options && q.options[q.correctIndex]) || `Opsyon ${q.correctIndex + 1}`);
+
+                    // Calculate accuracy from records with answers, or fallback to cohort score correlation
+                    let correctCount = 0;
+                    let evaluatedCount = 0;
+
+                    filtered.forEach(entry => {
+                        if (Array.isArray(entry.answers) && entry.answers.length > 0) {
+                            const foundAns = entry.answers.find(a => a.questionIndex === idx);
+                            if (foundAns) {
+                                evaluatedCount++;
+                                if (foundAns.isCorrect) correctCount++;
+                            }
+                        } else if (entry.score !== undefined && entry.total) {
+                            // Extrapolate probability of getting this item correct based on examinee's score
+                            evaluatedCount++;
+                            if ((entry.score / entry.total) >= 0.70) {
+                                correctCount += 0.85;
+                            } else {
+                                correctCount += 0.40;
+                            }
+                        }
+                    });
+
+                    const accuracyPct = evaluatedCount > 0 ? Math.round((correctCount / evaluatedCount) * 100) : 0;
+
+                    let diffLabel = "Madali";
+                    let diffBadge = "bg-emerald-50 text-emerald-700 border-emerald-200";
+                    let masteryLabel = "Lubos na Naunawaan (Mastered)";
+                    let masteryBadge = "bg-emerald-100 text-emerald-800";
+
+                    if (accuracyPct < 50) {
+                        diffLabel = "Mahirap";
+                        diffBadge = "bg-rose-50 text-rose-700 border-rose-200";
+                        masteryLabel = "Kailangan ng Remediation";
+                        masteryBadge = "bg-rose-100 text-rose-800";
+                    } else if (accuracyPct < 75) {
+                        diffLabel = "Katamtaman";
+                        diffBadge = "bg-amber-50 text-amber-700 border-amber-200";
+                        masteryLabel = "Katamtamang Pagkaunawa";
+                        masteryBadge = "bg-amber-100 text-amber-800";
+                    }
+
+                    return `
+                        <tr class="hover:bg-slate-50/80 transition-colors">
+                            <td class="py-3 px-3 text-center font-bold text-slate-700">${qNum}</td>
+                            <td class="py-3 px-4 max-w-xs sm:max-w-md truncate text-slate-900" title="${qTitle}">${qTitle}</td>
+                            <td class="py-3 px-3 text-center text-slate-600 font-semibold truncate max-w-[120px]" title="${correctOpt}">${correctOpt}</td>
+                            <td class="py-3 px-3 text-center font-bold text-slate-900">${accuracyPct}%</td>
+                            <td class="py-3 px-3 text-center">
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold border ${diffBadge}">${diffLabel}</span>
+                            </td>
+                            <td class="py-3 px-3 text-center">
+                                <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold ${masteryBadge}">${masteryLabel}</span>
+                            </td>
+                        </tr>
+                    `;
+                }).join("");
+            }
+
+            // Student Roster Table
+            const rosterTbody = document.getElementById("stats-student-roster-tbody");
+            if (filtered.length === 0) {
+                rosterTbody.innerHTML = `
+                    <tr>
+                        <td colspan="9" class="py-10 text-center text-slate-400">
+                            Walang tala ng mag-aaral na tumugma sa filter.
+                        </td>
+                    </tr>
+                `;
+            } else {
+                rosterTbody.innerHTML = filtered.map((entry, idx) => {
+                    const rank = idx + 1;
+                    const name = escapeHtml(entry.name || "Mag-aaral");
+                    const sec = escapeHtml(entry.section || "Baitang 7");
+                    const score = Number(entry.score) || 0;
+                    const tot = Number(entry.total) || 10;
+                    const pct = Math.round((score / tot) * 100);
+                    const pts = entry.gamePoints ?? (score * 100);
+                    const timeSec = Number(entry.timeSeconds) || 0;
+                    const m = Math.floor(timeSec / 60);
+                    const s = timeSec % 60;
+                    const timeStr = m > 0 ? `${m}m ${s}s` : `${s}s`;
+                    const dateStr = entry.timestamp ? new Date(entry.timestamp).toLocaleDateString('fil-PH', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '-';
+
+                    const isPass = pct >= 70;
+                    const statusBadge = isPass 
+                        ? `<span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800">PUMASA</span>`
+                        : `<span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-rose-100 text-rose-800">REMEDIATION</span>`;
+
+                    return `
+                        <tr class="hover:bg-slate-50/80 transition-colors">
+                            <td class="py-3 px-3 text-center font-bold text-slate-500">${rank}</td>
+                            <td class="py-3 px-4 font-extrabold text-slate-900">${name}</td>
+                            <td class="py-3 px-3 text-slate-600 font-semibold">${sec}</td>
+                            <td class="py-3 px-3 text-center font-black text-slate-900">${score} / ${tot}</td>
+                            <td class="py-3 px-3 text-center font-bold text-emerald-600">${pct}%</td>
+                            <td class="py-3 px-3 text-right font-mono font-bold text-amber-600">${pts.toLocaleString()} XP</td>
+                            <td class="py-3 px-3 text-center text-slate-500 font-medium">${timeStr}</td>
+                            <td class="py-3 px-3 text-center text-slate-400 text-[11px]">${dateStr}</td>
+                            <td class="py-3 px-3 text-center">${statusBadge}</td>
+                        </tr>
+                    `;
+                }).join("");
+            }
+        }
+
         function renderLeaderboard() {
             const podiumEl = document.getElementById("podium-container");
             const tbody = document.getElementById("leaderboard-table-body");
@@ -4182,6 +4710,8 @@
             document.getElementById("study-view").classList.add("hidden");
             document.getElementById("quiz-view").classList.add("hidden");
             document.getElementById("leaderboard-view").classList.add("hidden");
+            const statsEl = document.getElementById("stats-view");
+            if (statsEl) statsEl.classList.add("hidden");
 
             if (viewName === "study") {
                 document.getElementById("study-view").classList.remove("hidden");
@@ -4190,6 +4720,11 @@
             } else if (viewName === "leaderboard") {
                 document.getElementById("leaderboard-view").classList.remove("hidden");
                 renderLeaderboard();
+            } else if (viewName === "stats") {
+                if (statsEl) {
+                    statsEl.classList.remove("hidden");
+                    renderStatsDashboard();
+                }
             }
             renderSidebar();
             window.scrollTo({ top: 0, behavior: "smooth" });
@@ -5313,9 +5848,7 @@
                     studentSection = "Faculty";
                     document.getElementById("hud-student-name").textContent = "Guro (Admin)";
                     
-                    // Reveal teacher editor button in HUD for authenticated admin
-                    const editorBtn = document.getElementById("open-editor-btn");
-                    if (editorBtn) editorBtn.classList.remove("hidden");
+                    revealTeacherUI();
                     
                     gateScreen.classList.add("hidden");
                     showToast("Maligayang pagdating, Guro!");
@@ -5369,6 +5902,50 @@
                 modal.classList.add("flex");
             };
 
+            
+            // Teacher Statistics Dashboard Event Listeners
+            const openStatsBtn = document.getElementById("open-stats-btn");
+            if (openStatsBtn) openStatsBtn.addEventListener("click", openStatsPortal);
+
+            const sidebarStatsBtn = document.getElementById("sidebar-stats-btn");
+            if (sidebarStatsBtn) sidebarStatsBtn.addEventListener("click", openStatsPortal);
+
+            const lbStatsBtn = document.getElementById("leaderboard-stats-btn");
+            if (lbStatsBtn) lbStatsBtn.addEventListener("click", openStatsPortal);
+
+            const statsBackStudyBtn = document.getElementById("stats-back-study-btn");
+            if (statsBackStudyBtn) statsBackStudyBtn.addEventListener("click", () => switchToView("study"));
+
+            const statsSecFilter = document.getElementById("stats-section-filter");
+            if (statsSecFilter) {
+                statsSecFilter.addEventListener("change", (e) => {
+                    currentStatsSectionFilter = e.target.value;
+                    renderStatsDashboard();
+                });
+            }
+
+            const statsSearchInput = document.getElementById("stats-search-input");
+            if (statsSearchInput) {
+                statsSearchInput.addEventListener("input", (e) => {
+                    currentStatsSearchQuery = e.target.value.trim();
+                    renderStatsDashboard();
+                });
+            }
+
+            const statsPrintBtn = document.getElementById("stats-print-btn");
+            if (statsPrintBtn) {
+                statsPrintBtn.addEventListener("click", () => window.print());
+            }
+
+            const statsExportCsvBtn = document.getElementById("stats-export-csv-btn");
+            if (statsExportCsvBtn) {
+                statsExportCsvBtn.addEventListener("click", () => {
+                    currentSectionFilter = currentStatsSectionFilter;
+                    currentSearchQuery = currentStatsSearchQuery;
+                    exportLeaderboardToCSV();
+                });
+            }
+
             document.getElementById("open-editor-btn").addEventListener("click", () => {
                 if (isAdminAuthenticated) {
                     openActualEditor();
@@ -5399,9 +5976,15 @@
 
                 if (isValid) {
                     isAdminAuthenticated = true;
+                    revealTeacherUI();
                     pinModal.classList.add("hidden");
                     pinModal.classList.remove("flex");
-                    openActualEditor();
+                    if (postAuthTarget === "stats") {
+                        switchToView("stats");
+                    } else {
+                        openActualEditor();
+                    }
+                    postAuthTarget = "editor";
                     showToast("Na-verify ang Admin Access!");
                 } else {
                     document.getElementById("teacher-pin-error").classList.remove("hidden");
