@@ -1497,47 +1497,119 @@
             },
             4: {
                 type: "map",
-                heading: "Interactive War Map: Sabayang Pananalakay ng Japan sa Pasipiko at Pilipinas (Disyembre 1941)",
+                heading: "Tactical War Map: Sabayang Pananalakay ng Japan sa Pasipiko at Pilipinas (1941–1942)",
                 targets: [
                     {
-                        name: "Pearl Harbor (Hawaii)",
-                        date: "Disyembre 7, 1941",
-                        badge: "Pangunahing Base Militar",
-                        x: 630,
-                        y: 75,
-                        info: "Sinalakay ng mga eroplano at submarino ng Japan ang base ng U.S. Pacific Fleet sa Pulo ng Oahu, Hawaii. Nawasak ang maraming barko at nagtulak sa Amerika na opisyal na pumasok sa Ikalawang Digmaang Pandaigdig."
+                        id: "pearl-harbor",
+                        stepNum: 1,
+                        name: "Pearl Harbor (Oahu, Hawaii)",
+                        shortName: "Pearl Harbor",
+                        date: "Disyembre 7, 1941 (7:55 AM)",
+                        badge: "Sorpresang Pagsalakay sa U.S. Navy",
+                        category: "Unang Dagsa",
+                        leader: "Bise-Almirante Chuichi Nagumo & Yamamoto Isoroku",
+                        impact: "Nawasak o napinsala ang 8 battleships (kabilang ang USS Arizona), 188 eroplano, at 2,403 Amerikano ang nasawi. Nagtulak kay Pang. Roosevelt na ideklara ang digmaan ('A date which will live in infamy').",
+                        takeaway: "Nais paralisahin ng Japan ang U.S. Pacific Fleet upang malayang masakop ang Timog-Silangang Asya nang walang banta sa dagat.",
+                        x: 815,
+                        y: 175,
+                        vectorPath: "M 415,65 Q 615,60 815,175",
+                        info: "Sinalakay ng 353 eroplano mula sa anim na aircraft carriers (Kido Butai) ng Japan ang base militar ng U.S. Navy sa Oahu, Hawaii nang walang pormal na babala. Naghudyat ito ng pagsabog ng Ikalawang Digmaang Pandaigdig sa Pasipiko."
                     },
                     {
-                        name: "Clark Field & Iba Field (Pilipinas)",
-                        date: "Disyembre 8, 1941",
-                        badge: "Paliparan ng USAFFE",
-                        x: 235,
-                        y: 130,
-                        info: "Ilang oras lamang matapos ang Pearl Harbor, binomba ng mga Hapones ang mga base militar sa Pampanga at Zambales, na sumira sa halos lahat ng eroplanong pandigma ng Estados Unidos sa Pilipinas."
+                        id: "clark-field",
+                        stepNum: 2,
+                        name: "Clark Field & Nichols Field (Pilipinas)",
+                        shortName: "Clark & Nichols",
+                        date: "Disyembre 8, 1941 (12:30 PM)",
+                        badge: "Pagwasak sa USAFFE Air Force",
+                        category: "Kampanya sa Pilipinas",
+                        leader: "11th Air Fleet (Japan) vs. Hen. Douglas MacArthur (USAFFE)",
+                        impact: "Nawasak ang kalahati ng B-17 bombers at mga P-40 fighter planes habang nakaparada sa runway. Nawalan ng air support ang mga sundalong Pilipino at Amerikano.",
+                        takeaway: "Kahit nalaman na ang balita sa Pearl Harbor 9 na oras bago nito, nasorpresa pa rin ang hukbong panghimpapawid ng USAFFE sa Luzon.",
+                        x: 236,
+                        y: 288,
+                        vectorPath: "M 242,245 L 236,288",
+                        info: "Ilang oras matapos ang Pearl Harbor, binomba ng mga eroplanong Hapones mula sa Taiwan (Formosa) ang Clark Air Base sa Pampanga at Nichols Field sa Maynila, na sumira sa depensang panghimpapawid ng Pilipinas."
                     },
                     {
-                        name: "Guam at Wake Island",
+                        id: "malaya-singapore",
+                        stepNum: 3,
+                        name: "Malaya at Singapore (Tanggulan ng Britain)",
+                        shortName: "Malaya & Singapore",
+                        date: "Disyembre 8, 1941 – Peb. 15, 1942",
+                        badge: "Pagsakop sa Kolonya ng Britanya",
+                        category: "Unang Dagsa",
+                        leader: "Lt. Hen. Tomoyuki Yamashita ('Tigre ng Malaya')",
+                        impact: "Sumuko ang higit 80,000 sundalong British at Commonwealth sa Singapore ('Gibraltar of the East'), na itinuring ni Winston Churchill na pinakamalaking kahihiyan sa militar ng Britanya.",
+                        takeaway: "Ginamit ng Japan ang mga bisikleta sa gubat para sa mabilisang pagsulong (bicycle blitzkrieg) upang makontrol ang plantasyon ng goma at lata.",
+                        x: 130,
+                        y: 395,
+                        vectorPath: "M 165,280 Q 155,340 130,395",
+                        info: "Sabayang dumaong ang 25th Army ng Japan sa Kota Bharu (Malaya) at mabilis na sumulong patungong Singapore. Pinalubog din ang dalawang modernong battleship ng Britain, ang HMS Prince of Wales at HMS Repulse."
+                    },
+                    {
+                        id: "guam-wake",
+                        stepNum: 4,
+                        name: "Pulo ng Guam at Wake Island",
+                        shortName: "Guam & Wake",
                         date: "Disyembre 8–23, 1941",
-                        badge: "Estratehikong Daungan sa Pasipiko",
-                        x: 440,
-                        y: 125,
-                        info: "Mahahalagang teritoryo ng Amerika sa Karagatang Pasipiko na mabilis na sinakop ng mga Hapones upang putulin ang linya ng komunikasyon at tulong ng Amerika patungong Asya."
+                        badge: "Pagputol sa Linya ng Pasipiko",
+                        category: "Unang Dagsa",
+                        leader: "South Seas Force (Japan) vs. Major James Devereux (U.S. Marines)",
+                        impact: "Bumagsak ang Guam noong Disyembre 10. Sa Wake Island, magiting na lumaban ang 449 U.S. Marines ('Alamo of the Pacific') bago napasuko noong Disyembre 23.",
+                        takeaway: "Naitatag ng Japan ang kanilang outer defensive perimeter sa gitnang Pasipiko upang harangin ang anumang saklolo mula sa Hawaii.",
+                        x: 425,
+                        y: 295,
+                        vectorPath: "M 375,130 Q 400,220 425,295",
+                        info: "Inagaw ng puwersang pandagat ng Japan ang mga base at daungan ng Amerika sa Marianas (Guam) at Wake Island upang putulin ang linya ng komunikasyon at saklolo patungong Pilipinas."
                     },
                     {
-                        name: "Malaya at Hong Kong",
-                        date: "Disyembre 8, 1941",
-                        badge: "Teritoryo ng Great Britain",
-                        x: 135,
-                        y: 145,
-                        info: "Sabayang sinalakay ng hukbong Hapones ang mga kolonya ng Britain sa Asya, na nagpatunay sa kanilang malawakang plano na kontrolin ang buong Timog-Silangang Asya."
-                    },
-                    {
-                        name: "Look ng Lingayen at Maynila",
+                        id: "lingayen-manila",
+                        stepNum: 5,
+                        name: "Look ng Lingayen at Pagsakop sa Maynila",
+                        shortName: "Lingayen & Maynila",
                         date: "Disyembre 22, 1941 – Enero 2, 1942",
-                        badge: "Pagsakop sa Maynila",
-                        x: 220,
-                        y: 110,
-                        info: "Dumaong ang 43,000 sundalong Hapones sa Look ng Lingayen (Pangasinan) at tuluyang pinasok ang Maynila matapos itong ideklara ni MacArthur na Open City."
+                        badge: "Amphibious Invasion sa Luzon",
+                        category: "Kampanya sa Pilipinas",
+                        leader: "Lt. Hen. Masaharu Homma (14th Imperial Japanese Army)",
+                        impact: "Dumaong ang 43,000 sundalo sa Pangasinan at Lamon Bay. Idineklara ni MacArthur ang Maynila bilang 'Open City' noong Disyembre 26, 1941 bago ito pormal na pinasok ng mga Hapones noong Enero 2, 1942.",
+                        takeaway: "Napasok ng Japan ang kabisera ng Pilipinas sa loob lamang ng 25 araw mula nang sumiklab ang digmaan sa Pasipiko.",
+                        x: 230,
+                        y: 275,
+                        vectorPath: "M 242,245 Q 235,260 230,275",
+                        info: "Lumapag ang 85 barkong pandigma ng Japan sa Lingayen Gulf. Sinipit ng dalawang kolum ng hukbong Hapones ang Maynila mula hilaga at timog, dahilan upang ideklara itong Open City."
+                    },
+                    {
+                        id: "bataan-corregidor",
+                        stepNum: 6,
+                        name: "Bataan at Corregidor (Huling Tanggulan)",
+                        shortName: "Bataan & Corregidor",
+                        date: "Enero – Mayo 6, 1942",
+                        badge: "War Plan Orange-3 & Death March",
+                        category: "Kampanya sa Pilipinas",
+                        leader: "Hen. Douglas MacArthur / Hen. Edward King / Hen. Jonathan Wainwright",
+                        impact: "Natiis ng mga Pilipino at Amerikano ang 3 buwang labanan nang walang gamot at pagkain. Bumagsak ang Bataan noong Abril 9, 1942 (Bataan Death March) at sumuko ang Corregidor noong Mayo 6, 1942.",
+                        takeaway: "Naantala ng paglaban sa Bataan ang timetable ng pananakop ng Japan sa buong Pasipiko at nagbigay ng panahon sa Australia at Amerika na maghanda.",
+                        x: 233,
+                        y: 302,
+                        vectorPath: "M 230,275 L 233,302",
+                        info: "Alinsunod sa War Plan Orange-3 (WPO-3), umatras ang 78,000 sundalo ng USAFFE sa tangway ng Bataan at kuta ng Corregidor kung saan nagpakita ng walang kapantay na kagitingan ang mga sundalong Pilipino at Amerikano."
+                    },
+                    {
+                        id: "dutch-east-indies",
+                        stepNum: 7,
+                        name: "Dutch East Indies (Indonesia: Balon ng Langis)",
+                        shortName: "Balon ng Langis (Indonesia)",
+                        date: "Enero – Marso 1942",
+                        badge: "Pangunahing Layunin ng Digmaan",
+                        category: "Balon ng Langis",
+                        leader: "Southern Expeditionary Army Group",
+                        impact: "Napasakamay ng Japan ang mga oil fields sa Tarakan, Balikpapan (Borneo), at Palembang (Sumatra), na nagbigay sa kanila ng suplay ng krudo matapos ang U.S. Oil Embargo.",
+                        takeaway: "Ito ang pinakadahilan kung bakit kinailangang salakayin ng Japan ang Pearl Harbor at Pilipinas: upang maabot at makontrol ang reserba ng langis sa Indonesia.",
+                        x: 195,
+                        y: 405,
+                        vectorPath: "M 250,385 Q 220,395 195,405",
+                        info: "Nang putulin ng U.S. ang suplay ng langis noong Hulyo 1941, nanganib huminto ang mga barko at eroplano ng Japan. Sa pagsakop sa Indonesia, nakuha nila ang kinakailangang langis upang ipagpatuloy ang digmaan."
                     }
                 ]
             }
@@ -2851,121 +2923,468 @@
                 `;
             } else if (widget.type === "map" || widget.type === "targets") {
                 const targets = widget.targets || [];
-                const first = targets[0] || { name: "", info: "", date: "", badge: "" };
-                
-                container.innerHTML = `
-                    <div class="p-4 sm:p-5 rounded-2xl bg-slate-900 text-white border-2 border-slate-800 space-y-4 shadow-md">
-                        <div class="flex items-center justify-between gap-2">
-                            <h4 class="text-xs font-extrabold uppercase tracking-wider text-rose-400 flex items-center gap-1.5">
-                                <i class="ph-fill ph-crosshair text-base text-rose-500 animate-pulse"></i> ${escapeHtml(widget.heading)}
-                            </h4>
-                            <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-rose-950 text-rose-300 border border-rose-800">
-                                Tactical Map
-                            </span>
+                let activeTargetIdx = 0;
+                let activeFilter = "all";
+                let isPlaying = false;
+
+                // Stop any existing map interval
+                if (window.__mapAutoPlayTimer) {
+                    clearInterval(window.__mapAutoPlayTimer);
+                    window.__mapAutoPlayTimer = null;
+                }
+
+                const renderMapWidgetHTML = () => {
+                    const first = targets[activeTargetIdx] || targets[0] || {};
+
+                    container.innerHTML = `
+                    <style>
+                        @keyframes attackVectorDash {
+                            to { stroke-dashoffset: -32; }
+                        }
+                        .animate-attack-vector {
+                            animation: attackVectorDash 1.2s linear infinite;
+                        }
+                        @keyframes radarSweepAnim {
+                            from { transform: rotate(0deg); }
+                            to { transform: rotate(360deg); }
+                        }
+                        .animate-radar-sweep {
+                            transform-origin: 75px 75px;
+                            animation: radarSweepAnim 4s linear infinite;
+                        }
+                    </style>
+                    <div class="p-4 sm:p-5 rounded-2xl bg-slate-950 text-white border-2 border-slate-800 space-y-4 shadow-xl">
+                        <!-- Tactical Header -->
+                        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
+                            <div class="flex items-center gap-2">
+                                <span class="relative flex h-3 w-3">
+                                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                                  <span class="relative inline-flex rounded-full h-3 w-3 bg-rose-500"></span>
+                                </span>
+                                <div>
+                                    <h4 class="text-xs sm:text-sm font-black uppercase tracking-wider text-rose-400 flex items-center gap-1.5">
+                                        <i class="ph-fill ph-crosshair text-base text-rose-500"></i> ${escapeHtml(widget.heading)}
+                                    </h4>
+                                    <p class="text-[11px] text-slate-400">Teatro ng Digmaan sa Karagatang Pasipiko at Timog-Silangang Asya (WWII)</p>
+                                </div>
+                            </div>
+                            <!-- Auto-play Timeline Controls -->
+                            <div class="flex items-center gap-1.5 bg-slate-900 border border-slate-700 p-1 rounded-xl">
+                                <button type="button" id="map-prev-btn" title="Nakaraang Kaganapan" class="p-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer">
+                                    <i class="ph-bold ph-skip-back text-sm"></i>
+                                </button>
+                                <button type="button" id="map-play-toggle-btn" class="px-2.5 py-1 rounded-lg text-xs font-black flex items-center gap-1.5 ${isPlaying ? 'bg-amber-500 hover:bg-amber-400 text-slate-950' : 'bg-rose-600 hover:bg-rose-500 text-white'} transition-all shadow-xs cursor-pointer">
+                                    <i id="map-play-icon" class="ph-fill ${isPlaying ? 'ph-pause' : 'ph-play'} text-xs"></i>
+                                    <span id="map-play-label">${isPlaying ? 'I-pause' : 'Auto-Play'}</span>
+                                </button>
+                                <button type="button" id="map-next-btn" title="Susunod na Kaganapan" class="p-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer">
+                                    <i class="ph-bold ph-skip-forward text-sm"></i>
+                                </button>
+                            </div>
                         </div>
 
-                        <!-- Interactive SVG Map Canvas (Pacific Theater of War) -->
-                        <div class="relative w-full rounded-xl overflow-hidden bg-[#0a0f1d] border border-slate-700 aspect-[16/8] sm:aspect-[16/7]">
-                            <svg viewBox="0 0 800 350" class="w-full h-full block select-none">
+                        <!-- Phase / Category Filter Tabs -->
+                        <div class="flex flex-wrap gap-1.5 items-center justify-between text-xs">
+                            <div class="flex flex-wrap gap-1.5" id="map-filter-group">
+                                <button type="button" data-filter="all" class="map-filter-pill cursor-pointer px-2.5 py-1 rounded-lg font-bold border transition-all ${activeFilter === 'all' ? 'bg-rose-600 text-white border-rose-500' : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-white'}">
+                                    Lahat (${targets.length})
+                                </button>
+                                <button type="button" data-filter="Unang Dagsa" class="map-filter-pill cursor-pointer px-2.5 py-1 rounded-lg font-bold border transition-all ${activeFilter === 'Unang Dagsa' ? 'bg-rose-600 text-white border-rose-500' : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-white'}">
+                                    ⚡ Unang Dagsa (Dis 7–8)
+                                </button>
+                                <button type="button" data-filter="Kampanya sa Pilipinas" class="map-filter-pill cursor-pointer px-2.5 py-1 rounded-lg font-bold border transition-all ${activeFilter === 'Kampanya sa Pilipinas' ? 'bg-rose-600 text-white border-rose-500' : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-white'}">
+                                    🇵🇭 Kampanya sa Pilipinas
+                                </button>
+                                <button type="button" data-filter="Balon ng Langis" class="map-filter-pill cursor-pointer px-2.5 py-1 rounded-lg font-bold border transition-all ${activeFilter === 'Balon ng Langis' ? 'bg-rose-600 text-white border-rose-500' : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-white'}">
+                                    🛢️ Balon ng Langis
+                                </button>
+                            </div>
+                            <div class="text-[11px] font-mono text-slate-400 flex items-center gap-1">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                Kaganapan <span id="map-step-indicator" class="font-bold text-amber-400 font-mono">${activeTargetIdx + 1}</span> / ${targets.length}
+                            </div>
+                        </div>
+
+                        <!-- Interactive SVG Map Canvas -->
+                        <div class="relative w-full rounded-xl overflow-hidden bg-[#060b16] border-2 border-slate-800 shadow-inner aspect-[16/8] sm:aspect-[16/8]">
+                            <svg viewBox="0 0 900 460" class="w-full h-full block select-none" xmlns="http://www.w3.org/2000/svg">
                                 <defs>
-                                    <pattern id="radarGrid" width="40" height="40" patternUnits="userSpaceOnUse">
-                                        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.8" opacity="0.6"/>
+                                    <pattern id="radarGrid" width="45" height="45" patternUnits="userSpaceOnUse">
+                                        <path d="M 45 0 L 0 0 0 45" fill="none" stroke="#1e293b" stroke-width="0.8" opacity="0.45"/>
+                                        <circle cx="0" cy="0" r="1.5" fill="#334155"/>
                                     </pattern>
-                                    <linearGradient id="oceanGrad" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="0%" stop-color="#080d1a"/>
-                                        <stop offset="100%" stop-color="#0f172a"/>
+                                    <linearGradient id="oceanGrad" x1="0" y1="0" x2="1" y2="1">
+                                        <stop offset="0%" stop-color="#060b16"/>
+                                        <stop offset="50%" stop-color="#091224"/>
+                                        <stop offset="100%" stop-color="#0d1b38"/>
                                     </linearGradient>
+                                    <filter id="glowGold" x="-20%" y="-20%" width="140%" height="140%">
+                                        <feGaussianBlur stdDeviation="3.5" result="blur"/>
+                                        <feMerge>
+                                            <feMergeNode in="blur"/>
+                                            <feMergeNode in="SourceGraphic"/>
+                                        </feMerge>
+                                    </filter>
+                                    <marker id="arrowGold" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                        <path d="M 0 1 L 10 5 L 0 9 z" fill="#fbbf24"/>
+                                    </marker>
+                                    <marker id="arrowRed" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                                        <path d="M 0 1 L 10 5 L 0 9 z" fill="#f43f5e"/>
+                                    </marker>
                                 </defs>
-                                <rect width="800" height="350" fill="url(#oceanGrad)"/>
-                                <rect width="800" height="350" fill="url(#radarGrid)"/>
-                                
-                                <!-- Stylized Landmasses -->
-                                <!-- Japan -->
-                                <path d="M 210,60 Q 230,45 255,55 T 265,85 Q 240,95 215,80 Z" fill="#334155" stroke="#475569" stroke-width="1.5"/>
-                                <text x="240" y="72" fill="#e2e8f0" font-size="10" font-weight="900" text-anchor="middle">JAPAN</text>
 
-                                <!-- Asian Mainland -->
-                                <path d="M 30,30 L 160,30 L 175,110 L 130,170 L 80,210 L 30,210 Z" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
-                                <text x="90" y="80" fill="#64748b" font-size="10" font-weight="800">ASYA (MAINLAND)</text>
+                                <!-- Ocean background & Tactical Grid -->
+                                <rect width="900" height="460" fill="url(#oceanGrad)"/>
+                                <rect width="900" height="460" fill="url(#radarGrid)"/>
 
-                                <!-- Philippine Archipelago -->
-                                <path d="M 215,125 Q 230,115 235,135 Q 230,175 240,205 Q 245,235 225,255 Q 205,235 220,185 Z" fill="#334155" stroke="#475569" stroke-width="1.5"/>
-                                <text x="260" y="190" fill="#f8fafc" font-size="10" font-weight="900">PILIPINAS</text>
-
-                                <!-- Hawaiian Islands (Pearl Harbor area) -->
-                                <path d="M 680,120 Q 700,110 720,125 Q 710,140 690,135 Z" fill="#334155" stroke="#475569" stroke-width="1.5"/>
-                                <text x="700" y="105" fill="#fcd34d" font-size="10" font-weight="900" text-anchor="middle">HAWAII (U.S.)</text>
-
-                                <!-- Attack Lines (Dashed vectors from Japan) -->
-                                <path d="M 255,85 Q 480,35 690,120" fill="none" stroke="#ef4444" stroke-width="2" stroke-dasharray="6,4" opacity="0.8"/>
-                                <path d="M 240,90 L 230,130" fill="none" stroke="#ef4444" stroke-width="2" stroke-dasharray="5,3" opacity="0.8"/>
-                                <path d="M 245,90 L 440,125" fill="none" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.6"/>
-
-                                <!-- Interactive Clickable Target Pins -->
-                                ${targets.map((t, i) => `
-                                    <g class="map-target-pin cursor-pointer transition-transform hover:scale-110" data-target-idx="${i}" transform="translate(${t.x || (200 + i*100)}, ${t.y || (100 + i*30)})">
-                                        <circle cx="0" cy="0" r="14" fill="#ef4444" opacity="0.25" class="animate-ping"/>
-                                        <circle cx="0" cy="0" r="7" fill="${i === 0 ? '#f59e0b' : '#ef4444'}" stroke="#ffffff" stroke-width="2"/>
-                                        <rect x="-35" y="10" width="70" height="18" rx="5" fill="#0f172a" opacity="0.85" stroke="#334155" stroke-width="1"/>
-                                        <text x="0" y="22" fill="#ffffff" font-size="9" font-weight="800" text-anchor="middle">${escapeHtml(t.name.split(' ')[0])}</text>
+                                <!-- Radar Sweep Display -->
+                                <g opacity="0.25">
+                                    <circle cx="75" cy="75" r="55" fill="none" stroke="#38bdf8" stroke-width="1" stroke-dasharray="4,4"/>
+                                    <circle cx="75" cy="75" r="35" fill="none" stroke="#38bdf8" stroke-width="0.8"/>
+                                    <circle cx="75" cy="75" r="18" fill="none" stroke="#38bdf8" stroke-width="0.8"/>
+                                    <line x1="75" y1="20" x2="75" y2="130" stroke="#38bdf8" stroke-width="0.8"/>
+                                    <line x1="20" y1="75" x2="130" y2="75" stroke="#38bdf8" stroke-width="0.8"/>
+                                    <!-- Rotating Scanner Beam -->
+                                    <g class="animate-radar-sweep">
+                                        <path d="M 75,75 L 130,75 A 55,55 0 0,0 114,36 Z" fill="rgba(56, 189, 248, 0.25)"/>
+                                        <line x1="75" y1="75" x2="130" y2="75" stroke="#38bdf8" stroke-width="1.5"/>
                                     </g>
-                                `).join("")}
+                                    <text x="75" y="142" fill="#38bdf8" font-size="7" font-weight="800" text-anchor="middle">RADAR SECTOR 01</text>
+                                </g>
+
+                                <!-- Japanese Empire Maximum Expansion Boundary (1942 Perimeter) -->
+                                <path d="M 330,40 Q 640,40 760,140 Q 660,280 520,340 Q 340,440 180,450 Q 80,430 70,360 L 120,320 L 160,260 Z" 
+                                      fill="rgba(244, 63, 94, 0.04)" stroke="#ef4444" stroke-width="1.2" stroke-dasharray="6,6" opacity="0.5"/>
+                                <text x="560" y="325" fill="#f43f5e" font-size="8" font-weight="800" opacity="0.65" letter-spacing="1">GREATER EAST ASIA CO-PROSPERITY SPHERE BOUNDARY</text>
+
+                                <!-- GEOGRAPHICAL LANDMASSES -->
+                                <!-- ASIA MAINLAND (China, Korea, Indochina, Malaya) -->
+                                <path d="M 0,0 L 290,0 L 285,45 L 260,65 L 245,100 L 265,115 L 285,130 L 275,155 L 255,145 L 240,120 L 220,125 L 225,160 L 260,185 L 240,215 L 225,210 L 210,230 L 180,240 L 165,260 L 175,290 L 160,320 L 135,325 L 125,355 L 138,385 L 130,405 L 120,380 L 115,340 L 100,310 L 100,260 L 70,245 L 40,260 L 0,260 Z" 
+                                      fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+                                <text x="140" y="160" fill="#64748b" font-size="11" font-weight="900" letter-spacing="2">TSINA (CHINA)</text>
+                                <text x="110" y="285" fill="#64748b" font-size="8" font-weight="800">INDOCHINA</text>
+                                <text x="75" y="375" fill="#64748b" font-size="8" font-weight="800">MALAYA</text>
+                                <text x="270" y="140" fill="#94a3b8" font-size="8" font-weight="700">KOREA</text>
+
+                                <!-- JAPAN ARCHIPELAGO (Accurate Arc) -->
+                                <path d="M 375,50 Q 395,40 420,48 Q 425,65 405,75 Q 385,80 375,65 Z" fill="#3b4252" stroke="#e2e8f0" stroke-width="1.5"/>
+                                <path d="M 400,82 Q 385,95 375,115 Q 365,130 335,140 Q 315,145 305,155 Q 310,165 330,158 Q 355,148 375,138 Q 395,120 405,95 Z" fill="#475569" stroke="#f8fafc" stroke-width="1.8"/>
+                                <path d="M 320,162 Q 335,158 345,166 Q 338,175 322,172 Z" fill="#475569" stroke="#f8fafc" stroke-width="1.2"/>
+                                <path d="M 292,165 Q 308,160 312,175 Q 305,195 290,192 Q 285,178 292,165 Z" fill="#475569" stroke="#f8fafc" stroke-width="1.5"/>
+                                <!-- Japanese Flag Badge -->
+                                <rect x="345" y="105" width="56" height="18" rx="4" fill="#991b1b" opacity="0.95" stroke="#f87171" stroke-width="1"/>
+                                <text x="373" y="118" fill="#ffffff" font-size="9" font-weight="900" text-anchor="middle" letter-spacing="1">🇯🇵 JAPAN</text>
+
+                                <!-- TAIWAN (FORMOSA) -->
+                                <path d="M 232,225 Q 242,220 248,232 Q 245,250 236,252 Q 230,240 232,225 Z" fill="#475569" stroke="#fca5a5" stroke-width="1.5"/>
+                                <text x="254" y="238" fill="#fca5a5" font-size="8" font-weight="800">TAIWAN</text>
+
+                                <!-- PHILIPPINES (Accurate archipelago) -->
+                                <path d="M 225,270 Q 240,265 248,272 Q 252,285 242,298 Q 246,310 258,322 Q 252,330 240,320 Q 235,305 228,295 Q 222,285 225,270 Z" 
+                                      fill="#334155" stroke="#38bdf8" stroke-width="1.6"/>
+                                <path d="M 190,345 L 210,328 L 214,332 L 194,352 Z" fill="#334155" stroke="#38bdf8" stroke-width="1.2"/>
+                                <path d="M 240,332 Q 248,326 254,334 Q 248,345 238,340 Z" fill="#334155" stroke="#38bdf8" stroke-width="1.2"/>
+                                <path d="M 256,330 Q 266,325 268,338 Q 260,348 254,340 Z" fill="#334155" stroke="#38bdf8" stroke-width="1.2"/>
+                                <path d="M 235,368 Q 260,360 275,372 Q 278,395 262,408 Q 245,400 248,385 Q 230,388 235,368 Z" 
+                                      fill="#334155" stroke="#38bdf8" stroke-width="1.6"/>
+                                <text x="268" y="305" fill="#38bdf8" font-size="10" font-weight="900" letter-spacing="1">PILIPINAS</text>
+
+                                <!-- DUTCH EAST INDIES (Indonesia) -->
+                                <path d="M 60,390 L 115,445 L 105,455 L 50,400 Z" fill="#1e293b" stroke="#334155" stroke-width="1.2"/>
+                                <path d="M 165,370 Q 200,360 215,380 Q 220,410 195,425 Q 165,415 165,370 Z" fill="#1e293b" stroke="#334155" stroke-width="1.4"/>
+                                <text x="180" y="395" fill="#64748b" font-size="8" font-weight="800">BORNEO</text>
+                                <path d="M 130,448 Q 180,445 220,452 Q 215,458 135,456 Z" fill="#1e293b" stroke="#334155" stroke-width="1.2"/>
+                                <text x="155" y="445" fill="#64748b" font-size="8" font-weight="800">JAVA (LANGIS)</text>
+
+                                <!-- PACIFIC ISLANDS -->
+                                <circle cx="425" cy="295" r="4" fill="#38bdf8" stroke="#ffffff" stroke-width="1"/>
+                                <text x="425" y="312" fill="#93c5fd" font-size="8" font-weight="800" text-anchor="middle">GUAM (U.S.)</text>
+
+                                <circle cx="585" cy="225" r="3.5" fill="#38bdf8" stroke="#ffffff" stroke-width="1"/>
+                                <text x="585" y="215" fill="#93c5fd" font-size="8" font-weight="800" text-anchor="middle">WAKE IS. (U.S.)</text>
+
+                                <circle cx="700" cy="150" r="3.5" fill="#38bdf8" stroke="#ffffff" stroke-width="1"/>
+                                <text x="700" y="140" fill="#93c5fd" font-size="8" font-weight="800" text-anchor="middle">MIDWAY</text>
+
+                                <!-- HAWAII / PEARL HARBOR -->
+                                <path d="M 810,175 Q 825,168 835,178 Q 825,188 812,182 Z" fill="#334155" stroke="#fcd34d" stroke-width="1.5"/>
+                                <circle cx="845" cy="190" r="3" fill="#334155"/>
+                                <circle cx="860" cy="205" r="4" fill="#334155"/>
+                                <text x="825" y="160" fill="#fcd34d" font-size="10" font-weight="900" text-anchor="middle">HAWAII (U.S.)</text>
+
+                                <!-- OCEAN LABELS -->
+                                <text x="490" y="130" fill="#1e3a5f" font-size="13" font-weight="900" letter-spacing="4">KARAGATANG PASIPIKO</text>
+                                <text x="490" y="150" fill="#1e293b" font-size="9" font-weight="700" letter-spacing="1">PACIFIC OCEAN THEATER</text>
+                                <text x="160" y="270" fill="#1e293b" font-size="8" font-weight="700">DAGAT TIMOG TSINA</text>
+
+                                <!-- COMPASS ROSE -->
+                                <g transform="translate(850, 60)" opacity="0.8">
+                                    <circle cx="0" cy="0" r="18" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+                                    <path d="M 0 -14 L 4 0 L 0 3 L -4 0 Z" fill="#ef4444"/>
+                                    <path d="M 0 14 L 3 0 L 0 -2 L -3 0 Z" fill="#64748b"/>
+                                    <text x="0" y="-16" fill="#f87171" font-size="9" font-weight="900" text-anchor="middle">H</text>
+                                </g>
+
+                                <!-- ATTACK VECTORS (ALL TARGETS) -->
+                                ${targets.map((t, idx) => {
+                                    const isActive = idx === activeTargetIdx;
+                                    return `
+                                    <path id="map-vector-${idx}" d="${t.vectorPath}" fill="none"
+                                        stroke="${isActive ? '#fbbf24' : '#ef4444'}"
+                                        stroke-width="${isActive ? '3' : '1.5'}"
+                                        stroke-dasharray="${isActive ? '8,4' : '5,3'}"
+                                        opacity="${isActive ? '1' : '0.4'}"
+                                        filter="${isActive ? 'url(#glowGold)' : 'none'}"
+                                        class="${isActive ? 'animate-attack-vector' : ''}"
+                                        marker-end="${isActive ? 'url(#arrowGold)' : 'url(#arrowRed)'}"/>
+                                    `;
+                                }).join("")}
+
+                                <!-- TARGET PINS -->
+                                ${targets.map((t, idx) => {
+                                    const isActive = idx === activeTargetIdx;
+                                    const isVisible = activeFilter === 'all' || t.category === activeFilter;
+                                    return `
+                                    <g class="map-target-pin cursor-pointer transition-all duration-300 ${isVisible ? '' : 'opacity-30'}"
+                                       data-target-idx="${idx}"
+                                       transform="translate(${t.x}, ${t.y})">
+                                        <!-- Expanding Radar Ping Ring if Active -->
+                                        ${isActive ? `
+                                            <circle cx="0" cy="0" r="22" fill="#fbbf24" opacity="0.3" class="animate-ping"/>
+                                            <circle cx="0" cy="0" r="14" fill="none" stroke="#fbbf24" stroke-width="2" stroke-dasharray="3,2"/>
+                                        ` : `
+                                            <circle cx="0" cy="0" r="10" fill="#ef4444" opacity="0.2"/>
+                                        `}
+                                        <!-- Main Pin Disc -->
+                                        <circle cx="0" cy="0" r="${isActive ? '11' : '8'}" 
+                                                fill="${isActive ? '#fbbf24' : '#ef4444'}" 
+                                                stroke="#ffffff" stroke-width="2" 
+                                                class="drop-shadow-md"/>
+                                        <!-- Pin Number -->
+                                        <text x="0" y="${isActive ? '4' : '3'}" fill="${isActive ? '#0f172a' : '#ffffff'}" font-size="${isActive ? '10' : '8'}" font-weight="900" text-anchor="middle">
+                                            ${t.stepNum || (idx + 1)}
+                                        </text>
+                                        <!-- Label Tag -->
+                                        <g transform="translate(0, ${isActive ? '16' : '12'})">
+                                            <rect x="-40" y="0" width="80" height="18" rx="4" 
+                                                  fill="${isActive ? '#7f1d1d' : '#0f172a'}" 
+                                                  stroke="${isActive ? '#fbbf24' : '#334155'}" 
+                                                  stroke-width="${isActive ? '1.5' : '1'}" opacity="0.95"/>
+                                            <text x="0" y="12" fill="${isActive ? '#fef08a' : '#ffffff'}" font-size="8.5" font-weight="800" text-anchor="middle">
+                                                ${escapeHtml(t.shortName || t.name.split(' ')[0])}
+                                            </text>
+                                        </g>
+                                    </g>
+                                    `;
+                                }).join("")}
                             </svg>
                         </div>
 
-                        <!-- Target Chip Selector Buttons -->
-                        <div class="flex flex-wrap gap-2">
-                            ${targets.map((t, i) => `
-                                <button type="button" data-target-idx="${i}" class="map-chip-btn px-3 py-1.5 rounded-xl text-xs font-extrabold border transition-all cursor-pointer ${
-                                    i === 0
-                                        ? "bg-rose-600 text-white border-rose-500 shadow-sm"
-                                        : "bg-slate-800 text-slate-300 border-slate-700 hover:border-slate-500"
+                        <!-- Target Chip Selector Buttons (Grid of 7) -->
+                        <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-1.5">
+                            ${targets.map((t, idx) => {
+                                const isActive = idx === activeTargetIdx;
+                                return `
+                                <button type="button" data-target-idx="${idx}" class="map-chip-btn p-2 rounded-xl text-left border transition-all cursor-pointer flex flex-col justify-between ${
+                                    isActive 
+                                        ? 'bg-rose-600 text-white border-rose-400 shadow-md ring-2 ring-rose-400/30' 
+                                        : 'bg-slate-900 text-slate-300 border-slate-800 hover:border-slate-600 hover:bg-slate-800'
                                 }">
-                                    📍 ${escapeHtml(t.name)}
+                                    <div class="flex items-center justify-between gap-1">
+                                        <span class="text-[10px] font-black px-1.5 py-0.2 rounded ${isActive ? 'bg-black/30 text-amber-300' : 'bg-slate-800 text-slate-400'}">
+                                            #${t.stepNum || (idx + 1)}
+                                        </span>
+                                        <span class="text-[9px] font-mono opacity-80">${escapeHtml(t.date.split(',')[0] || t.date)}</span>
+                                    </div>
+                                    <div class="text-xs font-extrabold mt-1 truncate" title="${escapeHtml(t.name)}">
+                                        ${escapeHtml(t.shortName || t.name)}
+                                    </div>
                                 </button>
-                            `).join("")}
+                                `;
+                            }).join("")}
                         </div>
 
-                        <!-- Military Intel Report Card -->
-                        <div id="target-info-display" class="p-4 rounded-xl bg-slate-800/90 border border-slate-700 space-y-1.5">
-                            <div class="flex flex-wrap items-center justify-between gap-2">
-                                <span id="map-target-badge" class="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-rose-900/80 text-rose-300 border border-rose-700">
-                                    ${escapeHtml(first.badge || "Pangunahing Target")}
-                                </span>
-                                <span id="map-target-date" class="text-xs font-mono font-bold text-amber-400">
-                                    ${escapeHtml(first.date || "Disyembre 1941")}
-                                </span>
+                        <!-- Enhanced Military Intel Report HUD Card -->
+                        <div id="target-info-display" class="p-4 sm:p-5 rounded-2xl bg-slate-900/95 border-2 border-slate-700/80 shadow-2xl space-y-3.5 relative overflow-hidden">
+                            <!-- Background accent glow -->
+                            <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-rose-600/10 rounded-full blur-2xl pointer-events-none"></div>
+
+                            <!-- Header: Title, Category Badge, Date -->
+                            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
+                                <div class="flex items-center gap-2">
+                                    <span class="px-2.5 py-0.5 rounded-full text-[11px] font-black uppercase bg-rose-950 text-rose-300 border border-rose-700">
+                                        ${escapeHtml(first.badge || "Pangunahing Target")}
+                                    </span>
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-800 text-slate-300">
+                                        ${escapeHtml(first.category || "Operasyon")}
+                                    </span>
+                                </div>
+                                <div class="text-xs font-mono font-bold text-amber-400 flex items-center gap-1">
+                                    <i class="ph-bold ph-calendar"></i> ${escapeHtml(first.date || "Disyembre 1941")}
+                                </div>
                             </div>
-                            <h5 id="map-target-title" class="font-black text-white text-sm sm:text-base">${escapeHtml(first.name)}</h5>
-                            <p id="map-target-info" class="text-xs sm:text-sm text-slate-300 leading-relaxed">${escapeHtml(first.info)}</p>
+
+                            <!-- Title -->
+                            <h5 class="font-black text-white text-base sm:text-lg flex items-center gap-2">
+                                <span class="text-rose-500 font-mono font-black text-sm">#${first.stepNum || (activeTargetIdx + 1)}</span>
+                                ${escapeHtml(first.name)}
+                            </h5>
+
+                            <!-- Narrative Info -->
+                            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed border-l-2 border-rose-500 pl-3">
+                                ${escapeHtml(first.info)}
+                            </p>
+
+                            <!-- 3 Tactical Columns: Forces, Impact, Curriculum Takeaway -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 pt-1 text-xs">
+                                <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700">
+                                    <div class="font-extrabold text-amber-300 flex items-center gap-1.5 mb-1">
+                                        <i class="ph-fill ph-users-three text-sm"></i> Mga Namuno at Puwersa:
+                                    </div>
+                                    <div class="text-slate-300 leading-relaxed">${escapeHtml(first.leader || "Hukbong Pandigma")}</div>
+                                </div>
+                                <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700">
+                                    <div class="font-extrabold text-rose-300 flex items-center gap-1.5 mb-1">
+                                        <i class="ph-fill ph-bomb text-sm"></i> Pinsala at Epekto:
+                                    </div>
+                                    <div class="text-slate-300 leading-relaxed">${escapeHtml(first.impact || "Malawakang pinsala sa mga depensa.")}</div>
+                                </div>
+                                <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700">
+                                    <div class="font-extrabold text-emerald-300 flex items-center gap-1.5 mb-1">
+                                        <i class="ph-fill ph-lightbulb text-sm"></i> Kahalagahan sa AP7:
+                                    </div>
+                                    <div class="text-slate-300 leading-relaxed">${escapeHtml(first.takeaway || "Pangunahing punto ng aralin.")}</div>
+                                </div>
+                            </div>
+
+                            <!-- Navigation Quick Button -->
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-800">
+                                <span class="text-[11px] text-slate-400 italic">Pindutin ang mga numero sa mapa o gamitin ang Auto-Play para sa buong salaysay.</span>
+                                <button type="button" id="map-next-step-btn" class="px-3 py-1.5 rounded-xl text-xs font-black bg-rose-600 hover:bg-rose-500 text-white flex items-center gap-1 transition-all cursor-pointer">
+                                    <span>Susunod na Kaganapan</span>
+                                    <i class="ph-bold ph-arrow-right"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
-                `;
+                    `;
 
-                const updateTargetSelection = (idx) => {
-                    const t = targets[idx];
-                    if (!t) return;
-                    document.getElementById("map-target-badge").textContent = t.badge || "Pangunahing Target";
-                    document.getElementById("map-target-date").textContent = t.date || "Disyembre 1941";
-                    document.getElementById("map-target-title").textContent = t.name;
-                    document.getElementById("map-target-info").textContent = t.info;
-
-                    container.querySelectorAll(".map-chip-btn").forEach((btn, bi) => {
-                        if (bi === idx) {
-                            btn.className = "map-chip-btn px-3 py-1.5 rounded-xl text-xs font-extrabold border transition-all bg-rose-600 text-white border-rose-500 shadow-sm cursor-pointer";
-                        } else {
-                            btn.className = "map-chip-btn px-3 py-1.5 rounded-xl text-xs font-extrabold border transition-all bg-slate-800 text-slate-300 border-slate-700 hover:border-slate-500 cursor-pointer";
-                        }
+                    // Wire up interactions
+                    container.querySelectorAll(".map-chip-btn").forEach(btn => {
+                        btn.addEventListener("click", () => {
+                            stopAutoPlay();
+                            activeTargetIdx = Number(btn.dataset.targetIdx);
+                            renderMapWidgetHTML();
+                            playGameSound("xp");
+                        });
                     });
-                    playGameSound("xp");
+
+                    container.querySelectorAll(".map-target-pin").forEach(pin => {
+                        pin.addEventListener("click", () => {
+                            stopAutoPlay();
+                            activeTargetIdx = Number(pin.dataset.targetIdx);
+                            renderMapWidgetHTML();
+                            playGameSound("xp");
+                        });
+                    });
+
+                    container.querySelectorAll(".map-filter-pill").forEach(pill => {
+                        pill.addEventListener("click", () => {
+                            activeFilter = pill.dataset.filter;
+                            // Set activeTargetIdx to first visible target in this filter if current not visible
+                            const visible = targets.filter(t => activeFilter === "all" || t.category === activeFilter);
+                            if (visible.length > 0 && !visible.some((t, i) => targets.indexOf(t) === activeTargetIdx)) {
+                                activeTargetIdx = targets.indexOf(visible[0]);
+                            }
+                            renderMapWidgetHTML();
+                        });
+                    });
+
+                    const nextStepBtn = document.getElementById("map-next-step-btn");
+                    if (nextStepBtn) {
+                        nextStepBtn.addEventListener("click", () => {
+                            stopAutoPlay();
+                            activeTargetIdx = (activeTargetIdx + 1) % targets.length;
+                            renderMapWidgetHTML();
+                            playGameSound("xp");
+                        });
+                    }
+
+                    const prevBtn = document.getElementById("map-prev-btn");
+                    if (prevBtn) {
+                        prevBtn.addEventListener("click", () => {
+                            stopAutoPlay();
+                            activeTargetIdx = (activeTargetIdx - 1 + targets.length) % targets.length;
+                            renderMapWidgetHTML();
+                            playGameSound("xp");
+                        });
+                    }
+
+                    const nextBtn = document.getElementById("map-next-btn");
+                    if (nextBtn) {
+                        nextBtn.addEventListener("click", () => {
+                            stopAutoPlay();
+                            activeTargetIdx = (activeTargetIdx + 1) % targets.length;
+                            renderMapWidgetHTML();
+                            playGameSound("xp");
+                        });
+                    }
+
+                    const playToggleBtn = document.getElementById("map-play-toggle-btn");
+                    if (playToggleBtn) {
+                        playToggleBtn.addEventListener("click", () => {
+                            if (isPlaying) {
+                                stopAutoPlay();
+                            } else {
+                                startAutoPlay();
+                            }
+                        });
+                    }
                 };
 
-                container.querySelectorAll(".map-chip-btn").forEach(btn => {
-                    btn.addEventListener("click", () => updateTargetSelection(Number(btn.dataset.targetIdx)));
-                });
-                container.querySelectorAll(".map-target-pin").forEach(pin => {
-                    pin.addEventListener("click", () => updateTargetSelection(Number(pin.dataset.targetIdx)));
-                });
+                const startAutoPlay = () => {
+                    isPlaying = true;
+                    const btn = document.getElementById("map-play-toggle-btn");
+                    const icon = document.getElementById("map-play-icon");
+                    const label = document.getElementById("map-play-label");
+                    if (btn) {
+                        btn.className = "px-2.5 py-1 rounded-lg text-xs font-black flex items-center gap-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 transition-all shadow-xs cursor-pointer";
+                    }
+                    if (icon) icon.className = "ph-fill ph-pause text-xs";
+                    if (label) label.textContent = "I-pause";
+
+                    window.__mapAutoPlayTimer = setInterval(() => {
+                        activeTargetIdx = (activeTargetIdx + 1) % targets.length;
+                        renderMapWidgetHTML();
+                        // re-establish playing state visuals
+                        isPlaying = true;
+                        const curBtn = document.getElementById("map-play-toggle-btn");
+                        const curIcon = document.getElementById("map-play-icon");
+                        const curLabel = document.getElementById("map-play-label");
+                        if (curBtn) curBtn.className = "px-2.5 py-1 rounded-lg text-xs font-black flex items-center gap-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 transition-all shadow-xs cursor-pointer";
+                        if (curIcon) curIcon.className = "ph-fill ph-pause text-xs";
+                        if (curLabel) curLabel.textContent = "I-pause";
+                        playGameSound("xp");
+                    }, 4500);
+                };
+
+                const stopAutoPlay = () => {
+                    isPlaying = false;
+                    if (window.__mapAutoPlayTimer) {
+                        clearInterval(window.__mapAutoPlayTimer);
+                        window.__mapAutoPlayTimer = null;
+                    }
+                    const btn = document.getElementById("map-play-toggle-btn");
+                    const icon = document.getElementById("map-play-icon");
+                    const label = document.getElementById("map-play-label");
+                    if (btn) {
+                        btn.className = "px-2.5 py-1 rounded-lg text-xs font-black flex items-center gap-1.5 bg-rose-600 hover:bg-rose-500 text-white transition-all shadow-xs cursor-pointer";
+                    }
+                    if (icon) icon.className = "ph-fill ph-play text-xs";
+                    if (label) label.textContent = "Auto-Play";
+                };
+
+                renderMapWidgetHTML();
             }
         }
 
