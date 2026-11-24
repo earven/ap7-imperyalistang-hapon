@@ -1456,15 +1456,123 @@
         ];
 
         const TIMELINE_EVENTS_ARALIN6 = [
-            { date: "Nobyembre 5, 1941", desc: "Pag-uutos ng Japan sa paghahandang militar bago ang mga pagsalakay." },
-            { date: "Disyembre 7, 1941", desc: "Pagsalakay ng Japan sa Pearl Harbor sa Pulo ng Oahu, Hawaii." },
-            { date: "Disyembre 8, 1941", desc: "Pagsimula ng pag-atake sa Pilipinas (Clark Field sa Pampanga at Iba Field sa Zambales)." },
-            { date: "Disyembre 22, 1941", desc: "Pagdaong ng pangunahing puwersang Hapones sa Look ng Lingayen sa Pangasinan." },
-            { date: "Enero 2, 1942", desc: "Tuluyang pagpasok ng mga hukbong Hapones sa Maynila." },
-            { date: "Marso 11, 1942", desc: "Pag-alis/paglikas ni Heneral Douglas MacArthur mula sa Pilipinas patungong Australia ('I shall return')." },
-            { date: "Abril 9, 1942", desc: "Pagsuko sa Bataan (Hen. Edward King Jr., 76,000 sundalo) at ang pagsisimula ng Death March." },
-            { date: "Mayo 6, 1942", desc: "Pagsuko ng huling tanggulan sa pulo ng Corregidor (Hen. Jonathan Wainwright)." },
-            { date: "Oktubre 20, 1944", desc: "Pagbabalik ni Heneral Douglas MacArthur sa Leyte para sa pagpapalaya sa bansa." }
+            {
+                id: "step-1",
+                year: "1941",
+                date: "Nobyembre 5, 1941",
+                title: "Lihim na Utos ng Digmaan ng Japan",
+                phase: "Paghahanda",
+                phaseColor: "amber",
+                icon: "ph-scroll",
+                location: "Tokyo, Japan",
+                desc: "Pormal na inaprubahan ng Imperyalistang Hapon ang planong sabayang salakayin ang Pearl Harbor, Pilipinas, at Timog-Silangang Asya matapos ang U.S. Oil Embargo.",
+                impact: "Nagsimula ang lihim na paglalayag ng Kido Butai patungong Hawaii at pagpoposisyon ng mga hukbo sa Taiwan para sa pagsalakay sa Luzon.",
+                takeaway: "Walang pormal na deklarasyon ng digmaan bago ang pagsalakay."
+            },
+            {
+                id: "step-2",
+                year: "1941",
+                date: "Disyembre 7, 1941",
+                title: "Sorpresang Pagsalakay sa Pearl Harbor",
+                phase: "Pagsalakay",
+                phaseColor: "rose",
+                icon: "ph-airplane-tilt",
+                location: "Oahu, Hawaii (7:55 AM)",
+                desc: "Binomba ng Kido Butai ng Japan ang base militar ng U.S. Pacific Fleet. Winasak ang mga barkong pandigma ng Amerika tulad ng USS Arizona.",
+                impact: "Napalumpo ang plota ng Amerika sa Pasipiko, kaya hindi nakapagpadala ng agarang saklolo sa Pilipinas.",
+                takeaway: "Pumasok ang Estados Unidos sa Ikalawang Digmaang Pandaigdig."
+            },
+            {
+                id: "step-3",
+                year: "1941",
+                date: "Disyembre 8, 1941",
+                title: "Pambobomba sa Clark Field at Baguio",
+                phase: "Pagsalakay",
+                phaseColor: "rose",
+                icon: "ph-bomb",
+                location: "Clark Field (Pampanga), Iba (Zambales), Camp John Hay",
+                desc: "Ilang oras matapos ang Pearl Harbor, nilusob ng 192 eroplanong Hapones mula sa Taiwan ang Clark Field at iba pang base panghimpapawid sa Pilipinas.",
+                impact: "Nawasak ang karamihan sa mga B-17 Flying Fortress ng USAFFE habang nakaparada pa sa paliparan bago pa man makalipad.",
+                takeaway: "Nawalan ang Pilipinas ng proteksiyong panghimpapawid sa unang araw pa lamang."
+            },
+            {
+                id: "step-4",
+                year: "1941",
+                date: "Disyembre 22, 1941",
+                title: "Pagdaong sa Look ng Lingayen",
+                phase: "Pagsalakay",
+                phaseColor: "rose",
+                icon: "ph-anchor",
+                location: "Lingayen Gulf, Pangasinan",
+                desc: "Dumaong ang 43,000 sundalo ng 14th Army ng Japan sa pamumuno ni Lt. Hen. Masaharu Homma sakay ng 85 sasakyang pandagat.",
+                impact: "Mabilis na sumulong ang mga tangke at impanterya ng Hapon patimog patungong Gitnang Luzon at Maynila.",
+                takeaway: "Hindi napigilan ng pwersang pandagat at baybayin ang pagdaong ng Hapon."
+            },
+            {
+                id: "step-5",
+                year: "1941",
+                date: "Disyembre 26, 1941",
+                title: "Pagdeklara sa Maynila bilang 'Open City'",
+                phase: "Pagtatanggol",
+                phaseColor: "sky",
+                icon: "ph-shield-check",
+                location: "Maynila",
+                desc: "Sa payo ni Pangulong Manuel L. Quezon, idineklara ni Hen. Douglas MacArthur ang Maynila bilang 'Open City' upang iligtas ang mga sibilyan at makasaysayang gusali sa pambobomba.",
+                impact: "Inalis ang lahat ng sandata at tropa militar sa lungsod. Pumasok ang mga Hapones sa Maynila nang walang putukan noong Enero 2, 1942.",
+                takeaway: "Inilipat ang pamahalaang Commonwealth nina Quezon at Osmeña sa isla ng Corregidor."
+            },
+            {
+                id: "step-6",
+                year: "1942",
+                date: "Marso 11, 1942",
+                title: "Paglikas ni MacArthur patungong Australia",
+                phase: "Pagtatanggol",
+                phaseColor: "sky",
+                icon: "ph-boat",
+                location: "Corregidor ➔ Del Monte, Bukidnon ➔ Darwin, Australia",
+                desc: "Sa utos ni Pangulong Roosevelt, lumikas si Hen. MacArthur sakay ng PT boat 41. Pagdating sa Australia, binitiwan niya ang tanyag na pangakong 'I came through and I shall return.'",
+                impact: "Naiwan ang direktang pamumuno sa Bataan kay Hen. Edward King Jr. at sa Corregidor kay Hen. Jonathan Wainwright.",
+                takeaway: "Nagpatuloy ang paglaban ng mga sundalo sa gitna ng desperadong sitwasyon."
+            },
+            {
+                id: "step-7",
+                year: "1942",
+                date: "Abril 9, 1942",
+                title: "Pagsuko sa Bataan at ang Death March",
+                phase: "Tragedya",
+                phaseColor: "purple",
+                icon: "ph-skull",
+                location: "Bataan hanggang Capas, Tarlac (105 kilometro)",
+                desc: "Matapos ang 3 buwang gutom, malaria, at walang saklolo, napilitang sumuko si Hen. Edward King Jr. kasama ang tinatayang 76,000 sundalong Pilipino (64,000) at Amerikano (12,000).",
+                impact: "Sapilitang pinagmartsa nang walang pagkain at tubig sa ilalim ng matinding init. Tinatayang 7,000 hanggang 10,000 sundalo ang nasawi sa brutalidad.",
+                takeaway: "Ginugunita ito taon-taon bilang 'Araw ng Kagitingan' (Day of Valor)."
+            },
+            {
+                id: "step-8",
+                year: "1942",
+                date: "Mayo 6, 1942",
+                title: "Pagsuko ng Huling Tanggulan sa Corregidor",
+                phase: "Okupasyon",
+                phaseColor: "emerald",
+                icon: "ph-flag",
+                location: "Isla ng Corregidor ('The Rock')",
+                desc: "Matapos ang walang humpay na artillery bombardment mula Bataan, sumuko si Hen. Jonathan Wainwright upang iligtas ang mga sugatang sundalo at nars sa Malinta Tunnel.",
+                impact: "Ganap nang napasailalim ang buong kapuluan ng Pilipinas sa Imperyo ng Japan. Nagsimula ang 3 taon ng madilim na okupasyong militar.",
+                takeaway: "Binuo ang mga kilusang gerilya (Hukbalahap, USAFFE Guerillas) sa mga bundok."
+            },
+            {
+                id: "step-9",
+                year: "1944",
+                date: "Oktubre 20, 1944",
+                title: "Ang Makasaysayang Leyte Landing at Paglaya",
+                phase: "Paglaya",
+                phaseColor: "emerald",
+                icon: "ph-trophy",
+                location: "Red Beach, Palo, Leyte",
+                desc: "Tumapak sa dalampasigan ng Leyte si Hen. Douglas MacArthur kasama si Pangulong Sergio Osmeña at Carlos P. Romulo, sabay pahayag ng 'People of the Philippines: I have returned!'",
+                impact: "Naganap ang Battle of Leyte Gulf (pinakamalaking labanang pandagat sa kasaysayan). Nagsimula ang unti-unting pagbawi at pagpapalaya sa Pilipinas.",
+                takeaway: "Napatunayan ang pangako ng pagbabalik at pagwawakas ng pasistang pananakop noong 1945."
+            }
         ];
 
         const INTERACTIVE_LESSON_WIDGETS = {
@@ -2699,6 +2807,241 @@
         }
 
         /**
+         * Interactive Chronological Graph for Aralin 6 (Pilipinas 1941–1945)
+         */
+        let activeChronologyIndex = 0;
+        let chronologyActivePhase = "all";
+        let isChronologyPlaying = false;
+
+        function renderInteractiveChronologyGraph(container) {
+            if (window.__chronologyAutoPlayTimer) {
+                clearInterval(window.__chronologyAutoPlayTimer);
+                window.__chronologyAutoPlayTimer = null;
+                isChronologyPlaying = false;
+            }
+
+            const events = TIMELINE_EVENTS_ARALIN6;
+            if (!events || !events.length) return;
+
+            const renderUI = () => {
+                const current = events[activeChronologyIndex] || events[0];
+                const filteredEvents = chronologyActivePhase === "all"
+                    ? events
+                    : events.filter(e => e.phase.toLowerCase() === chronologyActivePhase.toLowerCase());
+
+                container.innerHTML = `
+                    <div class="space-y-4">
+                        <!-- Header & Control Bar -->
+                        <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-800">
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-amber-400/20 text-amber-300 border border-amber-400/30">Interactive Graph</span>
+                                    <span class="text-xs text-slate-400">Yugto ${activeChronologyIndex + 1} ng ${events.length}</span>
+                                </div>
+                                <h3 class="text-sm sm:text-base font-black text-white mt-0.5 flex items-center gap-2">
+                                    <i class="ph-fill ph-clock-clockwise text-amber-400"></i>
+                                    Interaktibong Kronolohiya ng Digmaan sa Pilipinas (1941–1945)
+                                </h3>
+                            </div>
+
+                            <!-- Play/Pause & Step Buttons -->
+                            <div class="flex items-center gap-1.5 shrink-0">
+                                <button id="btn-chrono-play" type="button" class="px-3 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all cursor-pointer ${
+                                    isChronologyPlaying
+                                        ? "bg-rose-500 hover:bg-rose-600 text-white shadow-rose-500/30"
+                                        : "bg-amber-400 hover:bg-amber-300 text-slate-950 shadow-amber-500/20"
+                                } shadow-md">
+                                    <i class="ph-fill ${isChronologyPlaying ? 'ph-pause' : 'ph-play'} text-sm"></i>
+                                    <span>${isChronologyPlaying ? 'Ihinto' : 'Auto-Play'}</span>
+                                </button>
+                                <button id="btn-chrono-prev" type="button" class="p-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors disabled:opacity-30 disabled:pointer-events-none cursor-pointer" title="Naunang Petsa">
+                                    <i class="ph-bold ph-caret-left text-base"></i>
+                                </button>
+                                <button id="btn-chrono-next" type="button" class="p-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors disabled:opacity-30 disabled:pointer-events-none cursor-pointer" title="Susunod na Petsa">
+                                    <i class="ph-bold ph-caret-right text-base"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Phase Filter Tabs -->
+                        <div class="flex flex-wrap items-center gap-1.5 text-xs">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase mr-1">Salain Ayon sa Yugto:</span>
+                            ${[
+                                { id: "all", label: "Lahat (9 Petsa)" },
+                                { id: "pagsalakay", label: "Pagsalakay (1941)" },
+                                { id: "pagtatanggol", label: "Pagtatanggol (1941-42)" },
+                                { id: "tragedya", label: "Tragedya / Bataan" },
+                                { id: "paglaya", label: "Paglaya (1944)" }
+                            ].map(tab => `
+                                <button type="button" data-phase="${tab.id}" class="chrono-filter-btn px-2.5 py-1 rounded-lg font-bold text-[11px] transition-all cursor-pointer ${
+                                    chronologyActivePhase === tab.id
+                                        ? "bg-amber-400 text-slate-950 shadow-xs"
+                                        : "bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white"
+                                }">${tab.label}</button>
+                            `).join("")}
+                        </div>
+
+                        <!-- Horizontal Scrollable Timeline Ribbon (Graph Node Track) -->
+                        <div class="relative py-3 overflow-x-auto scrollbar-none">
+                            <div class="relative min-w-[620px] flex items-center justify-between px-4 pb-2">
+                                <!-- Track line -->
+                                <div class="absolute left-6 right-6 top-5 h-1 bg-slate-800 -z-0">
+                                    <div class="h-full bg-gradient-to-r from-amber-400 via-rose-500 to-emerald-400 transition-all duration-300" style="width: ${(activeChronologyIndex / (events.length - 1)) * 100}%"></div>
+                                </div>
+
+                                <!-- Milestone Nodes -->
+                                ${events.map((ev, idx) => {
+                                    const isCurrent = idx === activeChronologyIndex;
+                                    const isPassed = idx < activeChronologyIndex;
+                                    return `
+                                        <button type="button" data-chrono-idx="${idx}" class="chrono-node-btn group relative z-10 flex flex-col items-center cursor-pointer transition-transform duration-200 hover:scale-110">
+                                            <div class="w-10 h-10 rounded-full flex items-center justify-center font-black text-xs transition-all duration-300 border-2 ${
+                                                isCurrent
+                                                    ? "bg-amber-400 text-slate-950 border-white shadow-lg shadow-amber-500/40 scale-110 ring-4 ring-amber-400/20 animate-pulse"
+                                                    : isPassed
+                                                    ? "bg-slate-700 text-amber-300 border-amber-400/60"
+                                                    : "bg-slate-900 text-slate-400 border-slate-700 hover:border-slate-500"
+                                            }">
+                                                <i class="ph-bold ${ev.icon} text-sm"></i>
+                                            </div>
+                                            <span class="text-[10px] font-black mt-1.5 transition-colors ${
+                                                isCurrent ? "text-amber-300" : isPassed ? "text-slate-300" : "text-slate-400"
+                                            }">${ev.date.split(",")[0]}</span>
+                                            <span class="text-[9px] text-slate-400 font-bold">${ev.year}</span>
+                                        </button>
+                                    `;
+                                }).join("")}
+                            </div>
+                        </div>
+
+                        <!-- Active Milestone Spotlight Card -->
+                        <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-slate-900/95 to-slate-950 border-2 border-amber-400/30 shadow-xl space-y-3.5 animate-pop-in">
+                            <!-- Card Meta -->
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-8 h-8 rounded-xl bg-amber-400/10 border border-amber-400/30 text-amber-300 flex items-center justify-center text-lg">
+                                        <i class="ph-fill ${current.icon}"></i>
+                                    </div>
+                                    <div>
+                                        <span class="text-[10px] font-black uppercase tracking-wider text-amber-400">${current.phase}</span>
+                                        <div class="text-xs sm:text-sm font-black text-white">${escapeHtml(current.date)}</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-300 text-[11px] font-bold">
+                                    <i class="ph-fill ph-map-pin text-rose-400"></i>
+                                    <span>${escapeHtml(current.location)}</span>
+                                </div>
+                            </div>
+
+                            <!-- Title -->
+                            <h4 class="text-base sm:text-lg font-black text-amber-200 leading-snug">
+                                ${escapeHtml(current.title)}
+                            </h4>
+
+                            <!-- Description & Impact Grid -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs leading-relaxed">
+                                <div class="p-3 rounded-xl bg-slate-850/80 border border-slate-800 space-y-1">
+                                    <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 flex items-center gap-1">
+                                        <i class="ph-bold ph-info text-amber-400"></i> Buod ng Kaganapan
+                                    </div>
+                                    <p class="text-slate-200">${escapeHtml(current.desc)}</p>
+                                </div>
+                                <div class="p-3 rounded-xl bg-slate-850/80 border border-slate-800 space-y-1">
+                                    <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 flex items-center gap-1">
+                                        <i class="ph-bold ph-lightning text-rose-400"></i> Epekto sa Pilipinas
+                                    </div>
+                                    <p class="text-slate-200">${escapeHtml(current.impact)}</p>
+                                </div>
+                            </div>
+
+                            <!-- Bottom Key Takeaway Alert -->
+                            <div class="p-2.5 rounded-xl bg-amber-400/10 border border-amber-400/20 text-xs text-amber-200 flex items-center gap-2">
+                                <i class="ph-fill ph-lightbulb text-amber-400 text-base shrink-0"></i>
+                                <div><strong class="font-bold text-amber-300">Pangunahing Aral:</strong> ${escapeHtml(current.takeaway)}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Wire Timeline Events
+                // 1. Play / Pause
+                const playBtn = container.querySelector("#btn-chrono-play");
+                if (playBtn) {
+                    playBtn.addEventListener("click", () => {
+                        isChronologyPlaying = !isChronologyPlaying;
+                        playGameSound("click");
+                        if (isChronologyPlaying) {
+                            window.__chronologyAutoPlayTimer = setInterval(() => {
+                                activeChronologyIndex = (activeChronologyIndex + 1) % events.length;
+                                playGameSound("click");
+                                renderUI();
+                            }, 3200);
+                        } else {
+                            if (window.__chronologyAutoPlayTimer) {
+                                clearInterval(window.__chronologyAutoPlayTimer);
+                                window.__chronologyAutoPlayTimer = null;
+                            }
+                        }
+                        renderUI();
+                    });
+                }
+
+                // 2. Prev / Next
+                const prevBtn = container.querySelector("#btn-chrono-prev");
+                if (prevBtn) {
+                    prevBtn.disabled = activeChronologyIndex === 0;
+                    prevBtn.addEventListener("click", () => {
+                        if (activeChronologyIndex > 0) {
+                            activeChronologyIndex--;
+                            playGameSound("click");
+                            renderUI();
+                        }
+                    });
+                }
+
+                const nextBtn = container.querySelector("#btn-chrono-next");
+                if (nextBtn) {
+                    nextBtn.disabled = activeChronologyIndex === events.length - 1;
+                    nextBtn.addEventListener("click", () => {
+                        if (activeChronologyIndex < events.length - 1) {
+                            activeChronologyIndex++;
+                            playGameSound("click");
+                            renderUI();
+                        }
+                    });
+                }
+
+                // 3. Phase Filter Buttons
+                container.querySelectorAll(".chrono-filter-btn").forEach(btn => {
+                    btn.addEventListener("click", () => {
+                        chronologyActivePhase = btn.dataset.phase;
+                        // Jump to first event matching phase
+                        if (chronologyActivePhase !== "all") {
+                            const matchIdx = events.findIndex(e => e.phase.toLowerCase() === chronologyActivePhase.toLowerCase());
+                            if (matchIdx >= 0) activeChronologyIndex = matchIdx;
+                        }
+                        playGameSound("click");
+                        renderUI();
+                    });
+                });
+
+                // 4. Milestone Node Buttons
+                container.querySelectorAll(".chrono-node-btn").forEach(btn => {
+                    btn.addEventListener("click", () => {
+                        const idx = parseInt(btn.dataset.chronoIdx, 10);
+                        if (!isNaN(idx)) {
+                            activeChronologyIndex = idx;
+                            playGameSound("click");
+                            renderUI();
+                        }
+                    });
+                });
+            };
+
+            renderUI();
+        }
+
+        /**
          * Render Specific Lesson
          */
         function renderLesson(index) {
@@ -2745,23 +3088,14 @@
             if (timelineBox) {
                 if (currentLessonIndex === 5 && typeof TIMELINE_EVENTS_ARALIN6 !== "undefined") {
                     timelineBox.classList.remove("hidden");
-                    timelineBox.innerHTML = `
-                        <h3 class="text-xs font-extrabold uppercase tracking-wider text-amber-400 flex items-center gap-2 mb-4">
-                            <i class="ph-fill ph-clock-clockwise text-lg"></i> Mabilis na Chronology ng mga Kaganapan (1941–1944)
-                        </h3>
-                        <div class="space-y-3 relative border-l-2 border-amber-400/40 ml-3 pl-4">
-                            ${TIMELINE_EVENTS_ARALIN6.map(ev => `
-                                <div class="relative">
-                                    <span class="absolute -left-[23px] top-1 w-3 h-3 rounded-full bg-amber-400 border-2 border-slate-900"></span>
-                                    <div class="text-[11px] font-extrabold text-amber-300">${escapeHtml(ev.date)}</div>
-                                    <p class="text-xs text-slate-200 mt-0.5 leading-relaxed">${escapeHtml(ev.desc)}</p>
-                                </div>
-                            `).join("")}
-                        </div>
-                    `;
+                    renderInteractiveChronologyGraph(timelineBox);
                 } else {
                     timelineBox.classList.add("hidden");
                     timelineBox.innerHTML = "";
+                    if (window.__chronologyAutoPlayTimer) {
+                        clearInterval(window.__chronologyAutoPlayTimer);
+                        window.__chronologyAutoPlayTimer = null;
+                    }
                 }
             }
 
