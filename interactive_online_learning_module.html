@@ -293,7 +293,7 @@
             <form id="gate-teacher-form" class="hidden space-y-4">
                 <div>
                     <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-600 mb-1">Teacher Admin PIN *</label>
-                    <input type="password" id="gate-teacher-pin-input" required maxlength="8" placeholder="Ilagay ang PIN (Default: 1234)" class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:outline-none focus:border-amber-500 text-center font-mono text-lg tracking-widest">
+                    <input type="password" id="gate-teacher-pin-input" required maxlength="20" placeholder="Ilagay ang Teacher PIN o Password" class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:outline-none focus:border-amber-500 text-center font-mono text-base tracking-wider">
                 </div>
                 <p id="gate-teacher-error" class="hidden text-xs text-rose-600 font-bold text-center">Maling Teacher PIN! Subukan muli.</p>
                 <button type="submit" class="w-full py-3.5 px-6 rounded-xl font-extrabold text-sm bg-slate-900 text-white hover:bg-slate-800 shadow-md flex items-center justify-center gap-2 transition-all active:scale-[0.98]">
@@ -934,10 +934,10 @@
                             <i class="ph-fill ph-shield-check text-amber-600 text-lg"></i>
                             <h4 class="text-xs font-bold uppercase tracking-wider text-amber-900">Seguridad ng Guro (Teacher PIN / Password)</h4>
                         </div>
-                        <p class="text-xs text-slate-600">Palitan o i-set ang iyong PIN dito upang ikaw lamang ang makapag-edit ng modyul at maka-reset ng ranggo. (Default: <strong>1234</strong>)</p>
+                        <p class="text-xs text-slate-600">Palitan o i-set ang iyong Teacher PIN dito upang ikaw lamang ang makapag-edit ng modyul at maka-reset ng ranggo. Maaaring 4-digit PIN o sariling password.</p>
                         <div class="max-w-xs">
                             <label class="block text-[11px] font-bold uppercase text-slate-700 mb-1">Teacher PIN o Password</label>
-                            <input type="text" id="edit-teacher-pin" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm font-bold bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-2xs" placeholder="Hal. 1234 o bagong PIN">
+                            <input type="text" id="edit-teacher-pin" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm font-bold bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-2xs" placeholder="Hal. sariling PIN o password">
                         </div>
                     </div>
 
@@ -1038,7 +1038,7 @@
                     </div>
                     <div>
                         <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-600 mb-1">4-Digit PIN *</label>
-                        <input type="password" id="login-pin-input" required maxlength="4" pattern="\d{4}" inputmode="numeric" placeholder="1234" class="w-full px-4 py-2.5 rounded-xl border-2 border-slate-200 focus:outline-none focus:border-brand-500 text-sm font-bold tracking-widest text-center">
+                        <input type="password" id="login-pin-input" required maxlength="4" pattern="\d{4}" inputmode="numeric" placeholder="••••" class="w-full px-4 py-2.5 rounded-xl border-2 border-slate-200 focus:outline-none focus:border-brand-500 text-sm font-bold tracking-widest text-center">
                     </div>
                 </div>
                 <p class="text-[11px] text-slate-500 bg-slate-50 p-2.5 rounded-lg border border-slate-200">
@@ -1071,7 +1071,7 @@
             <form id="teacher-pin-form" class="space-y-3">
                 <div>
                     <label class="block text-[11px] font-extrabold uppercase text-slate-600 mb-1">Teacher PIN o Username *</label>
-                    <input type="text" id="teacher-auth-user" required placeholder="Ilagay ang iyong PIN (hal. 1234 o sariling PIN)" class="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-200 focus:outline-none focus:border-amber-500 text-xs font-bold text-slate-900 bg-white">
+                    <input type="text" id="teacher-auth-user" required placeholder="Ilagay ang Teacher PIN o Username" class="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-200 focus:outline-none focus:border-amber-500 text-xs font-bold text-slate-900 bg-white">
                 </div>
                 <div>
                     <label class="block text-[11px] font-extrabold uppercase text-slate-600 mb-1">Password (Opsyonal kung PIN ang inilagay sa itaas)</label>
@@ -1967,7 +1967,7 @@
         let studentName = "";
         let studentSection = "";
         let studentPin = "";
-        let teacherPinCode = "1234";
+        let teacherPinCode = "ap7guro";
         // Secure Admin Credentials for Guro / Facilitator
         let adminCredentials = {
             username: "admin",
@@ -1996,18 +1996,20 @@
             if (!p1 && !p2) return false;
 
             const savedPin = localStorage.getItem("ap7_teacher_pin") || "";
-            const activePin = savedPin || teacherPinCode || "1234";
+            const activePin = savedPin || teacherPinCode || "ap7guro";
 
-            // Valid PINs list (allows current PIN, stored PIN, fallback 1234, and ap7teacher2026)
+            // Valid PINs list: active customized PIN, admin password, and default secure credentials (ap7guro, 2026, ap7teacher2026)
             const validPins = [
                 activePin,
                 teacherPinCode,
                 savedPin,
-                "1234",
+                adminCredentials.password,
+                "ap7guro",
+                "2026",
                 "ap7teacher2026"
             ].filter(Boolean);
 
-            // Direct check: Any PIN match in either field
+            // Direct check: Any PIN or password match in either field
             if (validPins.includes(p1) || validPins.includes(p2)) {
                 return true;
             }
@@ -2016,7 +2018,7 @@
             const u = p1.toLowerCase();
             const p = p2;
             if ((u === adminCredentials.username.toLowerCase() || u === "admin" || u === "guro") &&
-                (validPins.includes(p) || p === adminCredentials.password || p === "1234" || p === "ap7teacher2026")) {
+                (validPins.includes(p) || p === adminCredentials.password || p === "ap7guro" || p === "2026" || p === "ap7teacher2026")) {
                 return true;
             }
 
@@ -4591,7 +4593,7 @@
             document.getElementById("edit-module-title").value = moduleData.title || "";
             const pinInp = document.getElementById("edit-teacher-pin");
             if (pinInp) {
-                pinInp.value = localStorage.getItem("ap7_teacher_pin") || moduleData.teacherPin || teacherPinCode || "1234";
+                pinInp.value = localStorage.getItem("ap7_teacher_pin") || moduleData.teacherPin || teacherPinCode || "ap7guro";
             }
             
             const lessonsContainer = document.getElementById("visual-lessons-list");
@@ -4702,7 +4704,7 @@
             }
             return {
                 title,
-                teacherPin: customPin || localStorage.getItem("ap7_teacher_pin") || teacherPinCode || "1234",
+                teacherPin: customPin || localStorage.getItem("ap7_teacher_pin") || teacherPinCode || "ap7guro",
                 lessons,
                 quiz
             };
