@@ -243,7 +243,7 @@
     <!-- Offline Status Alert Banner (Shown automatically when student has no internet) -->
     <div id="offline-alert-banner" class="hidden bg-amber-500 text-slate-950 px-4 py-2 text-xs font-black text-center flex items-center justify-center gap-2 shadow-sm z-50 sticky top-0">
         <i class="ph-bold ph-wifi-slash text-base"></i>
-        <span>Naka-Offline Mode ka ngayon. Maaari mo pa ring basahin ang mga aralin, mag-practice sa Memory Match, at mag-aral kahit walang internet!</span>
+        <span>Naka-Offline Mode ka ngayon. Maaari mo pa ring basahin ang mga aralin, sagutan ang mga pagsasanay, at mag-aral kahit walang internet!</span>
     </div>
 
     <!-- Top Navigation Bar (Gamified HUD) -->
@@ -273,12 +273,6 @@
                 <button id="pwa-install-btn" class="hidden items-center gap-1.5 px-2.5 py-1.5 text-xs font-bold text-emerald-300 bg-slate-800 hover:bg-slate-700 rounded-xl border border-emerald-500/40 transition-colors cursor-pointer" title="I-install ang App sa iyong Device para sa Offline Access">
                     <i class="ph-bold ph-download-simple text-base text-emerald-400"></i>
                     <span class="hidden xl:inline">I-install</span>
-                </button>
-
-                <!-- Memory Match Trigger Button -->
-                <button id="open-memory-game-btn" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-rose-300 border border-slate-700 transition-colors flex items-center gap-1.5 cursor-pointer" title="Maglaro ng Memory Match Game (+30 XP)">
-                    <i class="ph-fill ph-cards text-base text-rose-400"></i>
-                    <span class="text-xs font-bold hidden xl:inline">Pares-Pares</span>
                 </button>
 
                 <!-- Student Account Status Pill -->
@@ -375,10 +369,6 @@
                 <button id="sidebar-quiz-btn" class="btn-3d w-full py-3 px-4 rounded-xl font-extrabold text-sm flex items-center justify-center gap-2 bg-gradient-to-r from-brand-600 to-indigo-600 text-white hover:from-brand-700 hover:to-indigo-700">
                     <i class="ph-fill ph-swords text-lg text-amber-300"></i>
                     <span>Huling Hamon (Boss Quiz)</span>
-                </button>
-                <button id="sidebar-memory-btn" class="w-full py-2 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all bg-rose-50 text-rose-900 border border-rose-200 hover:bg-rose-100 cursor-pointer">
-                    <i class="ph-fill ph-cards text-base text-rose-500"></i>
-                    <span>Maglaro ng Pares-Pares (+30 XP)</span>
                 </button>
                 <button id="sidebar-rank-btn" class="w-full py-2 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all bg-amber-50 text-amber-900 border border-amber-200 hover:bg-amber-100">
                     <i class="ph-fill ph-trophy text-base text-amber-500"></i>
@@ -544,20 +534,7 @@
                             </p>
                         </div>
 
-                        <!-- Pre-Quiz Memory Match Drill Banner -->
-                        <div class="p-4 rounded-2xl bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-200 text-center space-y-2">
-                            <div class="flex items-center justify-center gap-2 text-xs font-black uppercase text-amber-900">
-                                <i class="ph-fill ph-cards text-amber-600 text-base"></i>
-                                <span>Magsanay Muna Gamit ang Pares-Pares Game!</span>
-                            </div>
-                            <p class="text-xs text-amber-800 leading-relaxed">
-                                Kabisaduhin ang mga termino at kahulugan bago sumabak sa 15-item quiz upang makakuha ng 100% at +30 XP!
-                            </p>
-                            <button type="button" id="btn-open-memory-from-quiz" class="w-full py-2.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition-all shadow-xs flex items-center justify-center gap-1.5 cursor-pointer">
-                                <i class="ph-fill ph-game-controller text-base"></i>
-                                <span>Maglaro ng Memory Match Game (+30 XP)</span>
-                            </button>
-                        </div>
+
 
                         <form id="student-info-form" class="space-y-4">
                             <div>
@@ -1120,75 +1097,6 @@
 
             <div id="glossary-terms-list" class="max-h-[55vh] overflow-y-auto space-y-2 pr-1 divide-y divide-slate-100">
                 <!-- Terms injected via JS -->
-            </div>
-        </div>
-    </div>
-
-    <!-- MEMORY MATCH REVIEW GAME MODAL -->
-    <div id="memory-game-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-xs overflow-y-auto">
-        <div class="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl p-4 sm:p-6 space-y-4 my-6 animate-pop-in border-2 border-slate-200">
-            <!-- Modal Header -->
-            <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-200">
-                <div class="flex items-center gap-2.5">
-                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-rose-500 to-amber-500 text-white flex items-center justify-center text-xl shrink-0 shadow-sm">
-                        <i class="ph-fill ph-cards"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-base sm:text-lg font-black text-slate-900">Pares-Pares ng Kasaysayan (Memory Match)</h3>
-                        <p class="text-[11px] sm:text-xs text-slate-500">Itambal ang bawat termino sa tamang kahulugan nito!</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button id="restart-memory-game-btn" type="button" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center gap-1 cursor-pointer" title="I-restart ang Laro">
-                        <i class="ph-bold ph-arrows-clockwise"></i> I-restart
-                    </button>
-                    <button id="close-memory-game-btn" type="button" class="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 cursor-pointer">
-                        <i class="ph ph-x text-xl"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Stats Bar -->
-            <div class="grid grid-cols-3 gap-2 bg-slate-900 text-white p-3 rounded-2xl text-center">
-                <div>
-                    <div class="text-[10px] font-bold text-slate-400 uppercase">Oras</div>
-                    <div id="memory-timer-display" class="font-mono font-black text-amber-400 text-sm sm:text-base">00:00</div>
-                </div>
-                <div>
-                    <div class="text-[10px] font-bold text-slate-400 uppercase">Mga Pindot (Moves)</div>
-                    <div id="memory-moves-display" class="font-mono font-black text-sky-400 text-sm sm:text-base">0</div>
-                </div>
-                <div>
-                    <div class="text-[10px] font-bold text-slate-400 uppercase">Natagpuang Pares</div>
-                    <div id="memory-pairs-display" class="font-mono font-black text-emerald-400 text-sm sm:text-base">0 / 8</div>
-                </div>
-            </div>
-
-            <!-- Victory Award Message (Hidden by default) -->
-            <div id="memory-victory-card" class="hidden p-4 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-700 text-white text-center space-y-2 animate-pop-in">
-                <div class="w-12 h-12 mx-auto rounded-full bg-white/20 flex items-center justify-center text-2xl">
-                    <i class="ph-fill ph-trophy text-amber-300"></i>
-                </div>
-                <h4 class="font-black text-lg">Napakagaling! Kumpleto ang Lahat ng Pares!</h4>
-                <p id="memory-victory-desc" class="text-xs text-emerald-100">
-                    Natapos mo ang hamon sa loob ng 0 segundo at 0 moves!
-                </p>
-                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/25 text-xs font-black text-amber-300">
-                    <i class="ph-fill ph-lightning"></i> +30 XP Gantimpala ang Naidagdag!
-                </div>
-                <div class="pt-2 flex justify-center gap-2">
-                    <button id="memory-play-again-btn" type="button" class="px-4 py-2 rounded-xl text-xs font-black bg-white text-emerald-950 hover:bg-emerald-50 cursor-pointer">
-                        Maglaro Muli
-                    </button>
-                    <button id="memory-proceed-quiz-btn" type="button" class="px-4 py-2 rounded-xl text-xs font-black bg-amber-400 text-slate-950 hover:bg-amber-300 cursor-pointer flex items-center gap-1">
-                        <span>Pumunta sa Quiz</span> <i class="ph-bold ph-arrow-right"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Cards Grid (4x4 = 16 cards) -->
-            <div id="memory-cards-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 min-h-[300px] select-none">
-                <!-- Cards dynamically injected via JS -->
             </div>
         </div>
     </div>
@@ -1872,307 +1780,6 @@
         let hasAnsweredCurrent = false;
         let leaderboardEntries = [];
         let editorActiveTab = "visual";
-
-        /**
-         * Memory Match Historical Review Pairs (AP7 Term 2 Week 5)
-         */
-        const MEMORY_GAME_PAIRS = [
-            {
-                id: 1,
-                term: "Sakoku",
-                icon: "🇯🇵",
-                badge: "Patakarang Panlabas",
-                def: "Patakaran ng pagsasara ng Japan sa daigdig sa ilalim ng Tokugawa Shogunate."
-            },
-            {
-                id: 2,
-                term: "Meiji Restoration",
-                icon: "👑",
-                badge: "Modernisasyon",
-                def: "Pagbabalik ng kapangyarihan sa Emperador at mabilisang industriyalisasyon ng Japan."
-            },
-            {
-                id: 3,
-                term: "Pearl Harbor",
-                icon: "⚓",
-                badge: "Disyembre 7, 1941",
-                def: "Sorpresang pagsalakay ng Kido Butai ng Japan sa base ng U.S. Navy sa Hawaii."
-            },
-            {
-                id: 4,
-                term: "Open City",
-                icon: "🏙️",
-                badge: "Maynila (Dis. 1941)",
-                def: "Pagdeklara ni MacArthur sa Maynila upang mailigtas ang lungsod sa pagkawasak."
-            },
-            {
-                id: 5,
-                term: "War Plan Orange-3",
-                icon: "🛡️",
-                badge: "Bataan Defensive",
-                def: "Plano ng USAFFE na magkuta sa Bataan habang naghihintay ng saklolo mula Amerika."
-            },
-            {
-                id: 6,
-                term: "Bataan Death March",
-                icon: "🚶",
-                badge: "Abril 9, 1942",
-                def: "Malagim na pagpapalakad sa higit 70,000 sumukong sundalo mula Mariveles hanggang Capas."
-            },
-            {
-                id: 7,
-                term: "Mickey Mouse Money",
-                icon: "💵",
-                badge: "Krisis sa Ekonomiya",
-                def: "Perang papel na inisyu ng militar ng Hapon na nawalan ng halaga dahil sa implasyon."
-            },
-            {
-                id: 8,
-                term: "Trade Embargo",
-                icon: "🛢️",
-                badge: "Krisis sa Langis",
-                def: "Pagputol ng Amerika sa langis ng Japan na nagtulak dito na salakayin ang Timog-Silangang Asya."
-            }
-        ];
-
-        // Memory Match Game State
-        let memoryCards = [];
-        let memoryFlippedCards = [];
-        let memoryMatchedPairs = 0;
-        let memoryMoves = 0;
-        let memoryTimer = null;
-        let memorySeconds = 0;
-        let memoryIsLocked = false;
-        let memoryGameStarted = false;
-
-        /**
-         * Memory Match Game ("Pares-Pares ng Kasaysayan") Logic
-         */
-        function startMemoryTimer() {
-            stopMemoryTimer();
-            memorySeconds = 0;
-            updateMemoryTimerDisplay();
-            memoryTimer = setInterval(() => {
-                memorySeconds++;
-                updateMemoryTimerDisplay();
-            }, 1000);
-        }
-
-        function stopMemoryTimer() {
-            if (memoryTimer) {
-                clearInterval(memoryTimer);
-                memoryTimer = null;
-            }
-        }
-
-        function updateMemoryTimerDisplay() {
-            const m = Math.floor(memorySeconds / 60);
-            const s = memorySeconds % 60;
-            const formatted = `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
-            const timerEl = document.getElementById("memory-timer");
-            if (timerEl) timerEl.textContent = formatted;
-        }
-
-        function openMemoryGameModal() {
-            const modal = document.getElementById("memory-game-modal");
-            if (!modal) return;
-            initMemoryGame();
-            modal.classList.remove("hidden");
-            modal.classList.add("flex");
-            playGameSound("click");
-        }
-
-        function closeMemoryGameModal() {
-            const modal = document.getElementById("memory-game-modal");
-            if (!modal) return;
-            stopMemoryTimer();
-            modal.classList.add("hidden");
-            modal.classList.remove("flex");
-        }
-
-        function initMemoryGame() {
-            stopMemoryTimer();
-            memoryFlippedCards = [];
-            memoryMatchedPairs = 0;
-            memoryMoves = 0;
-            memoryIsLocked = false;
-            memoryGameStarted = false;
-
-            const movesEl = document.getElementById("memory-moves");
-            if (movesEl) movesEl.textContent = "0";
-            const pairsEl = document.getElementById("memory-pairs");
-            if (pairsEl) pairsEl.textContent = "0/8";
-            const victoryBanner = document.getElementById("memory-victory-banner");
-            if (victoryBanner) victoryBanner.classList.add("hidden");
-
-            // Build 16 cards from 8 pairs (Type A = Konsepto/Term, Type B = Kahulugan/Def)
-            const deck = [];
-            MEMORY_GAME_PAIRS.forEach((item) => {
-                deck.push({
-                    uid: `pair-${item.id}-term`,
-                    pairId: item.id,
-                    type: "term",
-                    title: item.term,
-                    icon: item.icon,
-                    badge: item.badge,
-                    isMatched: false
-                });
-                deck.push({
-                    uid: `pair-${item.id}-def`,
-                    pairId: item.id,
-                    type: "def",
-                    title: item.def,
-                    icon: item.icon,
-                    badge: item.badge,
-                    isMatched: false
-                });
-            });
-
-            // Fisher-Yates Shuffle
-            for (let i = deck.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [deck[i], deck[j]] = [deck[j], deck[i]];
-            }
-
-            memoryCards = deck;
-            renderMemoryCards();
-            startMemoryTimer();
-        }
-
-        function renderMemoryCards() {
-            const grid = document.getElementById("memory-cards-grid");
-            if (!grid) return;
-            grid.innerHTML = "";
-
-            memoryCards.forEach((card, index) => {
-                const btn = document.createElement("button");
-                btn.type = "button";
-                btn.className = `memory-card group relative h-28 sm:h-32 rounded-xl p-2.5 text-center flex flex-col items-center justify-center transition-all duration-300 transform select-none cursor-pointer border shadow-sm ${
-                    card.isMatched
-                        ? "bg-emerald-50 border-emerald-300 text-emerald-800 scale-95 opacity-90 cursor-default"
-                        : "bg-gradient-to-br from-slate-800 to-slate-900 border-slate-700 hover:border-amber-400 hover:shadow-md hover:-translate-y-0.5"
-                }`;
-                btn.dataset.index = index;
-
-                if (card.isMatched) {
-                    btn.innerHTML = `
-                        <span class="text-xs px-2 py-0.5 rounded-full font-bold bg-emerald-100 text-emerald-700 mb-1 border border-emerald-200">✓ Naitugma</span>
-                        <div class="text-lg mb-1">${card.icon}</div>
-                        <p class="text-[11px] sm:text-xs font-bold leading-snug line-clamp-3 text-emerald-950">${escapeHtml(card.title)}</p>
-                    `;
-                } else {
-                    btn.innerHTML = `
-                        <div class="card-back flex flex-col items-center justify-center">
-                            <div class="w-10 h-10 rounded-full bg-slate-700/80 border border-slate-600 flex items-center justify-center text-amber-400 group-hover:scale-110 transition-transform">
-                                <i class="ph-bold ph-cards text-xl"></i>
-                            </div>
-                            <span class="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-wider">AP7 Card</span>
-                        </div>
-                    `;
-                }
-
-                btn.addEventListener("click", () => handleMemoryCardClick(index, btn));
-                grid.appendChild(btn);
-            });
-        }
-
-        function handleMemoryCardClick(index, btn) {
-            if (memoryIsLocked) return;
-            const card = memoryCards[index];
-            if (card.isMatched) return;
-            if (memoryFlippedCards.some(f => f.index === index)) return;
-
-            // Flip card visually
-            btn.className = `memory-card relative h-28 sm:h-32 rounded-xl p-2.5 text-center flex flex-col items-center justify-center transition-all duration-300 border-2 shadow-md ${
-                card.type === "term"
-                    ? "bg-amber-50 border-amber-400 text-amber-950 shadow-amber-500/20"
-                    : "bg-sky-50 border-sky-400 text-sky-950 shadow-sky-500/20"
-            }`;
-
-            btn.innerHTML = `
-                <div class="flex items-center gap-1 mb-1">
-                    <span class="text-xs">${card.icon}</span>
-                    <span class="text-[9px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider ${
-                        card.type === "term" ? "bg-amber-200/70 text-amber-900" : "bg-sky-200/70 text-sky-900"
-                    }">${card.badge}</span>
-                </div>
-                <p class="text-[11px] sm:text-xs font-bold leading-snug line-clamp-3 ${
-                    card.type === "term" ? "text-amber-950" : "text-sky-950"
-                }">${escapeHtml(card.title)}</p>
-            `;
-
-            playGameSound("click");
-            memoryFlippedCards.push({ index, card, btn });
-
-            if (memoryFlippedCards.length === 2) {
-                memoryMoves++;
-                const movesEl = document.getElementById("memory-moves");
-                if (movesEl) movesEl.textContent = memoryMoves.toString();
-
-                const [first, second] = memoryFlippedCards;
-                if (first.card.pairId === second.card.pairId && first.card.type !== second.card.type) {
-                    // Match found!
-                    memoryIsLocked = true;
-                    setTimeout(() => {
-                        first.card.isMatched = true;
-                        second.card.isMatched = true;
-                        memoryMatchedPairs++;
-                        const pairsEl = document.getElementById("memory-pairs");
-                        if (pairsEl) pairsEl.textContent = `${memoryMatchedPairs}/8`;
-
-                        playGameSound("correct");
-                        renderMemoryCards();
-                        memoryFlippedCards = [];
-                        memoryIsLocked = false;
-
-                        if (memoryMatchedPairs === 8) {
-                            handleMemoryGameVictory();
-                        }
-                    }, 500);
-                } else {
-                    // No match
-                    memoryIsLocked = true;
-                    setTimeout(() => {
-                        playGameSound("danger");
-                        // Flip back
-                        [first, second].forEach(item => {
-                            item.btn.className = "memory-card group relative h-28 sm:h-32 rounded-xl p-2.5 text-center flex flex-col items-center justify-center transition-all duration-300 transform select-none cursor-pointer border shadow-sm bg-gradient-to-br from-slate-800 to-slate-900 border-slate-700 hover:border-amber-400 hover:shadow-md hover:-translate-y-0.5";
-                            item.btn.innerHTML = `
-                                <div class="card-back flex flex-col items-center justify-center">
-                                    <div class="w-10 h-10 rounded-full bg-slate-700/80 border border-slate-600 flex items-center justify-center text-amber-400 group-hover:scale-110 transition-transform">
-                                        <i class="ph-bold ph-cards text-xl"></i>
-                                    </div>
-                                    <span class="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-wider">AP7 Card</span>
-                                </div>
-                            `;
-                        });
-                        memoryFlippedCards = [];
-                        memoryIsLocked = false;
-                    }, 900);
-                }
-            }
-        }
-
-        function handleMemoryGameVictory() {
-            stopMemoryTimer();
-            playGameSound("badge");
-            launchConfetti();
-
-            const finalTime = `${Math.floor(memorySeconds / 60).toString().padStart(2, "0")}:${(memorySeconds % 60).toString().padStart(2, "0")}`;
-            const victoryBanner = document.getElementById("memory-victory-banner");
-            const victorySummary = document.getElementById("memory-victory-summary");
-
-            if (victorySummary) {
-                victorySummary.textContent = `Matagumpay mong naitugma ang lahat ng 8 pares sa loob ng ${finalTime} gamit ang ${memoryMoves} moves!`;
-            }
-            if (victoryBanner) {
-                victoryBanner.classList.remove("hidden");
-            }
-
-            // Award XP once per session/completion
-            awardXP(30, "Pares-Pares ng Kasaysayan Master");
-            showToast("Tagumpay! +30 XP Bonus para sa Memory Match!");
-        }
 
         /**
          * PWA & Offline Support Setup
@@ -4885,40 +4492,6 @@
                     renderGlossaryList(e.target.value.trim());
                 });
             }
-
-            // Memory Match Game Events
-            const openMemoryBtn = document.getElementById("open-memory-game-btn");
-            if (openMemoryBtn) openMemoryBtn.addEventListener("click", openMemoryGameModal);
-
-            const sidebarMemoryBtn = document.getElementById("sidebar-memory-btn");
-            if (sidebarMemoryBtn) sidebarMemoryBtn.addEventListener("click", () => {
-                openMemoryGameModal();
-                closeMobileSidebar();
-            });
-
-            const preQuizMemoryBtn = document.getElementById("btn-open-memory-from-quiz");
-            if (preQuizMemoryBtn) preQuizMemoryBtn.addEventListener("click", openMemoryGameModal);
-
-            const closeMemoryBtn = document.getElementById("close-memory-game-btn");
-            if (closeMemoryBtn) closeMemoryBtn.addEventListener("click", closeMemoryGameModal);
-
-            const restartMemoryBtn = document.getElementById("restart-memory-game-btn");
-            if (restartMemoryBtn) restartMemoryBtn.addEventListener("click", () => {
-                initMemoryGame();
-                playGameSound("click");
-            });
-
-            const playAgainMemoryBtn = document.getElementById("memory-play-again-btn");
-            if (playAgainMemoryBtn) playAgainMemoryBtn.addEventListener("click", () => {
-                initMemoryGame();
-                playGameSound("click");
-            });
-
-            const proceedQuizFromMemoryBtn = document.getElementById("memory-proceed-quiz-btn");
-            if (proceedQuizFromMemoryBtn) proceedQuizFromMemoryBtn.addEventListener("click", () => {
-                closeMemoryGameModal();
-                openQuizPortal();
-            });
 
             // Student Registration Form inside Quiz (fallback if needed)
             document.getElementById("student-info-form").addEventListener("submit", (e) => {
