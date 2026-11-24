@@ -1247,8 +1247,17 @@
         };
 
         // Firebase Initialization
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-filipino-module';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'ap7-quest-hapon';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' 
+            ? JSON.parse(__firebase_config) 
+            : {
+                apiKey: "AIzaSyAN7uWc4piF5o48gT0eA6IU3JKKEmRx1aI",
+                authDomain: "ap7-quest-hapon.firebaseapp.com",
+                projectId: "ap7-quest-hapon",
+                storageBucket: "ap7-quest-hapon.firebasestorage.app",
+                messagingSenderId: "391434900600",
+                appId: "1:391434900600:web:8a1599d848830e2fbf498d"
+            };
         let db = null;
         let auth = null;
         let currentUser = null;
