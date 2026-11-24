@@ -142,6 +142,21 @@
                 margin: 0 auto !important;
             }
         }
+    
+        /* Force solid visible text in Handout Editor inputs and textareas */
+        #editor-modal input[type="text"],
+        #editor-modal textarea {
+            color: #0f172a !important;
+            -webkit-text-fill-color: #0f172a !important;
+            background-color: #ffffff !important;
+            opacity: 1 !important;
+        }
+        #editor-modal input::placeholder,
+        #editor-modal textarea::placeholder {
+            color: #94a3b8 !important;
+            -webkit-text-fill-color: #94a3b8 !important;
+            opacity: 1 !important;
+        }
     </style>
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans antialiased selection:bg-brand-500 selection:text-white min-h-screen flex flex-col transition-colors duration-300">
@@ -862,7 +877,7 @@
                 <div id="visual-editor-panel" class="space-y-6">
                     <div>
                         <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Pamagat ng Buong Modyul / Handout</label>
-                        <input type="text" id="edit-module-title" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        <input type="text" id="edit-module-title" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm font-bold text-slate-900 bg-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 shadow-2xs">
                     </div>
 
                     <!-- Lessons Builder -->
@@ -4411,18 +4426,18 @@
 
         function createLessonEditorCard(lesson, idx) {
             const div = document.createElement("div");
-            div.className = "lesson-editor-item p-4 rounded-xl border border-slate-200 bg-slate-50/70 space-y-3";
+            div.className = "lesson-editor-item p-4 rounded-xl border border-slate-200 bg-slate-50/70 space-y-3 text-slate-900";
             div.innerHTML = `
                 <div class="flex items-center justify-between">
                     <span class="text-xs font-bold uppercase text-brand-600">Aralin #${idx + 1}</span>
-                    <button type="button" class="remove-item-btn text-xs text-rose-600 hover:underline font-semibold">Alisin</button>
+                    <button type="button" class="remove-item-btn text-xs text-rose-600 hover:underline font-semibold cursor-pointer">Alisin</button>
                 </div>
-                <input type="text" class="lesson-title-input w-full px-3 py-2 rounded-lg border border-slate-300 text-sm font-semibold bg-white" placeholder="Pamagat ng Aralin" value="${escapeHtml(lesson.title || '')}">
-                <textarea rows="4" class="lesson-body-input w-full px-3 py-2 rounded-lg border border-slate-300 text-xs bg-white leading-relaxed" placeholder="I-paste dito ang mga talata mula sa iyong handout (paghiwalayin ng Enter)...">${escapeHtml((lesson.paragraphs || []).join('\n\n'))}</textarea>
-                <input type="text" class="lesson-takeaways-input w-full px-3 py-2 rounded-lg border border-slate-300 text-xs bg-white" placeholder="Mahahalagang Punto (paghiwalayin ng tuldok-kuwit ; )" value="${escapeHtml((lesson.takeaways || []).join('; '))}">
+                <input type="text" class="lesson-title-input w-full px-3 py-2 rounded-lg border border-slate-300 text-sm font-bold bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 shadow-2xs" placeholder="Pamagat ng Aralin" value="${escapeHtml(lesson.title || '')}">
+                <textarea rows="5" class="lesson-body-input w-full px-3 py-2 rounded-lg border border-slate-300 text-xs font-medium bg-white text-slate-900 placeholder:text-slate-400 leading-relaxed focus:outline-none focus:ring-2 focus:ring-brand-500 shadow-2xs" placeholder="I-paste dito ang mga talata mula sa iyong handout (paghiwalayin ng Enter)...">${escapeHtml((lesson.paragraphs || []).join('\n\n'))}</textarea>
+                <input type="text" class="lesson-takeaways-input w-full px-3 py-2 rounded-lg border border-slate-300 text-xs font-medium bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 shadow-2xs" placeholder="Mahahalagang Punto (paghiwalayin ng tuldok-kuwit ; )" value="${escapeHtml((lesson.takeaways || []).join('; '))}">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    <input type="text" class="lesson-fc-q w-full px-3 py-2 rounded-lg border border-slate-300 text-xs bg-white" placeholder="Flashcard Tanong (Opsyonal)" value="${escapeHtml(lesson.flashcard?.question || '')}">
-                    <input type="text" class="lesson-fc-a w-full px-3 py-2 rounded-lg border border-slate-300 text-xs bg-white" placeholder="Flashcard Sagot (Opsyonal)" value="${escapeHtml(lesson.flashcard?.answer || '')}">
+                    <input type="text" class="lesson-fc-q w-full px-3 py-2 rounded-lg border border-slate-300 text-xs font-medium bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 shadow-2xs" placeholder="Flashcard Tanong (Opsyonal)" value="${escapeHtml(lesson.flashcard?.question || '')}">
+                    <input type="text" class="lesson-fc-a w-full px-3 py-2 rounded-lg border border-slate-300 text-xs font-medium bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 shadow-2xs" placeholder="Flashcard Sagot (Opsyonal)" value="${escapeHtml(lesson.flashcard?.answer || '')}">
                 </div>
             `;
             div.querySelector(".remove-item-btn").addEventListener("click", () => div.remove());
@@ -4431,24 +4446,24 @@
 
         function createQuizEditorCard(q, idx) {
             const div = document.createElement("div");
-            div.className = "quiz-editor-item p-4 rounded-xl border border-slate-200 bg-amber-50/30 space-y-3";
+            div.className = "quiz-editor-item p-4 rounded-xl border border-slate-200 bg-amber-50/30 space-y-3 text-slate-900";
             const opts = q.options || ["", "", "", ""];
             div.innerHTML = `
                 <div class="flex items-center justify-between">
                     <span class="text-xs font-bold uppercase text-amber-700">Tanong #${idx + 1}</span>
-                    <button type="button" class="remove-item-btn text-xs text-rose-600 hover:underline font-semibold">Alisin</button>
+                    <button type="button" class="remove-item-btn text-xs text-rose-600 hover:underline font-semibold cursor-pointer">Alisin</button>
                 </div>
-                <input type="text" class="quiz-q-input w-full px-3 py-2 rounded-lg border border-slate-300 text-sm font-semibold bg-white" placeholder="Isulat ang tanong..." value="${escapeHtml(q.question || '')}">
+                <input type="text" class="quiz-q-input w-full px-3 py-2 rounded-lg border border-slate-300 text-sm font-bold bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-2xs" placeholder="Isulat ang tanong..." value="${escapeHtml(q.question || '')}">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     ${[0, 1, 2, 3].map(i => `
                         <div class="flex items-center gap-2">
                             <input type="radio" name="correct-opt-${idx}-${Math.random()}" class="quiz-correct-radio accent-emerald-600" value="${i}" ${q.correctIndex === i ? 'checked' : ''}>
-                            <input type="text" class="quiz-opt-input w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs bg-white" placeholder="Pagpipilian ${String.fromCharCode(65 + i)}" value="${escapeHtml(opts[i] || '')}">
+                            <input type="text" class="quiz-opt-input w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-medium bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-2xs" placeholder="Pagpipilian ${String.fromCharCode(65 + i)}" value="${escapeHtml(opts[i] || '')}">
                         </div>
                     `).join("")}
                 </div>
-                <p class="text-[11px] text-slate-500">* Piliin ang bilog (radio button) sa kaliwa ng tamang sagot.</p>
-                <input type="text" class="quiz-exp-input w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs bg-white" placeholder="Paliwanag kung bakit ito ang tamang sagot (Opsyonal)" value="${escapeHtml(q.explanation || '')}">
+                <p class="text-[11px] text-slate-600 font-medium">* Piliin ang bilog (radio button) sa kaliwa ng tamang sagot.</p>
+                <input type="text" class="quiz-exp-input w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-medium bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-2xs" placeholder="Paliwanag kung bakit ito ang tamang sagot (Opsyonal)" value="${escapeHtml(q.explanation || '')}">
             `;
             div.querySelector(".remove-item-btn").addEventListener("click", () => div.remove());
             return div;
