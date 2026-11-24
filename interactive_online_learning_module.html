@@ -1075,10 +1075,11 @@
                     <i class="ph-fill ph-certificate text-lg text-amber-600"></i> Opisyal na Sertipiko ng Pagkilala
                 </span>
                 <div class="flex items-center gap-2">
-                    <button id="btn-print-certificate" type="button" class="px-4 py-2 rounded-xl text-xs font-black bg-amber-500 text-slate-950 hover:bg-amber-400 flex items-center gap-1.5 shadow-sm cursor-pointer">
-                        <i class="ph-bold ph-printer text-base"></i> I-print / I-save bilang PDF
+                    <button id="btn-download-certificate-png" type="button" class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-black bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 flex items-center gap-2 shadow-md cursor-pointer transition-all active:scale-95" title="I-download ang Sertipiko bilang Larawan (PNG)">
+                        <i class="ph-bold ph-download-simple text-lg"></i>
+                        <span>I-download ang Sertipiko (Image)</span>
                     </button>
-                    <button id="btn-close-certificate" type="button" class="px-3 py-2 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-100 cursor-pointer">
+                    <button id="btn-close-certificate" type="button" class="px-3 py-2.5 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-100 cursor-pointer">
                         <i class="ph-bold ph-x text-base"></i> Isara
                     </button>
                 </div>
@@ -1108,6 +1109,14 @@
                 </p>
 
                 <!-- Signatures & Official Gold Badge -->
+                <!-- Mobile / Direct Download CTA -->
+                <div class="pt-2 no-print flex justify-center">
+                    <button id="btn-download-cert-bottom" type="button" class="w-full sm:w-auto px-6 py-3 rounded-2xl text-xs sm:text-sm font-black bg-amber-500 hover:bg-amber-400 text-slate-950 flex items-center justify-center gap-2 shadow-lg shadow-amber-500/25 cursor-pointer transition-all">
+                        <i class="ph-bold ph-image text-lg"></i>
+                        <span>I-save bilang Larawan sa Gallery (Download PNG)</span>
+                    </button>
+                </div>
+
                 <div class="pt-6 grid grid-cols-3 items-end text-center gap-4">
                     <div class="space-y-1">
                         <div class="w-32 border-b border-slate-400 mx-auto"></div>
@@ -4592,6 +4601,208 @@
         }
 
         /**
+         * Generate & Download Digital Certificate as High-Resolution PNG Image
+         */
+        function downloadCertificateAsImage() {
+            try {
+                playGameSound("badge");
+                const canvas = document.createElement("canvas");
+                // 16:9 High-Definition resolution for crisp printing & mobile gallery
+                const width = 1920;
+                const height = 1080;
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext("2d");
+
+                const sName = (lastQuizResultData && lastQuizResultData.name) || studentName || "Mag-aaral";
+                const sSection = (lastQuizResultData && lastQuizResultData.section) || studentSection || "Baitang 7";
+                const sScore = (lastQuizResultData && `${lastQuizResultData.score} / ${lastQuizResultData.total} (${lastQuizResultData.pct}%)`) || "15 / 15 (100%)";
+                const sDate = new Date().toLocaleDateString('fil-PH', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+
+                // 1. Background gradient (Warm parchment / ivory)
+                const bgGrad = ctx.createLinearGradient(0, 0, width, height);
+                bgGrad.addColorStop(0, "#fffdf7");
+                bgGrad.addColorStop(0.5, "#ffffff");
+                bgGrad.addColorStop(1, "#fef3c7");
+                ctx.fillStyle = bgGrad;
+                ctx.fillRect(0, 0, width, height);
+
+                // 2. Vintage Luxury Certificate Border (Double Gold/Bronze)
+                ctx.strokeStyle = "#d97706";
+                ctx.lineWidth = 14;
+                ctx.strokeRect(40, 40, width - 80, height - 80);
+
+                ctx.strokeStyle = "#b45309";
+                ctx.lineWidth = 4;
+                ctx.strokeRect(60, 60, width - 120, height - 120);
+
+                ctx.strokeStyle = "#f59e0b";
+                ctx.lineWidth = 2;
+                ctx.strokeRect(68, 68, width - 136, height - 136);
+
+                // Corner ornaments
+                const drawCornerOrnaments = (cx, cy) => {
+                    ctx.save();
+                    ctx.strokeStyle = "#d97706";
+                    ctx.fillStyle = "#f59e0b";
+                    ctx.lineWidth = 3;
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, 18, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.stroke();
+                    ctx.restore();
+                };
+                drawCornerOrnaments(68, 68);
+                drawCornerOrnaments(width - 68, 68);
+                drawCornerOrnaments(68, height - 68);
+                drawCornerOrnaments(width - 68, height - 68);
+
+                // 3. Institution Header
+                ctx.textAlign = "center";
+                ctx.fillStyle = "#64748b";
+                ctx.font = "bold 24px 'Inter', sans-serif";
+                ctx.letterSpacing = "4px";
+                ctx.fillText("REPUBLIKA NG PILIPINAS  •  KAGAWARAN NG EDUKASYON", width / 2, 140);
+
+                ctx.fillStyle = "#b45309";
+                ctx.font = "bold 26px 'Inter', sans-serif";
+                ctx.letterSpacing = "3px";
+                ctx.fillText("ARALING PANLIPUNAN 7  •  IKALAWANG MARKAHAN", width / 2, 185);
+
+                // 4. Main Certificate Title
+                ctx.fillStyle = "#0f172a";
+                ctx.font = "900 68px 'Georgia', serif";
+                ctx.letterSpacing = "6px";
+                ctx.fillText("KATIBAYAN NG PAGKILALA", width / 2, 275);
+
+                ctx.fillStyle = "#94a3b8";
+                ctx.font = "italic 26px 'Georgia', serif";
+                ctx.letterSpacing = "2px";
+                ctx.fillText("Certificate of Academic Achievement & Module Mastery", width / 2, 320);
+
+                // Divider line
+                ctx.strokeStyle = "#e2e8f0";
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(width / 2 - 350, 345);
+                ctx.lineTo(width / 2 + 350, 345);
+                ctx.stroke();
+
+                // 5. Conferred To Label
+                ctx.fillStyle = "#475569";
+                ctx.font = "600 24px 'Inter', sans-serif";
+                ctx.letterSpacing = "1px";
+                ctx.fillText("Ang sertipikong ito ay buong karangalang ipinagkakaloob kay", width / 2, 400);
+
+                // 6. Student Name (Large Serif & Gold Underline)
+                ctx.fillStyle = "#7c2d12"; // Deep bronze/wine
+                ctx.font = "bold 64px 'Georgia', serif";
+                ctx.fillText(sName.toUpperCase(), width / 2, 485);
+
+                // Gold name underline
+                const nameWidth = Math.min(800, ctx.measureText(sName.toUpperCase()).width + 120);
+                ctx.strokeStyle = "#f59e0b";
+                ctx.lineWidth = 5;
+                ctx.beginPath();
+                ctx.moveTo(width / 2 - nameWidth / 2, 510);
+                ctx.lineTo(width / 2 + nameWidth / 2, 510);
+                ctx.stroke();
+
+                // Section
+                ctx.fillStyle = "#334155";
+                ctx.font = "bold 28px 'Inter', sans-serif";
+                ctx.fillText(`Seksiyon / Pangkat: ${sSection}`, width / 2, 560);
+
+                // 7. Citation Body Text
+                ctx.fillStyle = "#334155";
+                ctx.font = "24px 'Inter', sans-serif";
+                ctx.fillText("Dahil sa kaniyang matagumpay na pagtatapos at kapuri-puring kahusayan sa Interactive Online Learning Module sa AP7:", width / 2, 630);
+
+                ctx.fillStyle = "#0f172a";
+                ctx.font = "bold 32px 'Georgia', serif";
+                ctx.fillText('“Ang Imperyalistang Hapon sa Asya at Pilipinas (1941–1945)”', width / 2, 680);
+
+                ctx.fillStyle = "#1e293b";
+                ctx.font = "bold 28px 'Inter', sans-serif";
+                ctx.fillText(`Nakamit na Marka sa Huling Pagsusulit: ${sScore}`, width / 2, 735);
+
+                // 8. Signatures & Official Gold Seal Medal (Bottom)
+                // Left: Date
+                ctx.strokeStyle = "#94a3b8";
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(250, 930);
+                ctx.lineTo(550, 930);
+                ctx.stroke();
+
+                ctx.fillStyle = "#0f172a";
+                ctx.font = "bold 24px 'Inter', sans-serif";
+                ctx.fillText(sDate, 400, 965);
+
+                ctx.fillStyle = "#64748b";
+                ctx.font = "600 18px 'Inter', sans-serif";
+                ctx.fillText("PETSA NG PAGTATAPOS", 400, 995);
+
+                // Center: Gold Seal Emblem
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(width / 2, 915, 60, 0, Math.PI * 2);
+                const sealGrad = ctx.createLinearGradient(width / 2 - 60, 855, width / 2 + 60, 975);
+                sealGrad.addColorStop(0, "#fbbf24");
+                sealGrad.addColorStop(0.5, "#d97706");
+                sealGrad.addColorStop(1, "#b45309");
+                ctx.fillStyle = sealGrad;
+                ctx.fill();
+                ctx.strokeStyle = "#78350f";
+                ctx.lineWidth = 4;
+                ctx.stroke();
+
+                ctx.fillStyle = "#ffffff";
+                ctx.font = "bold 18px 'Inter', sans-serif";
+                ctx.fillText("★ DEPED AP7 ★", width / 2, 905);
+                ctx.font = "bold 15px 'Inter', sans-serif";
+                ctx.fillText("OFFICIAL SEAL", width / 2, 930);
+                ctx.restore();
+
+                // Right: Teacher / Facilitator Signature Line
+                ctx.strokeStyle = "#94a3b8";
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(width - 550, 930);
+                ctx.lineTo(width - 250, 930);
+                ctx.stroke();
+
+                ctx.fillStyle = "#0f172a";
+                ctx.font = "bold 24px 'Inter', sans-serif";
+                ctx.fillText("Guro sa Araling Panlipunan 7", width - 400, 965);
+
+                ctx.fillStyle = "#64748b";
+                ctx.font = "600 18px 'Inter', sans-serif";
+                ctx.fillText("TAGAPANGASIWA NG MODYUL", width - 400, 995);
+
+                // 9. Trigger Direct Browser Image Download
+                const cleanFileName = `Sertipiko_AP7_${sName.replace(/[^a-zA-Z0-9]/g, "_")}.png`;
+                const imageURL = canvas.toDataURL("image/png");
+
+                const downloadLink = document.createElement("a");
+                downloadLink.href = imageURL;
+                downloadLink.download = cleanFileName;
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+
+                showToast(`Nai-download na ang Sertipiko bilang larawan (${cleanFileName})!`);
+            } catch (err) {
+                console.error("Certificate download error:", err);
+                showToast("Paumanhin, nagkaroon ng aberya sa pag-download ng larawan.");
+            }
+        }
+
+        /**
          * Event Listeners
          */
         function bindEvents() {
@@ -4844,11 +5055,14 @@
                 });
             }
 
-            const printCertBtn = document.getElementById("btn-print-certificate");
-            if (printCertBtn) {
-                printCertBtn.addEventListener("click", () => {
-                    window.print();
-                });
+            const downloadCertBtnTop = document.getElementById("btn-download-certificate-png");
+            if (downloadCertBtnTop) {
+                downloadCertBtnTop.addEventListener("click", downloadCertificateAsImage);
+            }
+
+            const downloadCertBtnBottom = document.getElementById("btn-download-cert-bottom");
+            if (downloadCertBtnBottom) {
+                downloadCertBtnBottom.addEventListener("click", downloadCertificateAsImage);
             }
 
             // Audio Read-Aloud (Text-to-Speech)
