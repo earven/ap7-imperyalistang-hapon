@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e1b4b"/>
+    </linearGradient>
+    <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ef4444"/>
+      <stop offset="80%" stop-color="#dc2626"/>
+      <stop offset="100%" stop-color="#991b1b"/>
+    </radialGradient>
+  </defs>
+  <rect width="512" height="512" rx="100" fill="url(#bgGrad)"/>
+  <!-- Rising Sun Rays -->
+  <g opacity="0.3" stroke="#f87171" stroke-width="4">
+    <line x1="256" y1="256" x2="70" y2="70"/>
+    <line x1="256" y1="256" x2="442" y2="70"/>
+    <line x1="256" y1="256" x2="70" y2="442"/>
+    <line x1="256" y1="256" x2="442" y2="442"/>
+    <line x1="256" y1="256" x2="256" y2="30"/>
+    <line x1="256" y1="256" x2="256" y2="482"/>
+    <line x1="256" y1="256" x2="30" y2="256"/>
+    <line x1="256" y1="256" x2="482" y2="256"/>
+  </g>
+  <!-- Center Hinomaru Sun Disc -->
+  <circle cx="256" cy="256" r="140" fill="url(#sunGlow)" stroke="#ffffff" stroke-width="8"/>
+  <!-- Torii Gate Silhouette / Imperial AP7 Emblem -->
+  <g fill="#ffffff">
+    <!-- Top lintel curved -->
+    <path d="M 150,210 Q 256,190 362,210 L 358,226 Q 256,206 154,226 Z"/>
+    <!-- Second lintel -->
+    <rect x="170" y="235" width="172" height="12" rx="3"/>
+    <!-- Pillars -->
+    <polygon points="195,247 185,340 205,340 211,247"/>
+    <polygon points="317,247 307,247 313,340 333,340"/>
+    <!-- Center Tablet -->
+    <rect x="246" y="218" width="20" height="26" rx="2" fill="#fbbf24"/>
+  </g>
+  <!-- Text Label AP7 -->
+  <text x="256" y="415" fill="#f8fafc" font-size="34" font-family="system-ui, sans-serif" font-weight="900" text-anchor="middle" letter-spacing="4">AP 7</text>
+  <text x="256" y="445" fill="#fca5a5" font-size="16" font-family="system-ui, sans-serif" font-weight="800" text-anchor="middle" letter-spacing="2">IMPERYALISTANG HAPON</text>
+</svg>
