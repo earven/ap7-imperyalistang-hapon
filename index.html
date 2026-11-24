@@ -4143,6 +4143,47 @@
             hasAnsweredCurrent = false;
             quizStartTime = Date.now();
 
+            // Randomize Quiz Questions and Option Positions (A, B, C, D)
+            // Ensures correct answers are randomly distributed across all letters (A, B, C, D),
+            // completely eliminating predictable patterns!
+            if (Array.isArray(moduleData.quiz)) {
+                // Fisher-Yates shuffle for question order
+                for (let i = moduleData.quiz.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [moduleData.quiz[i], moduleData.quiz[j]] = [moduleData.quiz[j], moduleData.quiz[i]];
+                }
+
+                // Randomize choices order for every question
+                moduleData.quiz.forEach(q => {
+                    if (Array.isArray(q.options) && q.options.length > 1) {
+                        const correctText = q.options[q.correctIndex];
+                        const wrongTexts = q.options.filter((_, idx) => idx !== q.correctIndex);
+
+                        // Shuffle wrong options
+                        for (let k = wrongTexts.length - 1; k > 0; k--) {
+                            const r = Math.floor(Math.random() * (k + 1));
+                            [wrongTexts[k], wrongTexts[r]] = [wrongTexts[r], wrongTexts[k]];
+                        }
+
+                        // Randomly assign correct answer to any slot (0=A, 1=B, 2=C, 3=D)
+                        const targetSlot = Math.floor(Math.random() * q.options.length);
+                        const shuffledOptions = [];
+                        let wrongIdx = 0;
+
+                        for (let pos = 0; pos < q.options.length; pos++) {
+                            if (pos === targetSlot) {
+                                shuffledOptions.push(correctText);
+                            } else {
+                                shuffledOptions.push(wrongTexts[wrongIdx++] || "");
+                            }
+                        }
+
+                        q.options = shuffledOptions;
+                        q.correctIndex = targetSlot;
+                    }
+                });
+            }
+
             document.getElementById("quiz-registration-area").classList.add("hidden");
             document.getElementById("quiz-results-area").classList.add("hidden");
             document.getElementById("quiz-active-area").classList.remove("hidden");
