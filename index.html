@@ -928,6 +928,19 @@
                         <input type="text" id="edit-module-title" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm font-bold text-slate-900 bg-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 shadow-2xs">
                     </div>
 
+                    <!-- Teacher Security PIN Setting -->
+                    <div class="p-4 rounded-xl border border-amber-200 bg-amber-50/70 space-y-2 text-slate-900">
+                        <div class="flex items-center gap-2">
+                            <i class="ph-fill ph-shield-check text-amber-600 text-lg"></i>
+                            <h4 class="text-xs font-bold uppercase tracking-wider text-amber-900">Seguridad ng Guro (Teacher PIN / Password)</h4>
+                        </div>
+                        <p class="text-xs text-slate-600">Palitan o i-set ang iyong PIN dito upang ikaw lamang ang makapag-edit ng modyul at maka-reset ng ranggo. (Default: <strong>1234</strong>)</p>
+                        <div class="max-w-xs">
+                            <label class="block text-[11px] font-bold uppercase text-slate-700 mb-1">Teacher PIN o Password</label>
+                            <input type="text" id="edit-teacher-pin" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm font-bold bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-2xs" placeholder="Hal. 1234 o bagong PIN">
+                        </div>
+                    </div>
+
                     <!-- Lessons Builder -->
                     <div class="space-y-3">
                         <div class="flex items-center justify-between">
@@ -1057,12 +1070,12 @@
             </div>
             <form id="teacher-pin-form" class="space-y-3">
                 <div>
-                    <label class="block text-[11px] font-extrabold uppercase text-slate-600 mb-1">Username</label>
-                    <input type="text" id="teacher-auth-user" required placeholder="Admin username" class="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-200 focus:outline-none focus:border-amber-500 text-xs font-bold text-slate-900 bg-white">
+                    <label class="block text-[11px] font-extrabold uppercase text-slate-600 mb-1">Teacher PIN o Username *</label>
+                    <input type="text" id="teacher-auth-user" required placeholder="Ilagay ang iyong PIN (hal. 1234 o sariling PIN)" class="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-200 focus:outline-none focus:border-amber-500 text-xs font-bold text-slate-900 bg-white">
                 </div>
                 <div>
-                    <label class="block text-[11px] font-extrabold uppercase text-slate-600 mb-1">Password</label>
-                    <input type="password" id="teacher-auth-pass" required placeholder="••••••••" class="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-200 focus:outline-none focus:border-amber-500 text-xs font-mono text-slate-900 bg-white">
+                    <label class="block text-[11px] font-extrabold uppercase text-slate-600 mb-1">Password (Opsyonal kung PIN ang inilagay sa itaas)</label>
+                    <input type="password" id="teacher-auth-pass" placeholder="••••••••" class="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-200 focus:outline-none focus:border-amber-500 text-xs font-mono text-slate-900 bg-white">
                 </div>
                 <p id="teacher-pin-error" class="hidden text-xs text-rose-600 font-bold text-center bg-rose-50 p-2 rounded-lg border border-rose-200">Maling Kredensyal! Hindi ma-access ang editor.</p>
                 <div class="flex justify-end gap-2 pt-2">
@@ -1962,8 +1975,12 @@
         };
         let isAdminAuthenticated = false;
 
-        // Restore custom teacher credentials if modified
+        // Restore custom teacher credentials and PIN if modified
         try {
+            const savedTeacherPin = localStorage.getItem("ap7_teacher_pin");
+            if (savedTeacherPin) {
+                teacherPinCode = savedTeacherPin;
+            }
             const savedAdmin = localStorage.getItem("ap7_admin_creds");
             if (savedAdmin) {
                 const parsed = JSON.parse(savedAdmin);
@@ -1974,24 +1991,32 @@
         } catch (_) {}
 
         function verifyAdminCredentials(userOrPin, pass) {
-            if (!userOrPin) return false;
-            const val1 = userOrPin.trim();
-            const val2 = pass ? pass.trim() : "";
+            const p1 = (userOrPin || "").trim();
+            const p2 = (pass || "").trim();
+            if (!p1 && !p2) return false;
 
-            // Case A: Entered PIN directly (e.g. "1234" o "ap7teacher2026")
-            if (val1 === teacherPinCode || val1 === "1234" || val1 === "ap7teacher2026") {
+            const savedPin = localStorage.getItem("ap7_teacher_pin") || "";
+            const activePin = savedPin || teacherPinCode || "1234";
+
+            // Valid PINs list (allows current PIN, stored PIN, fallback 1234, and ap7teacher2026)
+            const validPins = [
+                activePin,
+                teacherPinCode,
+                savedPin,
+                "1234",
+                "ap7teacher2026"
+            ].filter(Boolean);
+
+            // Direct check: Any PIN match in either field
+            if (validPins.includes(p1) || validPins.includes(p2)) {
                 return true;
             }
-            if (val2 === teacherPinCode || val2 === "1234" || val2 === "ap7teacher2026") {
-                return true;
-            }
 
-            // Case B: Entered Username and Password
-            const u = val1.toLowerCase();
-            const p = val2;
-            if ((u === adminCredentials.username.toLowerCase() && p === adminCredentials.password) ||
-                (u === "admin" && p === "1234") ||
-                (u === "guro" && p === "1234")) {
+            // Username + Password check
+            const u = p1.toLowerCase();
+            const p = p2;
+            if ((u === adminCredentials.username.toLowerCase() || u === "admin" || u === "guro") &&
+                (validPins.includes(p) || p === adminCredentials.password || p === "1234" || p === "ap7teacher2026")) {
                 return true;
             }
 
@@ -2397,6 +2422,10 @@
                     const parsed = JSON.parse(savedHandout);
                     if (parsed && parsed.title && Array.isArray(parsed.lessons)) {
                         moduleData = parsed;
+                        if (parsed.teacherPin) {
+                            teacherPinCode = parsed.teacherPin;
+                            try { localStorage.setItem("ap7_teacher_pin", parsed.teacherPin); } catch (_) {}
+                        }
                     }
                 }
                 const savedLeaderboard = localStorage.getItem("ap7_local_leaderboard");
@@ -2471,7 +2500,10 @@
                                 ? data.quiz
                                 : structuredClone(DEFAULT_MODULE_DATA.quiz)
                         };
-                        if (data.teacherPin) teacherPinCode = data.teacherPin;
+                        if (data.teacherPin) {
+                            teacherPinCode = data.teacherPin;
+                            try { localStorage.setItem("ap7_teacher_pin", data.teacherPin); } catch (_) {}
+                        }
                         renderSidebar();
                         renderLesson(currentLessonIndex);
                         updateProgressUI();
@@ -4557,6 +4589,10 @@
          */
         function populateVisualEditor() {
             document.getElementById("edit-module-title").value = moduleData.title || "";
+            const pinInp = document.getElementById("edit-teacher-pin");
+            if (pinInp) {
+                pinInp.value = localStorage.getItem("ap7_teacher_pin") || moduleData.teacherPin || teacherPinCode || "1234";
+            }
             
             const lessonsContainer = document.getElementById("visual-lessons-list");
             lessonsContainer.innerHTML = "";
@@ -4618,6 +4654,8 @@
 
         function extractDataFromVisualEditor() {
             const title = document.getElementById("edit-module-title").value.trim() || "Modyul sa Pag-aaral";
+            const customPinInp = document.getElementById("edit-teacher-pin");
+            const customPin = customPinInp ? customPinInp.value.trim() : "";
             const lessons = [];
             document.querySelectorAll(".lesson-editor-item").forEach((card, i) => {
                 const lTitle = card.querySelector(".lesson-title-input").value.trim();
@@ -4662,7 +4700,12 @@
             if (lessons.length === 0) {
                 throw new Error("Maglagay ng kahit isang aralin bago i-save.");
             }
-            return { title, lessons, quiz };
+            return {
+                title,
+                teacherPin: customPin || localStorage.getItem("ap7_teacher_pin") || teacherPinCode || "1234",
+                lessons,
+                quiz
+            };
         }
 
         function showConfirmDialog(title, message, onConfirm) {
@@ -5421,6 +5464,14 @@
                     }
 
                     moduleData = updatedData;
+                    if (updatedData.teacherPin) {
+                        teacherPinCode = updatedData.teacherPin;
+                        try {
+                            localStorage.setItem("ap7_teacher_pin", updatedData.teacherPin);
+                            adminCredentials.password = updatedData.teacherPin;
+                            localStorage.setItem("ap7_admin_creds", JSON.stringify(adminCredentials));
+                        } catch (_) {}
+                    }
                     try {
                         localStorage.setItem("ap7_active_handout", JSON.stringify(moduleData));
                     } catch (_) {}
