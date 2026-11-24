@@ -284,6 +284,12 @@
                     <i id="sound-icon" class="ph-fill ph-speaker-high text-base text-emerald-400"></i>
                 </button>
 
+                <!-- Glossary Trigger Button -->
+                <button id="open-glossary-btn" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 transition-colors flex items-center gap-1.5" title="Talahuluganan / Glosaryo ng Kasaysayan">
+                    <i class="ph-fill ph-book-bookmark text-base text-amber-400"></i>
+                    <span class="text-xs font-bold hidden md:inline">Glosaryo</span>
+                </button>
+
                 <!-- View Leaderboard Button -->
                 <button id="open-leaderboard-btn" class="flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-slate-950 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 rounded-xl transition-all shadow-xs" title="Tingnan ang Ranggo">
                     <i class="ph-fill ph-trophy text-base"></i>
@@ -355,7 +361,12 @@
         <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto w-full">
             
             <!-- VIEW 1: LESSON QUEST CONTAINER -->
-            <section id="study-view" class="space-y-6">
+            <section id="study-view" class="space-y-4 sm:space-y-6">
+                <!-- Interactive Historical Timeline Stepper Bar -->
+                <div id="quest-timeline-stepper" class="overflow-x-auto pb-1 scrollbar-none">
+                    <!-- Stepper items injected via JS -->
+                </div>
+
                 <!-- Lesson Header Card -->
                 <div class="theme-card bg-white rounded-2xl p-5 sm:p-8 shadow-xs border border-slate-200/90 transition-colors">
                     <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
@@ -363,6 +374,11 @@
                             <i class="ph-fill ph-map-pin"></i> Yugto 1
                         </span>
                         <div class="flex items-center gap-2">
+                            <!-- Text-to-Speech Audio Read-Aloud Button -->
+                            <button id="btn-read-aloud" type="button" class="text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-3 py-1 rounded-full flex items-center gap-1.5 transition-all cursor-pointer" title="Pakinggan ang Aralin">
+                                <i class="ph-fill ph-speaker-high text-amber-600 text-sm"></i>
+                                <span id="read-aloud-text">Pakinggan</span>
+                            </button>
                             <span class="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full flex items-center gap-1">
                                 <i class="ph-fill ph-lightning text-amber-500"></i> +50 XP Gantimpala
                             </span>
@@ -425,6 +441,30 @@
                             <span id="flashcard-hint" class="text-xs text-brand-600 mt-2 font-semibold flex items-center gap-1">
                                 <i class="ph-bold ph-hand-tap"></i> Pindutin upang makita ang sagot
                             </span>
+                        </div>
+                    </div>
+
+                    <!-- Pamprosesong Tanong / Mapanuring Pagsusuri (DepEd AP7 Critical Thinking) -->
+                    <div id="critical-thinking-box" class="mt-6 border-2 border-amber-200 rounded-2xl p-5 bg-gradient-to-br from-amber-50/70 to-orange-50/40">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-extrabold uppercase tracking-wider text-amber-900 flex items-center gap-1.5">
+                                <i class="ph-fill ph-brain text-amber-600 text-base"></i> Pagnilayan: Pamprosesong Tanong
+                            </span>
+                            <span class="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-amber-200/90 text-amber-950 font-mono">
+                                Mapanuring Pag-iisip
+                            </span>
+                        </div>
+                        <p id="critical-question-text" class="text-xs sm:text-sm font-bold text-slate-800 leading-relaxed"></p>
+                        
+                        <div class="mt-3">
+                            <button id="toggle-analysis-btn" type="button" class="text-xs font-extrabold text-amber-800 hover:text-amber-900 flex items-center gap-1.5 bg-white/95 border border-amber-300 px-3 py-1.5 rounded-xl shadow-2xs transition-all cursor-pointer">
+                                <i class="ph-fill ph-lightbulb text-amber-500"></i>
+                                <span id="toggle-analysis-label">Ipakita ang Gabay sa Pagsusuri</span>
+                            </button>
+                            <div id="critical-analysis-panel" class="hidden mt-2.5 p-3.5 rounded-xl bg-white border border-amber-200 text-xs text-slate-700 leading-relaxed shadow-2xs space-y-1">
+                                <span class="font-extrabold text-amber-900 block">💡 Gabay sa Talakayan at Pagsusuri:</span>
+                                <p id="critical-analysis-text"></p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1009,6 +1049,36 @@
         </div>
     </div>
 
+    <!-- HISTORICAL GLOSSARY MODAL -->
+    <div id="glossary-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs overflow-y-auto">
+        <div class="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl p-6 sm:p-8 space-y-4 my-8 animate-pop-in">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-xl shrink-0">
+                        <i class="ph-fill ph-book-bookmark"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base sm:text-lg font-extrabold text-slate-900">Talahuluganan (Glosaryo ng Kasaysayan)</h3>
+                        <p class="text-xs text-slate-500">Mahahalagang termino at konseptong pangkasaysayan sa Araling Panlipunan 7</p>
+                    </div>
+                </div>
+                <button id="close-glossary-btn" class="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 cursor-pointer">
+                    <i class="ph ph-x text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Search Glossary -->
+            <div class="relative">
+                <i class="ph ph-magnifying-glass absolute left-3 top-2.5 text-slate-400"></i>
+                <input type="text" id="glossary-search-input" placeholder="Maghanap ng termino (hal. Sakoku, Meiji, Embargo)..." class="w-full pl-9 pr-3 py-2 rounded-xl text-xs sm:text-sm bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium">
+            </div>
+
+            <div id="glossary-terms-list" class="max-h-[55vh] overflow-y-auto space-y-2 pr-1 divide-y divide-slate-100">
+                <!-- Terms injected via JS -->
+            </div>
+        </div>
+    </div>
+
     <!-- Firebase & Application Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -1426,15 +1496,141 @@
                 ]
             },
             4: {
-                type: "targets",
-                heading: "Pindutin ang mga Lugar na Sabayang Sinalakay noong Unang Araw ng Digmaan",
+                type: "map",
+                heading: "Interactive War Map: Sabayang Pananalakay ng Japan sa Pasipiko at Pilipinas (Disyembre 1941)",
                 targets: [
-                    { name: "Pearl Harbor (Hawaii)", info: "Base ng hukbong pandagat ng U.S. sa Pulo ng Oahu; sinalakay umaga ng Disyembre 7, 1941." },
-                    { name: "Pilipinas", info: "Binomba ang Clark Field (Pampanga) at Iba Field (Zambales) noong Disyembre 8, 1941." },
-                    { name: "Guam & Wake Island", info: "Mahahalagang base militar ng Estados Unidos sa Karagatang Pasipiko." },
-                    { name: "Midway Island", info: "Estratehikong isla sa gitna ng Pasipiko na target ng hukbong Hapones." },
-                    { name: "Malaya & Hong Kong", info: "Mga teritoryo sa ilalim ng kapangyarihan ng Britain na sabayang sinalakay." }
+                    {
+                        name: "Pearl Harbor (Hawaii)",
+                        date: "Disyembre 7, 1941",
+                        badge: "Pangunahing Base Militar",
+                        x: 630,
+                        y: 75,
+                        info: "Sinalakay ng mga eroplano at submarino ng Japan ang base ng U.S. Pacific Fleet sa Pulo ng Oahu, Hawaii. Nawasak ang maraming barko at nagtulak sa Amerika na opisyal na pumasok sa Ikalawang Digmaang Pandaigdig."
+                    },
+                    {
+                        name: "Clark Field & Iba Field (Pilipinas)",
+                        date: "Disyembre 8, 1941",
+                        badge: "Paliparan ng USAFFE",
+                        x: 235,
+                        y: 130,
+                        info: "Ilang oras lamang matapos ang Pearl Harbor, binomba ng mga Hapones ang mga base militar sa Pampanga at Zambales, na sumira sa halos lahat ng eroplanong pandigma ng Estados Unidos sa Pilipinas."
+                    },
+                    {
+                        name: "Guam at Wake Island",
+                        date: "Disyembre 8–23, 1941",
+                        badge: "Estratehikong Daungan sa Pasipiko",
+                        x: 440,
+                        y: 125,
+                        info: "Mahahalagang teritoryo ng Amerika sa Karagatang Pasipiko na mabilis na sinakop ng mga Hapones upang putulin ang linya ng komunikasyon at tulong ng Amerika patungong Asya."
+                    },
+                    {
+                        name: "Malaya at Hong Kong",
+                        date: "Disyembre 8, 1941",
+                        badge: "Teritoryo ng Great Britain",
+                        x: 135,
+                        y: 145,
+                        info: "Sabayang sinalakay ng hukbong Hapones ang mga kolonya ng Britain sa Asya, na nagpatunay sa kanilang malawakang plano na kontrolin ang buong Timog-Silangang Asya."
+                    },
+                    {
+                        name: "Look ng Lingayen at Maynila",
+                        date: "Disyembre 22, 1941 – Enero 2, 1942",
+                        badge: "Pagsakop sa Maynila",
+                        x: 220,
+                        y: 110,
+                        info: "Dumaong ang 43,000 sundalong Hapones sa Look ng Lingayen (Pangasinan) at tuluyang pinasok ang Maynila matapos itong ideklara ni MacArthur na Open City."
+                    }
                 ]
+            }
+        };
+
+        /**
+         * Glossary of Historical Terms (AP7 MATATAG Curriculum)
+         */
+        const GLOSSARY_TERMS = [
+            {
+                term: "Sakoku",
+                category: "Patakarang Panlabas",
+                def: "Patakaran ng pagsasara ng Japan sa ilalim ng Tokugawa Shogunate (1600s–1854). Nilimitahan lamang ang kalakalan sa mga Tsino at Olandes sa daungan ng Nagasaki at ipinagbawal ang paglabas ng mga Hapones sa ibang bansa."
+            },
+            {
+                term: "Tokugawa Shogunate",
+                category: "Pamahalaan",
+                def: "Militar na pamahalaan ng Japan na pinamunuan ng Shogun mula 1603 hanggang 1868 bago ibinalik ang kapangyarihan sa Emperador."
+            },
+            {
+                term: "Black Ships (Kurofune)",
+                category: "Makasaysayang Kaganapan",
+                def: "Tawag ng mga Hapones sa apat na barkong pandigma ng U.S. Navy sa pamumuno ni Commodore Matthew Perry noong 1853 na nagpumilit buksan ang Japan sa pandaigdigang kalakalan."
+            },
+            {
+                term: "Kasunduan ng Kanagawa",
+                category: "Kasunduan",
+                def: "Nilagdaan noong 1854 sa pagitan ng Japan at Amerika; opisyal na nagtapos sa Sakoku at nagbukas sa mga daungan ng Shimoda at Hakodate sa kalakalan."
+            },
+            {
+                term: "Meiji Restoration",
+                category: "Makasaysayang Yugto",
+                def: "Naganap noong 1868 nang ibalik ang kapangyarihan kay Emperador Meiji. Naging simula ito ng mabilis na modernisasyon, industriyalisasyon, at pagtatatag ng makabagong hukbong militar ng Japan."
+            },
+            {
+                term: "Greater East Asia Co-Prosperity Sphere",
+                category: "Propaganda",
+                def: "Propagandang inilunsad ng Japan noong 1940 na may islogang 'Asia for Asians'. Ipinangako ang kasaganaan ng mga Asyano, ngunit naging katwiran upang sakupin at kontrolin ang mga bansa sa Asya."
+            },
+            {
+                term: "Tripartite Pact",
+                category: "Alyansang Militar",
+                def: "Kasunduang nilagdaan noong Setyembre 27, 1940 sa Berlin na nagpatibay sa alyansa ng tatlong Axis Powers: Japan, Germany, at Italy."
+            },
+            {
+                term: "Trade Embargo",
+                category: "Pang-ekonomiya",
+                def: "Parusang ipinataw ni Pangulong Franklin D. Roosevelt noong Hulyo 1941 kung saan pinutol ang suplay ng langis at bakal sa Japan dahil sa pananakop nito sa Indochina."
+            },
+            {
+                term: "USAFFE",
+                category: "Sandatahang Lakas",
+                def: "United States Armed Forces in the Far East — pinagsanib na puwersang militar ng Amerika at Pilipinas sa pamumuno ni Heneral Douglas MacArthur noong 1941–1942."
+            },
+            {
+                term: "Open City",
+                category: "Taktika sa Digmaan",
+                def: "Deklarasyon ni MacArthur sa Maynila noong Disyembre 26, 1941 upang maiwasan ang pagkawasak ng mga makasaysayang gusali at pagkamatay ng mga sibilyan sa pambobomba."
+            },
+            {
+                term: "Bataan Death March",
+                category: "Kalupitan sa Digmaan",
+                def: "Puwersahang pagpapalakad sa tinatayang 76,000 sundalong Pilipino at Amerikano mula Mariveles/Bagac patungong Camp O'Donnell sa Capas, Tarlac matapos ang pagsuko sa Bataan noong Abril 9, 1942."
+            }
+        ];
+
+        /**
+         * DepEd AP7 Critical Thinking & Reflection Prompts per Lesson
+         */
+        const CRITICAL_THINKING_PROMPTS = {
+            0: {
+                question: "Bakit pinili ng Japan na buksan ang bansa at tularan ang Kanluran noong Meiji Restoration sa halip na makipagdigma tulad ng ginawa ng Tsina sa Opium Wars?",
+                analysis: "Napagtanto ng mga pinunong Hapones, matapos makita ang mga 'Black Ships' ni Perry at ang pagkatalo ng Tsina, na kung hindi sila mabilis na mag-mo-modernisa sa industriya at militar, tuluyan silang sasakupin. Ginamit nila ang Kanluraning modelo upang protektahan ang sariling kalayaan."
+            },
+            1: {
+                question: "Sa limang salik ng M-E-I-J-I Framework, alin sa iyong palagay ang pinakamalaking naging dahilan ng pananakop ng Japan sa Timog-Silangang Asya?",
+                analysis: "Ang 'E' (Ekonomiya at Kakulangan sa Hilaw na Materyales) at 'M' (Militarisasyon) ang pinakakritikal. Bilang bansang kapos sa langis at bakal, napilitan ang Japan na sumakop ng mga teritoryo sa Timog-Silangang Asya tulad ng Indonesia at Pilipinas upang suportahan ang kanilang industriya at hukbo."
+            },
+            2: {
+                question: "Paano ginamit ng Japan ang islogang 'Asia for Asians' upang hikayatin ang mga Pilipino at iba pang Asyano na suportahan ang kanilang pamamahala?",
+                analysis: "Ipininta ng Japan ang sarili bilang 'tagapagligtas' ng mga Asyano laban sa mga mapang-aping Kanluraning kolonyalista. Subalit sa likod ng pangakong kalayaan at kasaganaan, ginamit lamang ito upang ariin ang mga likas na yaman at gawing puppet state ang mga nasakop na bansa."
+            },
+            3: {
+                question: "Makatwiran ba ang naging hakbang ng Estados Unidos na magpatupad ng Trade Embargo sa langis laban sa Japan matapos nitong sakupin ang Indochina?",
+                analysis: "Layunin ng U.S. na pigilan ang pananalakay ng Japan nang hindi agad sumasabak sa digmaan. Subalit para sa militaristang Japan, ang pagkawala ng 80% ng suplay ng langis ay banta sa kanilang kaligtasan, kaya nagpasya silang salakayin ang Pasipiko bago maubos ang kanilang reserba."
+            },
+            4: {
+                question: "Bakit sabay-sabay na sinalakay ng Japan ang Pearl Harbor, Pilipinas, Guam, at Malaya noong Disyembre 7–8, 1941?",
+                analysis: "Ito ay estratehiyang 'preemptive strike'. Nais ng Japan na lumpuhin ang Pacific Fleet ng U.S. Navy sa Hawaii at sirain ang mga eroplano ng USAFFE sa Clark Field upang hindi makapagpadala ng agarang saklolo ang Amerika sa Timog-Silangang Asya."
+            },
+            5: {
+                question: "Ano ang naging epekto ng deklarasyon ng Maynila bilang 'Open City' at ng pagsuko sa Bataan at Corregidor sa diwa ng mga Pilipino?",
+                analysis: "Bagama't nasakop ang Maynila at naganap ang malupit na Death March, ang 4 na buwang magiting na pagtanggol ng mga sundalong Pilipino at Amerikano sa Bataan at Corregidor ay nagbigay ng sapat na panahon sa puwersang Alyado sa Australia upang maghanda at kalaunang magbalik sa Leyte."
             }
         };
 
@@ -2194,12 +2390,166 @@
         }
 
         /**
+         * Render Interactive Historical Timeline Stepper Bar
+         */
+        function renderTimelineStepper() {
+            const stepperContainer = document.getElementById("quest-timeline-stepper");
+            if (!stepperContainer) return;
+
+            const steps = [
+                { era: "1600s – 1868", label: "Sakoku & Meiji" },
+                { era: "Ika-20 Siglo", label: "M-E-I-J-I Framework" },
+                { era: "Set. 1940", label: "Indochina & Tripartite" },
+                { era: "Hulyo 1941", label: "Trade Embargo & Langis" },
+                { era: "Dis. 7, 1941", label: "Pearl Harbor & Pasipiko" },
+                { era: "1941 – 1945", label: "Pilipinas & Paglaya" }
+            ];
+
+            stepperContainer.innerHTML = `
+                <div class="flex items-center gap-1.5 min-w-[620px] bg-white p-1.5 rounded-2xl border border-slate-200 shadow-2xs">
+                    ${steps.map((st, i) => {
+                        const isActive = i === currentLessonIndex;
+                        const isCompleted = completedLessons.has(moduleData.lessons[i]?.id);
+                        return `
+                            <button type="button" data-step-idx="${i}" class="quest-step-btn flex-1 py-1.5 px-2.5 rounded-xl text-left border transition-all flex items-center gap-2 cursor-pointer ${
+                                isActive
+                                    ? "bg-slate-900 text-white border-slate-900 shadow-xs"
+                                    : isCompleted
+                                    ? "bg-emerald-50 text-emerald-900 border-emerald-200 hover:bg-emerald-100"
+                                    : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
+                            }">
+                                <div class="w-5 h-5 rounded-md flex items-center justify-center shrink-0 ${
+                                    isActive
+                                        ? "bg-amber-400 text-slate-950 font-black text-[11px]"
+                                        : isCompleted
+                                        ? "bg-emerald-600 text-white font-bold text-[11px]"
+                                        : "bg-slate-200 text-slate-600 font-bold text-[11px]"
+                                }">
+                                    ${isCompleted && !isActive ? "✓" : i + 1}
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="text-[9px] font-extrabold uppercase tracking-tight truncate ${isActive ? "text-amber-400" : isCompleted ? "text-emerald-700" : "text-slate-400"}">${st.era}</div>
+                                    <div class="text-xs font-bold truncate leading-tight">${st.label}</div>
+                                </div>
+                            </button>
+                        `;
+                    }).join("")}
+                </div>
+            `;
+
+            stepperContainer.querySelectorAll(".quest-step-btn").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const idx = Number(btn.dataset.stepIdx);
+                    renderLesson(idx);
+                    playGameSound("click");
+                });
+            });
+        }
+
+        /**
+         * Audio Read-Aloud / Text-to-Speech Engine
+         */
+        let isSpeaking = false;
+
+        function toggleReadAloud() {
+            if (!('speechSynthesis' in window)) {
+                showToast("Hindi sinusuportahan ng browser ang audio narration.");
+                return;
+            }
+
+            if (isSpeaking) {
+                window.speechSynthesis.cancel();
+                isSpeaking = false;
+                updateReadAloudUI(false);
+                return;
+            }
+
+            const lesson = moduleData.lessons[currentLessonIndex];
+            if (!lesson) return;
+
+            const textToSpeak = `${lesson.title}. ${(lesson.paragraphs || []).join(" ")}`;
+            const utterance = new SpeechSynthesisUtterance(textToSpeak);
+            utterance.lang = "fil-PH";
+            utterance.rate = 0.95;
+
+            utterance.onend = () => {
+                isSpeaking = false;
+                updateReadAloudUI(false);
+            };
+            utterance.onerror = () => {
+                isSpeaking = false;
+                updateReadAloudUI(false);
+            };
+
+            window.speechSynthesis.cancel();
+            window.speechSynthesis.speak(utterance);
+            isSpeaking = true;
+            updateReadAloudUI(true);
+        }
+
+        function updateReadAloudUI(speaking) {
+            const btn = document.getElementById("btn-read-aloud");
+            const label = document.getElementById("read-aloud-text");
+            if (!btn || !label) return;
+            if (speaking) {
+                btn.className = "text-xs font-black text-rose-700 bg-rose-100 border border-rose-300 px-3 py-1 rounded-full flex items-center gap-1.5 animate-pulse cursor-pointer";
+                btn.innerHTML = `<i class="ph-fill ph-stop text-rose-600 text-sm"></i> <span>Ihinto</span>`;
+            } else {
+                btn.className = "text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-3 py-1 rounded-full flex items-center gap-1.5 transition-all cursor-pointer";
+                btn.innerHTML = `<i class="ph-fill ph-speaker-high text-amber-600 text-sm"></i> <span>Pakinggan</span>`;
+            }
+        }
+
+        /**
+         * Render Historical Glossary List
+         */
+        function renderGlossaryList(query = "") {
+            const listEl = document.getElementById("glossary-terms-list");
+            if (!listEl) return;
+
+            let filtered = GLOSSARY_TERMS;
+            if (query) {
+                const q = query.toLowerCase();
+                filtered = GLOSSARY_TERMS.filter(item => 
+                    item.term.toLowerCase().includes(q) ||
+                    item.category.toLowerCase().includes(q) ||
+                    item.def.toLowerCase().includes(q)
+                );
+            }
+
+            if (!filtered.length) {
+                listEl.innerHTML = `<div class="py-8 text-center text-xs text-slate-400">Walang natagpuang termino para sa "${escapeHtml(query)}".</div>`;
+                return;
+            }
+
+            listEl.innerHTML = filtered.map(item => `
+                <div class="py-2.5 space-y-1">
+                    <div class="flex items-center justify-between gap-2">
+                        <h4 class="font-black text-slate-900 text-sm">${escapeHtml(item.term)}</h4>
+                        <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">${escapeHtml(item.category)}</span>
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">${escapeHtml(item.def)}</p>
+                </div>
+            `).join("");
+        }
+
+        /**
          * Render Specific Lesson
          */
         function renderLesson(index) {
             if (!moduleData.lessons.length) return;
             currentLessonIndex = Math.max(0, Math.min(index, moduleData.lessons.length - 1));
             const lesson = moduleData.lessons[currentLessonIndex];
+
+            // Stop speech synthesis when switching lessons
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                isSpeaking = false;
+                updateReadAloudUI(false);
+            }
+
+            // Render Timeline Stepper Bar
+            renderTimelineStepper();
 
             document.getElementById("nav-course-title").textContent = moduleData.title;
             document.getElementById("lesson-badge").innerHTML = `<i class="ph-fill ph-map-pin"></i> Yugto ${currentLessonIndex + 1} ng ${moduleData.lessons.length}`;
@@ -2312,6 +2662,21 @@
                 updateFlashcardDisplay();
             } else {
                 flashSection.classList.add("hidden");
+            }
+
+            // Critical Thinking Prompt (Pamprosesong Tanong - DepEd AP7)
+            const ctBox = document.getElementById("critical-thinking-box");
+            const promptData = CRITICAL_THINKING_PROMPTS[currentLessonIndex];
+            if (ctBox && promptData) {
+                ctBox.classList.remove("hidden");
+                document.getElementById("critical-question-text").textContent = promptData.question;
+                document.getElementById("critical-analysis-text").textContent = promptData.analysis;
+                const panel = document.getElementById("critical-analysis-panel");
+                if (panel) panel.classList.add("hidden");
+                const label = document.getElementById("toggle-analysis-label");
+                if (label) label.textContent = "Ipakita ang Gabay sa Pagsusuri";
+            } else if (ctBox) {
+                ctBox.classList.add("hidden");
             }
 
             // Bottom Controls
@@ -2484,31 +2849,122 @@
                         ${tableHtml}
                     </div>
                 `;
-            } else if (widget.type === "targets") {
+            } else if (widget.type === "map" || widget.type === "targets") {
+                const targets = widget.targets || [];
+                const first = targets[0] || { name: "", info: "", date: "", badge: "" };
+                
                 container.innerHTML = `
-                    <div class="p-4 sm:p-5 rounded-2xl bg-rose-50/80 border-2 border-rose-200 space-y-3">
-                        <h4 class="text-xs font-extrabold uppercase tracking-wider text-rose-900 flex items-center gap-1.5">
-                            <i class="ph-fill ph-crosshair text-base text-rose-600"></i> ${escapeHtml(widget.heading)}
-                        </h4>
+                    <div class="p-4 sm:p-5 rounded-2xl bg-slate-900 text-white border-2 border-slate-800 space-y-4 shadow-md">
+                        <div class="flex items-center justify-between gap-2">
+                            <h4 class="text-xs font-extrabold uppercase tracking-wider text-rose-400 flex items-center gap-1.5">
+                                <i class="ph-fill ph-crosshair text-base text-rose-500 animate-pulse"></i> ${escapeHtml(widget.heading)}
+                            </h4>
+                            <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-rose-950 text-rose-300 border border-rose-800">
+                                Tactical Map
+                            </span>
+                        </div>
+
+                        <!-- Interactive SVG Map Canvas (Pacific Theater of War) -->
+                        <div class="relative w-full rounded-xl overflow-hidden bg-[#0a0f1d] border border-slate-700 aspect-[16/8] sm:aspect-[16/7]">
+                            <svg viewBox="0 0 800 350" class="w-full h-full block select-none">
+                                <defs>
+                                    <pattern id="radarGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+                                        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.8" opacity="0.6"/>
+                                    </pattern>
+                                    <linearGradient id="oceanGrad" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stop-color="#080d1a"/>
+                                        <stop offset="100%" stop-color="#0f172a"/>
+                                    </linearGradient>
+                                </defs>
+                                <rect width="800" height="350" fill="url(#oceanGrad)"/>
+                                <rect width="800" height="350" fill="url(#radarGrid)"/>
+                                
+                                <!-- Stylized Landmasses -->
+                                <!-- Japan -->
+                                <path d="M 210,60 Q 230,45 255,55 T 265,85 Q 240,95 215,80 Z" fill="#334155" stroke="#475569" stroke-width="1.5"/>
+                                <text x="240" y="72" fill="#e2e8f0" font-size="10" font-weight="900" text-anchor="middle">JAPAN</text>
+
+                                <!-- Asian Mainland -->
+                                <path d="M 30,30 L 160,30 L 175,110 L 130,170 L 80,210 L 30,210 Z" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+                                <text x="90" y="80" fill="#64748b" font-size="10" font-weight="800">ASYA (MAINLAND)</text>
+
+                                <!-- Philippine Archipelago -->
+                                <path d="M 215,125 Q 230,115 235,135 Q 230,175 240,205 Q 245,235 225,255 Q 205,235 220,185 Z" fill="#334155" stroke="#475569" stroke-width="1.5"/>
+                                <text x="260" y="190" fill="#f8fafc" font-size="10" font-weight="900">PILIPINAS</text>
+
+                                <!-- Hawaiian Islands (Pearl Harbor area) -->
+                                <path d="M 680,120 Q 700,110 720,125 Q 710,140 690,135 Z" fill="#334155" stroke="#475569" stroke-width="1.5"/>
+                                <text x="700" y="105" fill="#fcd34d" font-size="10" font-weight="900" text-anchor="middle">HAWAII (U.S.)</text>
+
+                                <!-- Attack Lines (Dashed vectors from Japan) -->
+                                <path d="M 255,85 Q 480,35 690,120" fill="none" stroke="#ef4444" stroke-width="2" stroke-dasharray="6,4" opacity="0.8"/>
+                                <path d="M 240,90 L 230,130" fill="none" stroke="#ef4444" stroke-width="2" stroke-dasharray="5,3" opacity="0.8"/>
+                                <path d="M 245,90 L 440,125" fill="none" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.6"/>
+
+                                <!-- Interactive Clickable Target Pins -->
+                                ${targets.map((t, i) => `
+                                    <g class="map-target-pin cursor-pointer transition-transform hover:scale-110" data-target-idx="${i}" transform="translate(${t.x || (200 + i*100)}, ${t.y || (100 + i*30)})">
+                                        <circle cx="0" cy="0" r="14" fill="#ef4444" opacity="0.25" class="animate-ping"/>
+                                        <circle cx="0" cy="0" r="7" fill="${i === 0 ? '#f59e0b' : '#ef4444'}" stroke="#ffffff" stroke-width="2"/>
+                                        <rect x="-35" y="10" width="70" height="18" rx="5" fill="#0f172a" opacity="0.85" stroke="#334155" stroke-width="1"/>
+                                        <text x="0" y="22" fill="#ffffff" font-size="9" font-weight="800" text-anchor="middle">${escapeHtml(t.name.split(' ')[0])}</text>
+                                    </g>
+                                `).join("")}
+                            </svg>
+                        </div>
+
+                        <!-- Target Chip Selector Buttons -->
                         <div class="flex flex-wrap gap-2">
-                            ${widget.targets.map((t, i) => `
-                                <button type="button" data-target-idx="${i}" class="target-chip-btn px-3 py-2 rounded-xl text-xs font-extrabold bg-white text-rose-800 border-2 border-rose-200 hover:border-rose-500 transition-all">
+                            ${targets.map((t, i) => `
+                                <button type="button" data-target-idx="${i}" class="map-chip-btn px-3 py-1.5 rounded-xl text-xs font-extrabold border transition-all cursor-pointer ${
+                                    i === 0
+                                        ? "bg-rose-600 text-white border-rose-500 shadow-sm"
+                                        : "bg-slate-800 text-slate-300 border-slate-700 hover:border-slate-500"
+                                }">
                                     📍 ${escapeHtml(t.name)}
                                 </button>
                             `).join("")}
                         </div>
-                        <div id="target-info-display" class="p-3.5 rounded-xl bg-white border border-rose-200 text-xs sm:text-sm text-slate-700 font-medium">
-                            <strong class="text-rose-700">${escapeHtml(widget.targets[0].name)}:</strong> ${escapeHtml(widget.targets[0].info)}
+
+                        <!-- Military Intel Report Card -->
+                        <div id="target-info-display" class="p-4 rounded-xl bg-slate-800/90 border border-slate-700 space-y-1.5">
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <span id="map-target-badge" class="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-rose-900/80 text-rose-300 border border-rose-700">
+                                    ${escapeHtml(first.badge || "Pangunahing Target")}
+                                </span>
+                                <span id="map-target-date" class="text-xs font-mono font-bold text-amber-400">
+                                    ${escapeHtml(first.date || "Disyembre 1941")}
+                                </span>
+                            </div>
+                            <h5 id="map-target-title" class="font-black text-white text-sm sm:text-base">${escapeHtml(first.name)}</h5>
+                            <p id="map-target-info" class="text-xs sm:text-sm text-slate-300 leading-relaxed">${escapeHtml(first.info)}</p>
                         </div>
                     </div>
                 `;
-                container.querySelectorAll(".target-chip-btn").forEach(btn => {
-                    btn.addEventListener("click", () => {
-                        const idx = Number(btn.dataset.targetIdx);
-                        const t = widget.targets[idx];
-                        document.getElementById("target-info-display").innerHTML = `<strong class="text-rose-700">${escapeHtml(t.name)}:</strong> ${escapeHtml(t.info)}`;
-                        playGameSound("xp");
+
+                const updateTargetSelection = (idx) => {
+                    const t = targets[idx];
+                    if (!t) return;
+                    document.getElementById("map-target-badge").textContent = t.badge || "Pangunahing Target";
+                    document.getElementById("map-target-date").textContent = t.date || "Disyembre 1941";
+                    document.getElementById("map-target-title").textContent = t.name;
+                    document.getElementById("map-target-info").textContent = t.info;
+
+                    container.querySelectorAll(".map-chip-btn").forEach((btn, bi) => {
+                        if (bi === idx) {
+                            btn.className = "map-chip-btn px-3 py-1.5 rounded-xl text-xs font-extrabold border transition-all bg-rose-600 text-white border-rose-500 shadow-sm cursor-pointer";
+                        } else {
+                            btn.className = "map-chip-btn px-3 py-1.5 rounded-xl text-xs font-extrabold border transition-all bg-slate-800 text-slate-300 border-slate-700 hover:border-slate-500 cursor-pointer";
+                        }
                     });
+                    playGameSound("xp");
+                };
+
+                container.querySelectorAll(".map-chip-btn").forEach(btn => {
+                    btn.addEventListener("click", () => updateTargetSelection(Number(btn.dataset.targetIdx)));
+                });
+                container.querySelectorAll(".map-target-pin").forEach(pin => {
+                    pin.addEventListener("click", () => updateTargetSelection(Number(pin.dataset.targetIdx)));
                 });
             }
         }
@@ -2564,6 +3020,13 @@
          * View Switcher: 'study' | 'quiz' | 'leaderboard'
          */
         function switchToView(viewName) {
+            // Stop speech synthesis when changing views
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                isSpeaking = false;
+                updateReadAloudUI(false);
+            }
+
             document.getElementById("study-view").classList.add("hidden");
             document.getElementById("quiz-view").classList.add("hidden");
             document.getElementById("leaderboard-view").classList.add("hidden");
@@ -3325,6 +3788,55 @@
             if (printCertBtn) {
                 printCertBtn.addEventListener("click", () => {
                     window.print();
+                });
+            }
+
+            // Audio Read-Aloud (Text-to-Speech)
+            const readAloudBtn = document.getElementById("btn-read-aloud");
+            if (readAloudBtn) {
+                readAloudBtn.addEventListener("click", toggleReadAloud);
+            }
+
+            // Critical Thinking Prompt (Pamprosesong Tanong Toggle)
+            const toggleAnalysisBtn = document.getElementById("toggle-analysis-btn");
+            if (toggleAnalysisBtn) {
+                toggleAnalysisBtn.addEventListener("click", () => {
+                    const panel = document.getElementById("critical-analysis-panel");
+                    const label = document.getElementById("toggle-analysis-label");
+                    if (!panel) return;
+                    const isHidden = panel.classList.contains("hidden");
+                    panel.classList.toggle("hidden", !isHidden);
+                    if (label) label.textContent = isHidden ? "Itago ang Gabay sa Pagsusuri" : "Ipakita ang Gabay sa Pagsusuri";
+                    playGameSound("click");
+                });
+            }
+
+            // Historical Glossary Modal Events
+            const openGlossaryBtn = document.getElementById("open-glossary-btn");
+            const closeGlossaryBtn = document.getElementById("close-glossary-btn");
+            const glossaryModal = document.getElementById("glossary-modal");
+            const glossarySearch = document.getElementById("glossary-search-input");
+
+            if (openGlossaryBtn && glossaryModal) {
+                openGlossaryBtn.addEventListener("click", () => {
+                    renderGlossaryList("");
+                    glossaryModal.classList.remove("hidden");
+                    glossaryModal.classList.add("flex");
+                    if (glossarySearch) glossarySearch.value = "";
+                    playGameSound("click");
+                });
+            }
+
+            if (closeGlossaryBtn && glossaryModal) {
+                closeGlossaryBtn.addEventListener("click", () => {
+                    glossaryModal.classList.add("hidden");
+                    glossaryModal.classList.remove("flex");
+                });
+            }
+
+            if (glossarySearch) {
+                glossarySearch.addEventListener("input", (e) => {
+                    renderGlossaryList(e.target.value.trim());
                 });
             }
 
