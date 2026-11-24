@@ -97,6 +97,43 @@
             transform: translateY(3px);
             box-shadow: 0 1px 0 rgba(15, 23, 42, 0.25);
         }
+
+        /* Print styling for Digital Certificate of Completion */
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            body > * {
+                visibility: hidden !important;
+            }
+            #certificate-modal,
+            #certificate-modal * {
+                visibility: visible !important;
+            }
+            #certificate-modal {
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100% !important;
+                height: auto !important;
+                background: transparent !important;
+                display: block !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            #certificate-modal .no-print {
+                display: none !important;
+            }
+            #printable-certificate-card {
+                box-shadow: none !important;
+                border: 4px double #d97706 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                page-break-inside: avoid !important;
+                margin: 0 auto !important;
+            }
+        }
     </style>
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans antialiased selection:bg-brand-500 selection:text-white min-h-screen flex flex-col transition-colors duration-300">
@@ -606,6 +643,21 @@
                             <span>Naitala na ang iyong puntos sa Online Leaderboard!</span>
                         </div>
 
+                        <!-- Certificate of Completion Award Banner (Shown when student scores >= 70%) -->
+                        <div id="certificate-award-banner" class="hidden max-w-md mx-auto p-5 rounded-2xl bg-gradient-to-br from-amber-500 via-amber-600 to-amber-700 text-white shadow-lg text-center space-y-3">
+                            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/20 backdrop-blur-xs text-xs font-black text-amber-200">
+                                <i class="ph-fill ph-certificate text-base text-amber-300"></i> KARAPAT-DAPAT SA PAGKILALA
+                            </div>
+                            <h4 class="text-xl font-black">Binabati kita, <span id="cert-banner-student-name">Mag-aaral</span>!</h4>
+                            <p class="text-xs text-amber-100 leading-relaxed">
+                                Matagumpay mong naipasa ang Pagsusulit sa Kasaysayan! Pindutin ang button sa ibaba upang makita, mai-print, o mai-save bilang PDF ang iyong Opisyal na Sertipiko.
+                            </p>
+                            <button id="btn-open-certificate" type="button" class="w-full py-3 px-4 rounded-xl bg-white text-slate-950 font-black text-xs sm:text-sm hover:bg-amber-100 transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer">
+                                <i class="ph-fill ph-printer text-lg text-amber-600"></i>
+                                <span>Buksan at I-print ang Aking Sertipiko</span>
+                            </button>
+                        </div>
+
                         <!-- Review Breakdown List -->
                         <div class="text-left max-w-2xl mx-auto mt-8 space-y-3">
                             <h4 class="text-xs font-extrabold uppercase tracking-wider text-slate-500">Buod ng Iyong mga Sagot</h4>
@@ -647,6 +699,33 @@
                             <button id="leaderboard-back-study-btn" class="px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-slate-600 hover:bg-slate-100 border border-slate-200 transition-colors">
                                 Aralin
                             </button>
+                        </div>
+                    </div>
+
+                    <!-- Leaderboard Toolbar: Search, Section Filter, Export CSV -->
+                    <div class="mt-6 mb-4 flex flex-wrap items-center justify-between gap-3 bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
+                        <div class="flex flex-wrap items-center gap-2.5 flex-1 min-w-[260px]">
+                            <!-- Search by Name -->
+                            <div class="relative flex-1 min-w-[180px]">
+                                <i class="ph ph-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-base"></i>
+                                <input type="text" id="leaderboard-search-input" placeholder="Maghanap ng mag-aaral..." class="w-full pl-9 pr-3 py-2 rounded-xl text-xs sm:text-sm bg-white border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                            </div>
+                            <!-- Section Filter -->
+                            <div class="flex items-center gap-1.5">
+                                <label for="leaderboard-section-filter" class="text-xs font-bold text-slate-600 hidden sm:inline">Seksiyon:</label>
+                                <select id="leaderboard-section-filter" class="py-2 px-3 rounded-xl text-xs sm:text-sm bg-white border border-slate-300 font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                                    <option value="all">Lahat ng Seksiyon</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Export CSV Button (Para sa Guro / Class Record) -->
+                        <div class="flex items-center gap-2">
+                            <button id="btn-export-csv" type="button" title="I-download ang talaan ng scores para sa Class Record" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-extrabold bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer">
+                                <i class="ph-bold ph-microsoft-excel-logo text-base"></i>
+                                <span>I-export sa Excel (CSV)</span>
+                            </button>
+                            <span id="leaderboard-count-badge" class="text-[11px] font-bold px-2.5 py-1 rounded-full bg-slate-200 text-slate-700">0 mag-aaral</span>
                         </div>
                     </div>
 
@@ -859,6 +938,74 @@
                     <button type="submit" class="px-5 py-2 rounded-xl text-xs font-extrabold bg-slate-900 text-white hover:bg-slate-800">Buksan ang Editor</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- DIGITAL CERTIFICATE MODAL -->
+    <div id="certificate-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm overflow-y-auto">
+        <div class="relative w-full max-w-3xl bg-white rounded-3xl shadow-2xl p-4 sm:p-8 space-y-4 my-8 animate-pop-in">
+            <!-- Modal Header Actions -->
+            <div class="flex items-center justify-between no-print pb-3 border-b border-slate-200">
+                <span class="text-xs font-extrabold uppercase tracking-wider text-amber-700 flex items-center gap-1.5">
+                    <i class="ph-fill ph-certificate text-lg text-amber-600"></i> Opisyal na Sertipiko ng Pagkilala
+                </span>
+                <div class="flex items-center gap-2">
+                    <button id="btn-print-certificate" type="button" class="px-4 py-2 rounded-xl text-xs font-black bg-amber-500 text-slate-950 hover:bg-amber-400 flex items-center gap-1.5 shadow-sm cursor-pointer">
+                        <i class="ph-bold ph-printer text-base"></i> I-print / I-save bilang PDF
+                    </button>
+                    <button id="btn-close-certificate" type="button" class="px-3 py-2 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-100 cursor-pointer">
+                        <i class="ph-bold ph-x text-base"></i> Isara
+                    </button>
+                </div>
+            </div>
+
+            <!-- PRINTABLE CERTIFICATE CONTAINER (Landscape Ratio) -->
+            <div id="printable-certificate-card" class="bg-gradient-to-br from-amber-50/60 via-white to-amber-50/50 p-6 sm:p-10 rounded-2xl border-8 border-double border-amber-600/70 shadow-inner relative text-center space-y-4">
+                <div class="space-y-1">
+                    <p class="text-[11px] sm:text-xs font-extrabold uppercase tracking-widest text-slate-500">Republika ng Pilipinas • Kagawaran ng Edukasyon</p>
+                    <p class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-amber-700">Araling Panlipunan 7 • Ikalawang Markahan</p>
+                    <h2 class="text-2xl sm:text-4xl font-serif font-black text-slate-900 tracking-wide pt-2">KATIBAYAN NG PAGKILALA</h2>
+                    <p class="text-xs italic text-slate-500 font-serif">Certificate of Academic Achievement</p>
+                </div>
+
+                <div class="py-2">
+                    <p class="text-xs uppercase tracking-wider text-slate-500 font-semibold">Ang sertipikong ito ay buong karangalang ipinagkakaloob kay</p>
+                    <h3 id="cert-student-name" class="text-2xl sm:text-4xl font-serif font-black text-brand-900 tracking-wider py-2 border-b-2 border-amber-400 inline-block px-8 max-w-full truncate">
+                        Pangalan ng Mag-aaral
+                    </h3>
+                    <p class="text-xs font-bold text-slate-600 mt-2">Seksiyon: <span id="cert-student-section" class="text-slate-900 font-extrabold">Baitang 7</span></p>
+                </div>
+
+                <p class="text-xs sm:text-sm text-slate-700 max-w-2xl mx-auto leading-relaxed">
+                    Dahil sa kaniyang matagumpay na pagtatapos at kapuri-puring kahusayan sa Interactive Online Learning Module sa Araling Panlipunan 7:
+                    <strong class="text-slate-900 font-black block mt-1">"Ang Imperyalistang Japan sa Asya at Pilipinas"</strong>
+                    na may nakamit na markang <strong id="cert-score-display" class="text-amber-700 font-black">15 / 15 (100%)</strong>.
+                </p>
+
+                <!-- Signatures & Official Gold Badge -->
+                <div class="pt-6 grid grid-cols-3 items-end text-center gap-4">
+                    <div class="space-y-1">
+                        <div class="w-32 border-b border-slate-400 mx-auto"></div>
+                        <p id="cert-date-display" class="text-[11px] font-bold text-slate-700">Petsa</p>
+                        <p class="text-[10px] text-slate-400 uppercase tracking-wider">Petsa ng Pagtatapos</p>
+                    </div>
+
+                    <div class="flex flex-col items-center justify-center">
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-tr from-amber-600 to-amber-300 text-slate-950 p-1 flex items-center justify-center shadow-lg">
+                            <div class="w-full h-full rounded-full border-2 border-dashed border-amber-900 flex flex-col items-center justify-center text-center p-1">
+                                <i class="ph-fill ph-seal-check text-xl sm:text-2xl text-slate-950"></i>
+                                <span class="text-[8px] sm:text-[9px] font-black uppercase tracking-tighter leading-tight">BATANG MANANALAYSAY</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-1">
+                        <div class="w-36 border-b border-slate-400 mx-auto"></div>
+                        <p class="text-[11px] font-extrabold text-slate-800">Guro sa Araling Panlipunan</p>
+                        <p class="text-[10px] text-slate-400 uppercase tracking-wider">Lagda ng Guro</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1806,19 +1953,58 @@
         }
 
         /**
-         * Render Leaderboard Podium & Table
+         * State for Leaderboard Filtering & Certificate Data
+         */
+        let currentSectionFilter = "all";
+        let currentSearchQuery = "";
+        let lastQuizResultData = null;
+
+        /**
+         * Render Leaderboard Podium & Table (Supports Search & Section Filter)
          */
         function renderLeaderboard() {
             const podiumEl = document.getElementById("podium-container");
             const tbody = document.getElementById("leaderboard-table-body");
+            const sectionSelect = document.getElementById("leaderboard-section-filter");
+            const countBadge = document.getElementById("leaderboard-count-badge");
 
-            if (!leaderboardEntries.length) {
+            // Dynamically populate unique sections in the filter dropdown
+            if (sectionSelect) {
+                const uniqueSections = Array.from(new Set(
+                    leaderboardEntries
+                        .map(e => (e.section || "").trim())
+                        .filter(Boolean)
+                )).sort();
+
+                const prevVal = currentSectionFilter;
+                let optHtml = `<option value="all">Lahat ng Seksiyon</option>`;
+                uniqueSections.forEach(sec => {
+                    const isSelected = sec.toLowerCase() === prevVal.toLowerCase();
+                    optHtml += `<option value="${escapeHtml(sec)}" ${isSelected ? 'selected' : ''}>${escapeHtml(sec)}</option>`;
+                });
+                sectionSelect.innerHTML = optHtml;
+            }
+
+            // Filter entries by Section and Search Query
+            let filtered = [...leaderboardEntries];
+            if (currentSectionFilter !== "all") {
+                filtered = filtered.filter(e => (e.section || "").trim().toLowerCase() === currentSectionFilter.toLowerCase());
+            }
+            if (currentSearchQuery) {
+                filtered = filtered.filter(e => (e.name || "").toLowerCase().includes(currentSearchQuery.toLowerCase()));
+            }
+
+            if (countBadge) {
+                countBadge.textContent = `${filtered.length} mag-aaral`;
+            }
+
+            if (!filtered.length) {
                 podiumEl.innerHTML = "";
                 tbody.innerHTML = `
                     <tr>
                         <td colspan="5" class="py-10 text-center text-slate-400">
                             <i class="ph ph-trophy text-3xl mb-2 block mx-auto text-slate-300"></i>
-                            Wala pang nakatalang puntos. Maging unang mag-aaral na mangunguna sa hamon!
+                            ${leaderboardEntries.length ? 'Walang mag-aaral na tumugma sa filter o paghahanap.' : 'Wala pang nakatalang puntos. Maging unang mag-aaral na mangunguna sa hamon!'}
                         </td>
                     </tr>
                 `;
@@ -1826,7 +2012,7 @@
             }
 
             // Render Top 3 Podium Cards
-            const top3 = leaderboardEntries.slice(0, 3);
+            const top3 = filtered.slice(0, 3);
             const podiumStyles = [
                 { rank: "Top 1 Kampeon", bg: "bg-gradient-to-br from-amber-50 to-amber-100/80 border-amber-400", badge: "bg-amber-500 text-slate-950", icon: "ph-crown" },
                 { rank: "Top 2", bg: "bg-gradient-to-br from-slate-50 to-slate-100 border-slate-300", badge: "bg-slate-600 text-white", icon: "ph-medal" },
@@ -1856,7 +2042,7 @@
             }).join("");
 
             // Render Full Table
-            tbody.innerHTML = leaderboardEntries.map((entry, idx) => {
+            tbody.innerHTML = filtered.map((entry, idx) => {
                 const rank = idx + 1;
                 const pts = entry.gamePoints ?? (entry.score * 100);
                 const isCurrentStudent = studentName && entry.name.toLowerCase() === studentName.toLowerCase();
@@ -1879,6 +2065,72 @@
                     </tr>
                 `;
             }).join("");
+        }
+
+        /**
+         * Export Leaderboard to CSV / Excel (For Teacher e-Class Record)
+         */
+        function exportLeaderboardToCSV() {
+            if (!leaderboardEntries || leaderboardEntries.length === 0) {
+                showToast("Walang datos na ma-export sa Leaderboard.");
+                return;
+            }
+
+            let exportList = [...leaderboardEntries];
+            if (currentSectionFilter !== "all") {
+                exportList = exportList.filter(e => (e.section || "").trim().toLowerCase() === currentSectionFilter.toLowerCase());
+            }
+            if (currentSearchQuery) {
+                exportList = exportList.filter(e => (e.name || "").toLowerCase().includes(currentSearchQuery.toLowerCase()));
+            }
+
+            if (!exportList.length) {
+                showToast("Walang tala sa napiling filter.");
+                return;
+            }
+
+            const headers = [
+                "Ranggo",
+                "Pangalan ng Mag-aaral",
+                "Seksiyon",
+                "Score sa Quiz",
+                "Kabuuan",
+                "Porsyento",
+                "Game Points",
+                "Oras (segundo)",
+                "Max Combo Streak",
+                "Petsa at Oras"
+            ];
+
+            const rows = exportList.map((entry, idx) => {
+                const rank = idx + 1;
+                const name = `"${(entry.name || "").replace(/"/g, '""')}"`;
+                const section = `"${(entry.section || "Baitang 7").replace(/"/g, '""')}"`;
+                const score = entry.score || 0;
+                const total = entry.total || 15;
+                const pct = `${Math.round((score / total) * 100)}%`;
+                const pts = entry.gamePoints ?? (score * 100);
+                const timeSec = entry.timeSeconds || 0;
+                const streak = entry.maxStreak ? `${entry.maxStreak}x` : "0x";
+                const dateStr = entry.timestamp ? new Date(entry.timestamp).toLocaleString("en-PH") : "N/A";
+
+                return [rank, name, section, score, total, pct, pts, timeSec, streak, `"${dateStr}"`].join(",");
+            });
+
+            // \uFEFF UTF-8 BOM ensures proper character encoding in Microsoft Excel
+            const csvContent = "\uFEFF" + [headers.join(","), ...rows].join("\r\n");
+            const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            const dateTag = new Date().toISOString().slice(0, 10);
+            const secTag = currentSectionFilter !== "all" ? `_${currentSectionFilter.replace(/\s+/g, "_")}` : "";
+            link.href = url;
+            link.download = `AP7_Kasaysayan_Scores${secTag}_${dateTag}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            showToast(`Matagumpay na na-download ang ${exportList.length} tala ng mag-aaral!`);
         }
 
         /**
@@ -2632,17 +2884,47 @@
                 card.innerHTML = `
                     <div class="flex items-start gap-2.5">
                         <i class="ph-fill ${isRight ? 'ph-check-circle text-emerald-600' : 'ph-x-circle text-rose-600'} text-lg mt-0.5 shrink-0"></i>
-                        <div class="space-y-1">
+                        <div class="space-y-1.5 w-full">
                             <p class="font-bold text-slate-900">${idx + 1}. ${escapeHtml(q.question)}</p>
                             <p class="text-xs ${isRight ? 'text-emerald-700' : 'text-rose-700'}">
                                 Iyong sagot: <span class="font-semibold">${escapeHtml(q.options[userAns] || 'Wala')}</span>
                             </p>
                             ${!isRight ? `<p class="text-xs text-emerald-800">Tamang sagot: <span class="font-semibold">${escapeHtml(q.options[q.correctIndex])}</span></p>` : ''}
+                            ${q.explanation ? `
+                                <div class="mt-2.5 pt-2 border-t border-slate-200/70 text-xs text-slate-700 bg-white/80 p-2.5 rounded-lg flex items-start gap-2">
+                                    <i class="ph-fill ph-lightbulb text-amber-500 text-sm mt-0.5 shrink-0"></i>
+                                    <div>
+                                        <span class="font-extrabold text-slate-900">Paliwanag / Rationale:</span>
+                                        <span class="ml-1 leading-relaxed text-slate-600">${escapeHtml(q.explanation)}</span>
+                                    </div>
+                                </div>
+                            ` : ''}
                         </div>
                     </div>
                 `;
                 breakdownEl.appendChild(card);
             });
+
+            // Store result data for certificate generation
+            lastQuizResultData = {
+                name: studentName,
+                section: studentSection || "Baitang 7",
+                score: quizScore,
+                total: totalQ,
+                pct: pct
+            };
+
+            // Display Certificate Award Banner if student achieves >= 70% passing score
+            const certBanner = document.getElementById("certificate-award-banner");
+            if (certBanner) {
+                if (pct >= 70 && !isGameOverByHearts) {
+                    certBanner.classList.remove("hidden");
+                    const nameSpan = document.getElementById("cert-banner-student-name");
+                    if (nameSpan) nameSpan.textContent = studentName || "Mag-aaral";
+                } else {
+                    certBanner.classList.add("hidden");
+                }
+            }
 
             updateRankTitleAndBadges();
             await submitScoreToLeaderboard(quizScore, totalQ, elapsedSeconds, gamePoints, maxStreak);
@@ -2987,6 +3269,64 @@
             document.getElementById("leaderboard-back-study-btn").addEventListener("click", () => {
                 switchToView("study");
             });
+
+            // Leaderboard Search, Filter, and Export Events
+            const lbSearch = document.getElementById("leaderboard-search-input");
+            if (lbSearch) {
+                lbSearch.addEventListener("input", (e) => {
+                    currentSearchQuery = e.target.value.trim();
+                    renderLeaderboard();
+                });
+            }
+
+            const lbFilter = document.getElementById("leaderboard-section-filter");
+            if (lbFilter) {
+                lbFilter.addEventListener("change", (e) => {
+                    currentSectionFilter = e.target.value;
+                    renderLeaderboard();
+                });
+            }
+
+            const lbExport = document.getElementById("btn-export-csv");
+            if (lbExport) {
+                lbExport.addEventListener("click", exportLeaderboardToCSV);
+            }
+
+            // Digital Certificate Modal Events
+            const openCertBtn = document.getElementById("btn-open-certificate");
+            if (openCertBtn) {
+                openCertBtn.addEventListener("click", () => {
+                    if (!lastQuizResultData) return;
+                    document.getElementById("cert-student-name").textContent = lastQuizResultData.name || studentName || "Mag-aaral";
+                    document.getElementById("cert-student-section").textContent = lastQuizResultData.section || studentSection || "Baitang 7";
+                    document.getElementById("cert-score-display").textContent = `${lastQuizResultData.score} / ${lastQuizResultData.total} (${lastQuizResultData.pct}%)`;
+                    document.getElementById("cert-date-display").textContent = new Date().toLocaleDateString('fil-PH', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+                    const certModal = document.getElementById("certificate-modal");
+                    certModal.classList.remove("hidden");
+                    certModal.classList.add("flex");
+                    playGameSound("badge");
+                });
+            }
+
+            const closeCertBtn = document.getElementById("btn-close-certificate");
+            if (closeCertBtn) {
+                closeCertBtn.addEventListener("click", () => {
+                    const certModal = document.getElementById("certificate-modal");
+                    certModal.classList.add("hidden");
+                    certModal.classList.remove("flex");
+                });
+            }
+
+            const printCertBtn = document.getElementById("btn-print-certificate");
+            if (printCertBtn) {
+                printCertBtn.addEventListener("click", () => {
+                    window.print();
+                });
+            }
 
             // Student Registration Form inside Quiz (fallback if needed)
             document.getElementById("student-info-form").addEventListener("submit", (e) => {
