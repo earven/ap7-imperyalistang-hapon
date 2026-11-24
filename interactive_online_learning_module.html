@@ -2,7 +2,10 @@
 <html lang="tl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
     <title>AP7 Quest: Ang Imperyalistang Hapon (Interactive Learning Module)</title>
     <meta name="description" content="Interaktibong Modyul sa Araling Panlipunan 7: Ang Imperyalistang Hapon - May flashcards, pagsusulit, XP system, at online leaderboard.">
     <meta property="og:title" content="AP7 Quest: Ang Imperyalistang Hapon - Interactive Learning Module">
@@ -157,6 +160,51 @@
             -webkit-text-fill-color: #94a3b8 !important;
             opacity: 1 !important;
         }
+    
+        /* ================= ANDROID PHONE OPTIMIZATIONS ================= */
+        /* Safe Area padding for notches and bottom navigation bars */
+        body {
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Smooth momentum scrolling on mobile */
+        .overflow-y-auto, .overflow-x-auto, #sidebar, .modal-scroll-area {
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-y: contain;
+        }
+
+        /* Larger touch targets (at least 42px on small screens) */
+        @media (max-width: 640px) {
+            button, select, input[type="text"], input[type="password"], input[type="number"] {
+                min-height: 42px;
+            }
+            .btn-3d {
+                transform: none !important;
+            }
+            /* Make text easily readable on Android without zooming */
+            .prose p {
+                font-size: 15.5px !important;
+                line-height: 1.65 !important;
+            }
+            /* Prevent horizontal overflow */
+            html, body {
+                overflow-x: hidden;
+                width: 100%;
+            }
+            /* Sticky Header on mobile: compact & clear */
+            header {
+                height: auto !important;
+                padding-top: max(8px, env(safe-area-inset-top));
+                padding-bottom: 8px;
+            }
+            /* Modals: fit 96% screen width, round edges, scrollable */
+            .modal-content-box {
+                max-width: 96% !important;
+                margin: 8px auto !important;
+                max-height: 90vh !important;
+            }
+        }
     </style>
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans antialiased selection:bg-brand-500 selection:text-white min-h-screen flex flex-col transition-colors duration-300">
@@ -283,57 +331,57 @@
             </div>
 
             <!-- Player Stats HUD (Level, XP, Theme, Sound, Leaderboard, Editor) -->
-            <div class="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+            <div class="flex items-center gap-1 sm:gap-2 shrink-0">
                 <!-- PWA Install Button (Shown on installable browsers) -->
-                <button id="pwa-install-btn" class="hidden items-center gap-1.5 px-2.5 py-1.5 text-xs font-bold text-emerald-300 bg-slate-800 hover:bg-slate-700 rounded-xl border border-emerald-500/40 transition-colors cursor-pointer" title="I-install ang App sa iyong Device para sa Offline Access">
+                <button id="pwa-install-btn" class="hidden items-center gap-1 px-2 py-1.5 text-xs font-bold text-emerald-300 bg-slate-800 hover:bg-slate-700 rounded-xl border border-emerald-500/40 transition-colors cursor-pointer" title="I-install ang App sa iyong Device para sa Offline Access">
                     <i class="ph-bold ph-download-simple text-base text-emerald-400"></i>
-                    <span class="hidden xl:inline">I-install</span>
+                    <span class="hidden sm:inline">I-install</span>
                 </button>
 
                 <!-- Student Account Status Pill -->
-                <button id="open-student-login-btn" class="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 px-2.5 py-1.5 rounded-xl text-xs font-bold text-sky-300 transition-colors" title="Profile ng Mag-aaral">
-                    <i id="hud-avatar-icon" class="ph-fill ph-sword text-base text-amber-400"></i>
-                    <span id="hud-student-name" class="max-w-[75px] sm:max-w-[115px] truncate">Mag-login</span>
+                <button id="open-student-login-btn" class="flex items-center gap-1 bg-slate-800 hover:bg-slate-700 border border-slate-700 px-2 py-1.5 rounded-xl text-xs font-bold text-sky-300 transition-colors cursor-pointer" title="Profile ng Mag-aaral">
+                    <i id="hud-avatar-icon" class="ph-fill ph-sword text-sm text-amber-400"></i>
+                    <span id="hud-student-name" class="max-w-[62px] sm:max-w-[105px] truncate text-[11px] sm:text-xs">Mag-login</span>
                 </button>
 
                 <!-- Level & XP Pill -->
-                <div class="flex items-center gap-1.5 sm:gap-2 bg-slate-800/90 border border-slate-700 px-2.5 py-1.5 rounded-xl">
-                    <div class="flex items-center gap-1 text-amber-400 font-extrabold text-xs">
+                <div class="flex items-center gap-1 bg-slate-800/90 border border-slate-700 px-2 py-1.5 rounded-xl">
+                    <div class="flex items-center gap-0.5 text-amber-400 font-extrabold text-[11px] sm:text-xs">
                         <i class="ph-fill ph-star"></i>
                         <span id="hud-level">Lvl 1</span>
                     </div>
-                    <div class="w-px h-3.5 bg-slate-700"></div>
-                    <div class="flex items-center gap-1 text-emerald-400 font-bold text-xs">
+                    <div class="w-px h-3 bg-slate-700"></div>
+                    <div class="flex items-center gap-0.5 text-emerald-400 font-bold text-[11px] sm:text-xs">
                         <i class="ph-fill ph-lightning"></i>
                         <span id="hud-xp">0 XP</span>
                     </div>
                 </div>
 
                 <!-- Reading Theme Toggle (Light / Sepia / Dark) -->
-                <button id="toggle-theme-btn" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 transition-colors" title="Palitan ang Tema (Light / Sepia / Dark)">
-                    <i id="theme-icon" class="ph-fill ph-sun text-base"></i>
+                <button id="toggle-theme-btn" class="p-1.5 sm:p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 transition-colors cursor-pointer" title="Palitan ang Tema">
+                    <i id="theme-icon" class="ph-fill ph-sun text-sm sm:text-base"></i>
                 </button>
 
                 <!-- Sound Toggle -->
-                <button id="toggle-sound-btn" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors hidden sm:flex" title="Tunog (On/Off)">
-                    <i id="sound-icon" class="ph-fill ph-speaker-high text-base text-emerald-400"></i>
+                <button id="toggle-sound-btn" class="p-1.5 sm:p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors hidden sm:flex cursor-pointer" title="Tunog (On/Off)">
+                    <i id="sound-icon" class="ph-fill ph-speaker-high text-sm sm:text-base text-emerald-400"></i>
                 </button>
 
                 <!-- Glossary Trigger Button -->
-                <button id="open-glossary-btn" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 transition-colors flex items-center gap-1.5" title="Talahuluganan / Glosaryo ng Kasaysayan">
-                    <i class="ph-fill ph-book-bookmark text-base text-amber-400"></i>
+                <button id="open-glossary-btn" class="p-1.5 sm:p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 transition-colors flex items-center gap-1 cursor-pointer" title="Glosaryo">
+                    <i class="ph-fill ph-book-bookmark text-sm sm:text-base text-amber-400"></i>
                     <span class="text-xs font-bold hidden md:inline">Glosaryo</span>
                 </button>
 
                 <!-- View Leaderboard Button -->
-                <button id="open-leaderboard-btn" class="flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-slate-950 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 rounded-xl transition-all shadow-xs" title="Tingnan ang Ranggo">
-                    <i class="ph-fill ph-trophy text-base"></i>
+                <button id="open-leaderboard-btn" class="flex items-center gap-1 p-1.5 sm:px-2.5 sm:py-2 text-xs font-bold text-slate-950 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 rounded-xl transition-all shadow-xs cursor-pointer" title="Tingnan ang Ranggo">
+                    <i class="ph-fill ph-trophy text-sm sm:text-base"></i>
                     <span class="hidden md:inline">Ranggo</span>
                 </button>
 
                 <!-- Teacher Handout Editor Trigger -->
-                <button id="open-editor-btn" class="flex items-center gap-1.5 px-2.5 py-2 text-xs font-medium text-slate-300 bg-slate-800 hover:bg-slate-700 rounded-xl transition-colors border border-slate-700" title="I-edit ang Handout">
-                    <i class="ph ph-pencil-simple-line text-base text-brand-400"></i>
+                <button id="open-editor-btn" class="flex items-center gap-1 p-1.5 sm:px-2 sm:py-2 text-xs font-medium text-slate-300 bg-slate-800 hover:bg-slate-700 rounded-xl transition-colors border border-slate-700 cursor-pointer" title="I-edit ang Handout">
+                    <i class="ph ph-pencil-simple-line text-sm sm:text-base text-brand-400"></i>
                     <span class="hidden lg:inline">Handout</span>
                 </button>
             </div>
@@ -504,18 +552,18 @@
                     </div>
                 </div>
 
-                <!-- Bottom Lesson Navigation Controls -->
-                <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-1">
-                    <button id="prev-lesson-btn" class="theme-card w-full sm:w-auto px-5 py-3 rounded-xl font-bold text-sm bg-white border border-slate-300 hover:bg-slate-50 disabled:opacity-40 disabled:pointer-events-none flex items-center justify-center gap-2 transition-colors">
-                        <i class="ph-bold ph-arrow-left"></i> Nakaraang Yugto
+                <!-- Bottom Lesson Navigation Controls (Mobile Thumb-Friendly) -->
+                <div class="sticky bottom-0 sm:static bg-white/95 sm:bg-transparent backdrop-blur-md sm:backdrop-blur-none -mx-4 sm:mx-0 p-3 sm:p-0 border-t sm:border-t-0 border-slate-200 z-20 shadow-lg sm:shadow-none flex flex-col sm:flex-row items-center justify-between gap-2.5 pt-2">
+                    <button id="prev-lesson-btn" class="theme-card w-full sm:w-auto px-4 py-2.5 sm:px-5 sm:py-3 rounded-xl font-bold text-xs sm:text-sm bg-white border border-slate-300 hover:bg-slate-50 disabled:opacity-40 disabled:pointer-events-none flex items-center justify-center gap-2 transition-colors cursor-pointer">
+                        <i class="ph-bold ph-arrow-left"></i> <span>Nakaraang Yugto</span>
                     </button>
 
-                    <div class="flex items-center gap-3 w-full sm:w-auto">
-                        <button id="mark-complete-btn" class="flex-1 sm:flex-initial px-5 py-3 rounded-xl font-bold text-sm bg-emerald-50 text-emerald-700 border-2 border-emerald-200 hover:bg-emerald-100 flex items-center justify-center gap-2 transition-all">
+                    <div class="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
+                        <button id="mark-complete-btn" class="flex-1 sm:flex-initial px-3.5 py-2.5 sm:px-5 sm:py-3 rounded-xl font-bold text-xs sm:text-sm bg-emerald-50 text-emerald-700 border-2 border-emerald-200 hover:bg-emerald-100 flex items-center justify-center gap-1.5 sm:gap-2 transition-all cursor-pointer">
                             <i class="ph-bold ph-check"></i> <span>Tapusin (+50 XP)</span>
                         </button>
 
-                        <button id="next-lesson-btn" class="btn-3d flex-1 sm:flex-initial px-6 py-3 rounded-xl font-extrabold text-sm bg-brand-600 text-white hover:bg-brand-700 flex items-center justify-center gap-2">
+                        <button id="next-lesson-btn" class="btn-3d flex-1 sm:flex-initial px-4 py-2.5 sm:px-6 sm:py-3 rounded-xl font-extrabold text-xs sm:text-sm bg-brand-600 text-white hover:bg-brand-700 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer shadow-md">
                             <span>Susunod na Yugto</span> <i class="ph-bold ph-arrow-right"></i>
                         </button>
                     </div>
