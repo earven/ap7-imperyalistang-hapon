@@ -1134,6 +1134,55 @@
         </div>
     </div>
 
+        <!-- Modal: Guro Score Corrector / Encoder -->
+    <div id="edit-score-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+        <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden transform transition-all animate-scale-up">
+            <div class="px-6 py-4 bg-gradient-to-r from-indigo-700 to-indigo-900 text-white flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i class="ph-bold ph-pencil-simple text-xl text-amber-300"></i>
+                    <div>
+                        <h4 class="font-extrabold text-base leading-tight">Itama / I-encode ang Iskor</h4>
+                        <p class="text-[11px] text-indigo-200">Guro Admin Score Corrector</p>
+                    </div>
+                </div>
+                <button type="button" id="btn-close-edit-score-modal" onclick="closeScoreEditorModal()" class="text-indigo-200 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors cursor-pointer">
+                    <i class="ph-bold ph-x text-lg"></i>
+                </button>
+            </div>
+            <form id="edit-score-form" onsubmit="handleSaveEditedScore(event)" class="p-6 space-y-4">
+                <input type="hidden" id="edit-score-target-id" value="">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Pangalan ng Mag-aaral</label>
+                    <input type="text" id="edit-score-student-name" class="w-full px-3 py-2 text-sm bg-slate-100 border border-slate-300 rounded-lg font-bold text-slate-900 cursor-not-allowed" readonly>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Seksiyon</label>
+                    <input type="text" id="edit-score-student-sec" class="w-full px-3 py-2 text-sm bg-slate-100 border border-slate-300 rounded-lg text-slate-700 cursor-not-allowed" readonly>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Iskor sa Quiz (0 - 15)</label>
+                        <input type="number" id="edit-score-val" min="0" max="15" step="1" required class="w-full px-3 py-2 text-base font-black text-indigo-700 border-2 border-indigo-200 focus:border-indigo-600 rounded-lg focus:outline-hidden" placeholder="Hal. 14">
+                        <span class="text-[10px] text-slate-400 mt-0.5 block">Kabuuan: 15 aytem</span>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Pang-ilang Subok?</label>
+                        <input type="number" id="edit-score-attempt-val" min="1" max="10" step="1" required class="w-full px-3 py-2 text-base font-black text-amber-700 border-2 border-amber-200 focus:border-amber-600 rounded-lg focus:outline-hidden" placeholder="Hal. 1">
+                        <span class="text-[10px] text-slate-400 mt-0.5 block">Attempt #</span>
+                    </div>
+                </div>
+                <div class="pt-2 flex items-center justify-end gap-2 border-t border-slate-100">
+                    <button type="button" id="btn-cancel-edit-score" onclick="closeScoreEditorModal()" class="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer">
+                        Kanselahin
+                    </button>
+                    <button type="submit" id="btn-save-edited-score" class="px-5 py-2 text-xs font-black text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 cursor-pointer">
+                        <i class="ph-bold ph-floppy-disk"></i>
+                        <span>I-save ang Iskor</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
     <!-- Teacher / Creator Handout Customizer Modal -->
     <div id="editor-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
         <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden">
@@ -2774,39 +2823,28 @@
                 if (clearedAt > 0 && profTime < clearedAt) return;
 
                 if (!registeredNames.has(pName.toLowerCase())) {
-                    const xp = Number(prof.xp) || 0;
                     const streak = Number(prof.maxStreak) || 0;
                     const quizTotal = (moduleData && Array.isArray(moduleData.quiz) && moduleData.quiz.length) ? moduleData.quiz.length : 15;
                     
-                    let estimatedScore = prof.lastQuizScore;
-                    if (estimatedScore === undefined) {
-                        if (xp >= 1000) estimatedScore = 15;
-                        else if (xp >= 800) estimatedScore = 14;
-                        else if (xp >= 700) estimatedScore = 13;
-                        else if (xp >= 600) estimatedScore = 12;
-                        else if (xp >= 500) estimatedScore = 11;
-                        else if (xp >= 400) estimatedScore = 10;
-                        else if (xp >= 300) estimatedScore = 9;
-                        else if (xp >= 200) estimatedScore = 8;
-                        else if (xp >= 100) estimatedScore = 7;
-                        else if (xp >= 50) estimatedScore = 6;
-                        else estimatedScore = Math.max(3, Math.min(quizTotal, Math.floor(xp / 50)));
-                    }
-                    
-                    const total = prof.lastQuizTotal || quizTotal;
-                    const gamePts = prof.lastQuizPoints || Math.max(xp, estimatedScore * 100);
+                    const hasActualQuiz = (prof.lastQuizScore !== undefined && prof.lastQuizScore !== null && prof.lastQuizScore !== "");
+                    const actualScore = hasActualQuiz ? Number(prof.lastQuizScore) : 0;
+                    const actualAttempts = Number(prof.quizAttempts) || (hasActualQuiz ? 1 : 0);
+                    const total = Number(prof.lastQuizTotal) || quizTotal;
+                    const gamePts = Number(prof.lastQuizPoints) || (actualScore * 100);
 
                     combined.push({
                         id: prof.id || `prof-${pName}`,
                         name: pName,
                         section: prof.section || "Grade 7 Biyo",
                         avatar: prof.avatar || "ph-sword",
-                        score: estimatedScore,
+                        hasActualQuiz: hasActualQuiz,
+                        score: actualScore,
                         total: total,
                         gamePoints: gamePts,
                         maxStreak: streak,
-                        timeSeconds: prof.lastQuizTime || (75 + Math.abs(pName.charCodeAt(0) * 3 % 60)),
-                        timestamp: prof.updatedAt || Date.now()
+                        attempt: actualAttempts,
+                        timeSeconds: prof.lastQuizTime || 0,
+                        timestamp: prof.lastQuizTimestamp || prof.updatedAt || Date.now()
                     });
                     registeredNames.add(pName.toLowerCase());
                 }
@@ -2833,6 +2871,9 @@
             });
 
             combined.sort((a, b) => {
+                const hasA = a.hasActualQuiz !== false && (a.attempt > 0 || a.score > 0);
+                const hasB = b.hasActualQuiz !== false && (b.attempt > 0 || b.score > 0);
+                if (hasA !== hasB) return hasA ? -1 : 1;
                 const ptsA = a.gamePoints ?? (a.score * 100);
                 const ptsB = b.gamePoints ?? (b.score * 100);
                 if (ptsB !== ptsA) return ptsB - ptsA;
@@ -3273,19 +3314,30 @@
                         attBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-800 border border-purple-300">Subok ${attNum}</span>`;
                     }
 
+                    const hasQuiz = entry.hasActualQuiz !== false && (entry.attempt > 0 || entry.score > 0);
+                    const displayScore = hasQuiz ? `${score} / ${tot}` : `<span class="text-slate-400 font-semibold text-xs">-- / ${tot}</span>`;
+                    const displayPct = hasQuiz ? `<span class="font-bold text-emerald-600">${pct}%</span>` : `<span class="text-slate-400 text-xs">-</span>`;
+                    const displayPts = hasQuiz ? `${pts.toLocaleString()} XP` : `<span class="text-slate-400 text-xs">-</span>`;
+                    const displayTime = hasQuiz ? timeStr : `<span class="text-slate-400 text-xs">-</span>`;
+                    const displayAttBadge = hasQuiz ? attBadge : `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-400">0 subok</span>`;
+                    const displayStatus = hasQuiz ? statusBadge : `<span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-slate-100 text-slate-500">HINDI PA NAKAKUHA</span>`;
+
                     return `
                         <tr class="hover:bg-slate-50/80 transition-colors">
                             <td class="py-3 px-3 text-center font-bold text-slate-500">${rank}</td>
                             <td class="py-3 px-4 font-extrabold text-slate-900">${name}</td>
                             <td class="py-3 px-3 text-slate-600 font-semibold">${sec}</td>
-                            <td class="py-3 px-3 text-center">${attBadge}</td>
-                            <td class="py-3 px-3 text-center font-black text-slate-900">${score} / ${tot}</td>
-                            <td class="py-3 px-3 text-center font-bold text-emerald-600">${pct}%</td>
-                            <td class="py-3 px-3 text-right font-mono font-bold text-amber-600">${pts.toLocaleString()} XP</td>
-                            <td class="py-3 px-3 text-center text-slate-500 font-medium">${timeStr}</td>
+                            <td class="py-3 px-3 text-center">${displayAttBadge}</td>
+                            <td class="py-3 px-3 text-center font-black text-slate-900">${displayScore}</td>
+                            <td class="py-3 px-3 text-center">${displayPct}</td>
+                            <td class="py-3 px-3 text-right font-mono font-bold text-amber-600">${displayPts}</td>
+                            <td class="py-3 px-3 text-center text-slate-500 font-medium">${displayTime}</td>
                             <td class="py-3 px-3 text-center text-slate-400 text-[11px]">${dateStr}</td>
-                            <td class="py-3 px-3 text-center">${statusBadge}</td>
-                            <td class="py-3 px-3 text-center no-print">
+                            <td class="py-3 px-3 text-center">${displayStatus}</td>
+                            <td class="py-3 px-3 text-center no-print whitespace-nowrap">
+                                <button type="button" class="btn-edit-student-score p-1.5 rounded-lg text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 border border-indigo-200 transition-colors cursor-pointer mr-1" title="Itama / I-encode ang Iskor" data-name="${name}" data-sec="${sec}" data-score="${hasQuiz ? score : ''}" data-attempt="${attNum}" data-id="${entry.id || ''}">
+                                    <i class="ph-bold ph-pencil-simple text-sm"></i>
+                                </button>
                                 <button type="button" class="btn-delete-single-entry p-1.5 rounded-lg text-rose-500 hover:text-rose-700 hover:bg-rose-50 border border-rose-200 transition-colors cursor-pointer" title="Alisin ang tala na ito" data-id="${entry.id || ''}" data-idx="${idx}">
                                     <i class="ph-fill ph-trash text-sm"></i>
                                 </button>
@@ -3294,7 +3346,18 @@
                     `;
                 }).join("");
 
-                // Bind single entry delete buttons
+                // Bind single entry edit & delete buttons
+                rosterTbody.querySelectorAll(".btn-edit-student-score").forEach(btn => {
+                    btn.addEventListener("click", () => {
+                        const sName = btn.getAttribute("data-name") || "";
+                        const sSec = btn.getAttribute("data-sec") || "Grade 7 Biyo";
+                        const sScore = btn.getAttribute("data-score") || "";
+                        const sAttempt = btn.getAttribute("data-attempt") || "1";
+                        const sId = btn.getAttribute("data-id") || "";
+                        openScoreEditorModal(sName, sSec, sScore, sAttempt, sId);
+                    });
+                });
+
                 rosterTbody.querySelectorAll(".btn-delete-single-entry").forEach(btn => {
                     btn.addEventListener("click", () => {
                         const targetId = btn.getAttribute("data-id") || "";
@@ -3345,6 +3408,126 @@
         /**
          * Delete Single Quiz Result by ID or Index
          */
+                /**
+         * Open & Manage Edit Score Modal (Allows teacher to manually correct or encode student quiz scores)
+         */
+        function openScoreEditorModal(name, section, score, attempt, targetId) {
+            const modal = document.getElementById("edit-score-modal");
+            document.getElementById("edit-score-target-id").value = targetId || "";
+            document.getElementById("edit-score-student-name").value = name;
+            document.getElementById("edit-score-student-sec").value = section;
+            document.getElementById("edit-score-val").value = score !== "" ? score : "";
+            document.getElementById("edit-score-attempt-val").value = attempt || "1";
+
+            if (modal) {
+                modal.classList.remove("hidden");
+                modal.classList.add("flex");
+                setTimeout(() => document.getElementById("edit-score-val").focus(), 100);
+            }
+        }
+
+        function closeScoreEditorModal() {
+            const modal = document.getElementById("edit-score-modal");
+            if (modal) {
+                modal.classList.add("hidden");
+                modal.classList.remove("flex");
+            }
+        }
+
+        async function handleSaveEditedScore(e) {
+            e.preventDefault();
+            const sName = document.getElementById("edit-score-student-name").value.trim();
+            const sSec = document.getElementById("edit-score-student-sec").value.trim() || "Grade 7 Biyo";
+            const scoreVal = Math.max(0, Math.min(15, parseInt(document.getElementById("edit-score-val").value) || 0));
+            const attVal = Math.max(1, parseInt(document.getElementById("edit-score-attempt-val").value) || 1);
+            const totalQ = (moduleData && Array.isArray(moduleData.quiz) && moduleData.quiz.length) ? moduleData.quiz.length : 15;
+            const gamePts = scoreVal * 100;
+
+            const saveBtn = document.getElementById("btn-save-edited-score");
+            if (saveBtn) {
+                saveBtn.disabled = true;
+                saveBtn.innerHTML = `<i class="ph ph-spinner animate-spin"></i> Sine-save...`;
+            }
+
+            try {
+                // 1. Add record to Firestore quiz_rankings
+                if (db && currentUser) {
+                    const scoresColRef = collection(db, 'artifacts', appId, 'public', 'data', 'quiz_rankings');
+                    await addDoc(scoresColRef, {
+                        name: sName,
+                        section: sSec,
+                        score: scoreVal,
+                        total: totalQ,
+                        gamePoints: gamePts,
+                        maxStreak: scoreVal,
+                        timeSeconds: 60,
+                        attempt: attVal,
+                        uid: currentUser.uid || "teacher-manual",
+                        timestamp: Date.now()
+                    });
+                }
+
+                // 2. Dual-save to student_profiles
+                if (db && currentUser) {
+                    const cleanKey = sName.toLowerCase().replace(/[^a-z0-9]/g, "_");
+                    const matchedProf = cloudProfiles.find(p => (p.name || "").trim().toLowerCase() === sName.toLowerCase());
+                    const profKey = matchedProf ? matchedProf.id : `${cleanKey}_1234`;
+                    const studentDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'student_profiles', profKey);
+                    await setDoc(studentDocRef, {
+                        name: sName,
+                        section: sSec,
+                        lastQuizScore: scoreVal,
+                        lastQuizTotal: totalQ,
+                        lastQuizPoints: gamePts,
+                        quizAttempts: attVal,
+                        lastQuizTimestamp: Date.now()
+                    }, { merge: true });
+                }
+
+                // 3. Update in-memory leaderboardEntries
+                const existingEntry = leaderboardEntries.find(entry => (entry.name || "").trim().toLowerCase() === sName.toLowerCase());
+                if (existingEntry) {
+                    existingEntry.score = scoreVal;
+                    existingEntry.total = totalQ;
+                    existingEntry.gamePoints = gamePts;
+                    existingEntry.attempt = attVal;
+                    existingEntry.hasActualQuiz = true;
+                    existingEntry.timestamp = Date.now();
+                } else {
+                    leaderboardEntries.push({
+                        name: sName,
+                        section: sSec,
+                        score: scoreVal,
+                        total: totalQ,
+                        gamePoints: gamePts,
+                        maxStreak: scoreVal,
+                        timeSeconds: 60,
+                        attempt: attVal,
+                        hasActualQuiz: true,
+                        timestamp: Date.now()
+                    });
+                }
+
+                leaderboardEntries.sort((a, b) => (b.gamePoints || 0) - (a.gamePoints || 0) || (a.timeSeconds || 999) - (b.timeSeconds || 999));
+                try {
+                    localStorage.setItem("ap7_local_leaderboard", JSON.stringify(leaderboardEntries));
+                } catch (_) {}
+
+                closeScoreEditorModal();
+                renderLeaderboard();
+                renderStatsDashboard();
+                showToast(`Matagumpay na naitala ang iskor ni ${sName}: ${scoreVal}/${totalQ}!`);
+            } catch (err) {
+                console.error("Error saving manual score edit:", err);
+                showToast("Nagkaroon ng aberya sa pag-save.");
+            } finally {
+                if (saveBtn) {
+                    saveBtn.disabled = false;
+                    saveBtn.innerHTML = `<i class="ph-bold ph-floppy-disk"></i> <span>I-save ang Iskor</span>`;
+                }
+            }
+        }
+
         async function deleteSingleQuizResult(targetId, targetIndex) {
             showConfirmDialog(
                 "Alisin ang Tala na Ito?",
@@ -3398,8 +3581,8 @@
                 sectionSelect.innerHTML = optHtml;
             }
 
-            // Filter entries by Section and Search Query
-            let filtered = [...leaderboardEntries];
+            // Filter entries by Section and Search Query, and only show students who actually completed the quiz
+            let filtered = leaderboardEntries.filter(e => e.hasActualQuiz !== false && (e.attempt > 0 || e.score > 0));
             if (currentSectionFilter !== "all") {
                 filtered = filtered.filter(e => (e.section || "").trim().toLowerCase() === currentSectionFilter.toLowerCase());
             }
