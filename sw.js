@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ap7-hapon-offline-v1';
+const CACHE_NAME = 'ap7-hapon-offline-v2';
 const PRECACHE_ASSETS = [
   './',
   './index.html',
