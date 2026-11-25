@@ -753,6 +753,12 @@
                         </div>
                         <div>
                             <span id="result-game-over-tag" class="hidden inline-block px-3 py-1 rounded-full bg-rose-100 text-rose-700 text-xs font-extrabold uppercase mb-2">Naubos ang iyong 3 Buhay!</span>
+                            <div class="flex items-center justify-center gap-2 mb-2">
+                                <span id="result-attempt-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 text-xs font-extrabold border border-indigo-200">
+                                    <i class="ph-bold ph-arrow-counter-clockwise text-indigo-600"></i>
+                                    <span>Subok #<span id="result-attempt-number">1</span> (Attempt)</span>
+                                </span>
+                            </div>
                             <h3 id="result-main-heading" class="text-2xl sm:text-3xl font-extrabold text-slate-900">Tapos na ang Hamon!</h3>
                             <p id="result-subtitle" class="text-slate-600 mt-1 text-sm sm:text-base">Narito ang resulta ng iyong laban.</p>
                         </div>
@@ -883,13 +889,14 @@
                                     <th class="py-3.5 px-4 w-16 text-center">Ranggo</th>
                                     <th class="py-3.5 px-4">Manlalaro (Mag-aaral)</th>
                                     <th class="py-3.5 px-4 hidden sm:table-cell">Seksyon</th>
+                                    <th class="py-3.5 px-4 text-center hidden md:table-cell">Subok (Attempt)</th>
                                     <th class="py-3.5 px-4 text-right">Game Points</th>
                                     <th class="py-3.5 px-4 text-right hidden md:table-cell">Tama / Oras</th>
                                 </tr>
                             </thead>
                             <tbody id="leaderboard-table-body" class="divide-y divide-slate-100 text-sm">
                                 <tr>
-                                    <td colspan="5" class="py-8 text-center text-slate-400">Ikinakarga ang talaan ng ranggo...</td>
+                                    <td colspan="6" class="py-8 text-center text-slate-400">Ikinakarga ang talaan ng ranggo...</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -953,7 +960,7 @@
                             <div class="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center text-sm"><i class="ph-fill ph-users"></i></div>
                         </div>
                         <div id="stat-total-students" class="text-2xl sm:text-3xl font-black text-slate-900">0</div>
-                        <p class="text-[11px] text-slate-500 mt-1">Kumuha ng pagsusulit</p>
+                        <p id="stat-total-students-sub" class="text-[11px] text-slate-500 mt-1">0 mag-aaral • 0 subok</p>
                     </div>
 
                     <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 shadow-2xs">
@@ -1098,6 +1105,7 @@
                                     <th class="py-3 px-3 text-center w-12">#</th>
                                     <th class="py-3 px-4">Pangalan ng Mag-aaral</th>
                                     <th class="py-3 px-3">Seksiyon</th>
+                                    <th class="py-3 px-3 text-center">Subok (Attempt)</th>
                                     <th class="py-3 px-3 text-center">Iskor</th>
                                     <th class="py-3 px-3 text-center">Bahagdan</th>
                                     <th class="py-3 px-3 text-right">Game Points</th>
@@ -2804,6 +2812,26 @@
                 }
             });
 
+            // Track attempt frequency per student
+            const nameAttemptsMap = {};
+            leaderboardEntries.forEach(e => {
+                const k = (e.name || "").trim().toLowerCase();
+                if (k) nameAttemptsMap[k] = (nameAttemptsMap[k] || 0) + 1;
+            });
+            cloudProfiles.forEach(p => {
+                const k = (p.name || "").trim().toLowerCase();
+                if (k && p.quizAttempts) {
+                    nameAttemptsMap[k] = Math.max(nameAttemptsMap[k] || 1, Number(p.quizAttempts) || 1);
+                }
+            });
+
+            combined.forEach(e => {
+                const k = (e.name || "").trim().toLowerCase();
+                if (!e.attempt) {
+                    e.attempt = nameAttemptsMap[k] || 1;
+                }
+            });
+
             combined.sort((a, b) => {
                 const ptsA = a.gamePoints ?? (a.score * 100);
                 const ptsB = b.gamePoints ?? (b.score * 100);
@@ -2859,6 +2887,11 @@
          */
         async function submitScoreToLeaderboard(score, total, timeSeconds, finalPts, bestCombo) {
             const cleanScore = Number(score) || 0;
+            const studentKey = (studentName || "").trim().toLowerCase();
+            const pastAttempts = leaderboardEntries.filter(e => (e.name || "").trim().toLowerCase() === studentKey).length;
+            const currentAttemptNum = pastAttempts + 1;
+            const attemptEl = document.getElementById("result-attempt-number");
+            if (attemptEl) attemptEl.textContent = currentAttemptNum;
             const cleanTotal = Number(total) || ((moduleData && moduleData.quiz && moduleData.quiz.length) ? moduleData.quiz.length : 15);
             const cleanPts = Number(finalPts) || (cleanScore * 100);
             const cleanStreak = Number(bestCombo) || 0;
@@ -2879,6 +2912,7 @@
                 name: (studentName || "Mag-aaral").trim(),
                 section: (studentSection || "Baitang 7").trim(),
                 avatar: playerAvatar || "ph-sword",
+                attempt: currentAttemptNum,
                 score: cleanScore,
                 total: cleanTotal,
                 gamePoints: cleanPts,
@@ -2901,6 +2935,7 @@
                             lastQuizPoints: cleanPts,
                             lastQuizStreak: cleanStreak,
                             lastQuizTime: cleanTime,
+                            quizAttempts: currentAttemptNum,
                             lastQuizTimestamp: Date.now()
                         }, { merge: true });
                     }
@@ -3015,8 +3050,13 @@
             const totalScoreSum = filtered.reduce((acc, e) => acc + (Number(e.score) || 0), 0);
             const totalMaxSum = filtered.reduce((acc, e) => acc + (Number(e.total) || defaultQCount), 0);
 
-            // KPI 1: Total Students
+            // KPI 1: Total Students & Total Attempts
             document.getElementById("stat-total-students").textContent = totalStudents;
+            const totalAttemptsSum = filtered.reduce((acc, e) => acc + (Number(e.attempt) || 1), 0);
+            const subBadge = document.getElementById("stat-total-students-sub");
+            if (subBadge) {
+                subBadge.textContent = `${totalStudents} mag-aaral • ${totalAttemptsSum} kabuuang subok`;
+            }
 
             // KPI 2: Mean Score
             const meanScorePct = (totalStudents && totalMaxSum) ? ((totalScoreSum / totalMaxSum) * 100).toFixed(1) : "0.0";
@@ -3200,7 +3240,7 @@
             if (filtered.length === 0) {
                 rosterTbody.innerHTML = `
                     <tr>
-                        <td colspan="10" class="py-10 text-center text-slate-400">
+                        <td colspan="11" class="py-10 text-center text-slate-400">
                             Walang tala ng mag-aaral na tumugma sa filter.
                         </td>
                     </tr>
@@ -3225,11 +3265,20 @@
                         ? `<span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800">PUMASA</span>`
                         : `<span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-rose-100 text-rose-800">REMEDIATION</span>`;
 
+                    const attNum = Number(entry.attempt) || 1;
+                    let attBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700">Subok 1</span>`;
+                    if (attNum === 2) {
+                        attBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300">Subok 2</span>`;
+                    } else if (attNum > 2) {
+                        attBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-800 border border-purple-300">Subok ${attNum}</span>`;
+                    }
+
                     return `
                         <tr class="hover:bg-slate-50/80 transition-colors">
                             <td class="py-3 px-3 text-center font-bold text-slate-500">${rank}</td>
                             <td class="py-3 px-4 font-extrabold text-slate-900">${name}</td>
                             <td class="py-3 px-3 text-slate-600 font-semibold">${sec}</td>
+                            <td class="py-3 px-3 text-center">${attBadge}</td>
                             <td class="py-3 px-3 text-center font-black text-slate-900">${score} / ${tot}</td>
                             <td class="py-3 px-3 text-center font-bold text-emerald-600">${pct}%</td>
                             <td class="py-3 px-3 text-right font-mono font-bold text-amber-600">${pts.toLocaleString()} XP</td>
@@ -3366,7 +3415,7 @@
                 podiumEl.innerHTML = "";
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="5" class="py-10 text-center text-slate-400">
+                        <td colspan="6" class="py-10 text-center text-slate-400">
                             <i class="ph ph-trophy text-3xl mb-2 block mx-auto text-slate-300"></i>
                             ${leaderboardEntries.length ? 'Walang mag-aaral na tumugma sa filter o paghahanap.' : 'Wala pang nakatalang puntos. Maging unang mag-aaral na mangunguna sa hamon!'}
                         </td>
@@ -3416,6 +3465,14 @@
                 else if (rank === 2) rankDisplay = `<span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-300 text-slate-800 font-extrabold text-xs">2</span>`;
                 else if (rank === 3) rankDisplay = `<span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-orange-300 text-orange-950 font-extrabold text-xs">3</span>`;
 
+                const attNum = Number(entry.attempt) || 1;
+                let lbAttBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-slate-100 text-slate-700">Subok 1</span>`;
+                if (attNum === 2) {
+                    lbAttBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-100 text-amber-800 border border-amber-300">Subok 2</span>`;
+                } else if (attNum > 2) {
+                    lbAttBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-purple-100 text-purple-800 border border-purple-300">Subok ${attNum}</span>`;
+                }
+
                 return `
                     <tr class="${isCurrentStudent ? 'bg-brand-50/80 font-semibold' : 'hover:bg-slate-50'} transition-colors">
                         <td class="py-3.5 px-4 text-center">${rankDisplay}</td>
@@ -3424,6 +3481,7 @@
                             ${isCurrentStudent ? '<span class="ml-2 text-[10px] uppercase font-extrabold px-2 py-0.5 rounded-full bg-brand-600 text-white">Ikaw</span>' : ''}
                         </td>
                         <td class="py-3.5 px-4 text-slate-500 hidden sm:table-cell">${escapeHtml(entry.section)}</td>
+                        <td class="py-3.5 px-4 text-center hidden md:table-cell">${lbAttBadge}</td>
                         <td class="py-3.5 px-4 text-right font-black text-brand-700">${pts.toLocaleString()} PTS</td>
                         <td class="py-3.5 px-4 text-right text-slate-500 text-xs hidden md:table-cell">${entry.score}/${entry.total} (${entry.timeSeconds || 0}s)</td>
                     </tr>
@@ -3457,6 +3515,7 @@
                 "Ranggo",
                 "Pangalan ng Mag-aaral",
                 "Seksiyon",
+                "Subok (Attempt)",
                 "Score sa Quiz",
                 "Kabuuan",
                 "Porsyento",
@@ -3478,7 +3537,8 @@
                 const streak = entry.maxStreak ? `${entry.maxStreak}x` : "0x";
                 const dateStr = entry.timestamp ? new Date(entry.timestamp).toLocaleString("en-PH") : "N/A";
 
-                return [rank, name, section, score, total, pct, pts, timeSec, streak, `"${dateStr}"`].join(",");
+                const attemptStr = `"Subok ${entry.attempt || 1}"`;
+                return [rank, name, section, attemptStr, score, total, pct, pts, timeSec, streak, `"${dateStr}"`].join(",");
             });
 
             // \uFEFF UTF-8 BOM ensures proper character encoding in Microsoft Excel
