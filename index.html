@@ -3105,12 +3105,15 @@
                 }
             });
 
-            // Group records by student name to prevent multiple duplicate rows
+            // Group records by canonicalized student name & normalize sections so variants merge cleanly
             const studentGroups = {};
             combined.forEach(item => {
                 const rawName = (item.name || "").trim();
-                if (!rawName || rawName.toLowerCase() === "guro (admin)") return;
-                const key = rawName.toLowerCase();
+                if (!rawName || isReservedAdminName(rawName)) return;
+                item.section = normalizeSectionName(item.section);
+                item.name = formatProperName(rawName);
+                const key = canonicalizeName(rawName);
+                if (!key) return;
                 if (!studentGroups[key]) {
                     studentGroups[key] = [];
                 }
