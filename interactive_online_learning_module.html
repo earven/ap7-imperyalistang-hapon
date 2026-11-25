@@ -596,6 +596,23 @@
                     </div>
 
                     <!-- STEP A: STUDENT REGISTRATION BEFORE QUIZ -->
+                    <div id="quiz-locked-banner" class="hidden py-12 max-w-md mx-auto text-center space-y-5">
+                        <div class="w-20 h-20 mx-auto rounded-3xl bg-amber-100 text-amber-600 flex items-center justify-center text-4xl shadow-inner border border-amber-200">
+                            <i class="ph-fill ph-lock-key"></i>
+                        </div>
+                        <div class="space-y-2">
+                            <span class="inline-block px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-[11px] font-extrabold uppercase tracking-wider">Fokus Muna sa Aralin</span>
+                            <h3 class="text-2xl font-extrabold text-slate-900">Naka-lock Pa ang Pagsusulit</h3>
+                            <p class="text-sm text-slate-600 leading-relaxed">
+                                Pansamantalang isinara ng iyong Guro ang <strong>Boss Quiz</strong> upang makapag-pokus muna ang klase sa pagbabasa ng mga Yugto, Flashcards, at Mapa. Hintayin ang hudyat ng Guro!
+                            </p>
+                        </div>
+                        <button type="button" onclick="switchToView('lesson')" class="btn-3d px-6 py-3 rounded-xl font-extrabold text-sm bg-brand-600 text-white hover:bg-brand-700 inline-flex items-center gap-2 cursor-pointer">
+                            <i class="ph-bold ph-book-open-text text-lg"></i>
+                            <span>Bumalik sa mga Aralin</span>
+                        </button>
+                    </div>
+
                     <div id="quiz-registration-area" class="py-8 max-w-md mx-auto space-y-6">
                         <div class="text-center space-y-2">
                             <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-slate-950 flex items-center justify-center text-3xl shadow-md">
@@ -916,6 +933,9 @@
                             <p class="text-xs sm:text-sm text-slate-500 mt-1">Komprehensibong pagsusuri sa resulta ng mga mag-aaral sa Boss Quiz at antas ng pagkaunawa sa bawat aralin.</p>
                         </div>
                         <div class="flex flex-wrap items-center gap-2 no-print">
+                            <button id="stats-toggle-quiz-lock-btn" type="button" onclick="toggleTeacherQuizLock()" class="px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-300 flex items-center gap-1.5 transition-colors cursor-pointer" title="I-lock pansamantala ang Boss Quiz upang mag-pokus muna ang klase sa mga Aralin">
+                                <i class="ph-fill ph-lock-key text-amber-600 text-base"></i> <span>I-lock Muna ang Quiz</span>
+                            </button>
                             <button id="stats-clear-all-btn" class="px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 flex items-center gap-1.5 transition-colors cursor-pointer" title="Burahin ang lahat ng resulta upang magsimula ang bagong klase">
                                 <i class="ph-fill ph-trash text-rose-600 text-base"></i> Burahin ang Lahat ng Resulta
                             </button>
@@ -2853,6 +2873,7 @@
 
         function listenToLeaderboard() {
             if (!db || !currentUser) return;
+            listenToQuizLock();
             
             // Listen to quiz_rankings collection
             const scoresColRef = collection(db, 'artifacts', appId, 'public', 'data', 'quiz_rankings');
@@ -5001,11 +5022,107 @@
         /**
          * Prepare Quiz View (Ask for Student Name first if not entered)
          */
+                let isQuizLockedByTeacher = false;
+        try {
+            isQuizLockedByTeacher = localStorage.getItem("ap7_quiz_locked") === "true";
+        } catch (_) {}
+
+        function updateQuizLockUI() {
+            const toggleBtn = document.getElementById("stats-toggle-quiz-lock-btn");
+            if (toggleBtn) {
+                if (isQuizLockedByTeacher) {
+                    toggleBtn.className = "px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 flex items-center gap-1.5 transition-colors cursor-pointer";
+                    toggleBtn.innerHTML = `<i class="ph-fill ph-lock-open text-emerald-600 text-base"></i> <span>Buksan na ang Quiz (Naka-lock)</span>`;
+                } else {
+                    toggleBtn.className = "px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-300 flex items-center gap-1.5 transition-colors cursor-pointer";
+                    toggleBtn.innerHTML = `<i class="ph-fill ph-lock-key text-amber-600 text-base"></i> <span>I-lock Muna ang Quiz</span>`;
+                }
+            }
+
+            const sidebarQuizBtn = document.getElementById("sidebar-quiz-btn");
+            if (sidebarQuizBtn) {
+                if (isQuizLockedByTeacher) {
+                    sidebarQuizBtn.classList.remove("from-brand-600", "to-indigo-600", "hover:from-brand-700", "hover:to-indigo-700");
+                    sidebarQuizBtn.classList.add("from-slate-500", "to-slate-600", "opacity-90");
+                    sidebarQuizBtn.innerHTML = `<i class="ph-fill ph-lock-key text-lg text-amber-300"></i> <span>Boss Quiz (Naka-lock Muna)</span>`;
+                } else {
+                    sidebarQuizBtn.classList.remove("from-slate-500", "to-slate-600", "opacity-90");
+                    sidebarQuizBtn.classList.add("from-brand-600", "to-indigo-600", "hover:from-brand-700", "hover:to-indigo-700");
+                    sidebarQuizBtn.innerHTML = `<i class="ph-fill ph-swords text-lg text-amber-300"></i> <span>Huling Hamon (Boss Quiz)</span>`;
+                }
+            }
+
+            // If a student is currently inside #quiz-view when teacher locks it, show locked banner immediately
+            const quizView = document.getElementById("quiz-view");
+            const lockedBanner = document.getElementById("quiz-locked-banner");
+            if (quizView && !quizView.classList.contains("hidden") && lockedBanner) {
+                if (isQuizLockedByTeacher && !isAdminAuthenticated) {
+                    clearInterval(questionTimerInterval);
+                    document.getElementById("quiz-registration-area").classList.add("hidden");
+                    document.getElementById("quiz-active-area").classList.add("hidden");
+                    document.getElementById("quiz-results-area").classList.add("hidden");
+                    lockedBanner.classList.remove("hidden");
+                }
+            }
+        }
+
+        function listenToQuizLock() {
+            updateQuizLockUI();
+            if (!db || !currentUser) return;
+            try {
+                const lockDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'quiz_lock');
+                onSnapshot(lockDocRef, (snap) => {
+                    if (snap.exists()) {
+                        isQuizLockedByTeacher = Boolean(snap.data().quizLocked);
+                        try { localStorage.setItem("ap7_quiz_locked", String(isQuizLockedByTeacher)); } catch (_) {}
+                        updateQuizLockUI();
+                    }
+                }, (err) => {
+                    console.warn("Quiz lock listener error:", err);
+                });
+            } catch (e) {
+                console.warn("Could not listen to quiz_lock:", e);
+            }
+        }
+
+        async function toggleTeacherQuizLock() {
+            const nextState = !isQuizLockedByTeacher;
+            isQuizLockedByTeacher = nextState;
+            try { localStorage.setItem("ap7_quiz_locked", String(nextState)); } catch (_) {}
+            updateQuizLockUI();
+
+            if (db && currentUser) {
+                try {
+                    const lockDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'quiz_lock');
+                    await setDoc(lockDocRef, {
+                        quizLocked: nextState,
+                        updatedAt: Date.now()
+                    }, { merge: true });
+                } catch (err) {
+                    console.error("Failed saving quiz_lock to Firestore:", err);
+                }
+            }
+
+            showToast(nextState
+                ? "Naka-lock na ang Boss Quiz! Nakatuon muna ang mga bata sa mga Aralin."
+                : "Bukas na ang Boss Quiz para sa lahat ng mag-aaral!");
+        }
+
         function openQuizPortal() {
             if (!moduleData.quiz || moduleData.quiz.length === 0) {
                 moduleData.quiz = structuredClone(DEFAULT_MODULE_DATA.quiz);
             }
             switchToView("quiz");
+
+            const lockedBanner = document.getElementById("quiz-locked-banner");
+            if (isQuizLockedByTeacher && !isAdminAuthenticated) {
+                document.getElementById("quiz-registration-area").classList.add("hidden");
+                document.getElementById("quiz-active-area").classList.add("hidden");
+                document.getElementById("quiz-results-area").classList.add("hidden");
+                if (lockedBanner) lockedBanner.classList.remove("hidden");
+                return;
+            }
+            if (lockedBanner) lockedBanner.classList.add("hidden");
 
             document.getElementById("quiz-results-area").classList.add("hidden");
             if (!studentName) {
@@ -5017,6 +5134,10 @@
         }
 
         function beginActualQuiz() {
+            if (isQuizLockedByTeacher && !isAdminAuthenticated) {
+                openQuizPortal();
+                return;
+            }
             currentQuestionIndex = 0;
             quizScore = 0;
             gamePoints = 0;
