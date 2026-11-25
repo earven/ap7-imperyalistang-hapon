@@ -5056,7 +5056,7 @@
             const quizView = document.getElementById("quiz-view");
             const lockedBanner = document.getElementById("quiz-locked-banner");
             if (quizView && !quizView.classList.contains("hidden") && lockedBanner) {
-                if (isQuizLockedByTeacher && !isAdminAuthenticated) {
+                if (isQuizLockedByTeacher) {
                     clearInterval(questionTimerInterval);
                     document.getElementById("quiz-registration-area").classList.add("hidden");
                     document.getElementById("quiz-active-area").classList.add("hidden");
@@ -5115,7 +5115,7 @@
             switchToView("quiz");
 
             const lockedBanner = document.getElementById("quiz-locked-banner");
-            if (isQuizLockedByTeacher && !isAdminAuthenticated) {
+            if (isQuizLockedByTeacher) {
                 document.getElementById("quiz-registration-area").classList.add("hidden");
                 document.getElementById("quiz-active-area").classList.add("hidden");
                 document.getElementById("quiz-results-area").classList.add("hidden");
@@ -5134,7 +5134,7 @@
         }
 
         function beginActualQuiz() {
-            if (isQuizLockedByTeacher && !isAdminAuthenticated) {
+            if (isQuizLockedByTeacher) {
                 openQuizPortal();
                 return;
             }
@@ -5293,6 +5293,10 @@
         }
 
         function handleAnswerSelection(selectedIndex) {
+            if (isQuizLockedByTeacher) {
+                openQuizPortal();
+                return;
+            }
             if (hasAnsweredCurrent) return;
             hasAnsweredCurrent = true;
             clearInterval(questionTimerInterval);
