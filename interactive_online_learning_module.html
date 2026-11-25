@@ -2568,45 +2568,55 @@
             }
         }
 
-                // Auto-recover any locally stored quiz scores from a student's device that failed to upload earlier
+                // Auto-recover any locally stored quiz scores from a shared/school computer browser that failed to upload earlier
+        let hasRunLocalRecovery = false;
         async function syncLocalScoresToCloudOnVisit() {
-            if (!db || !currentUser || !studentName) return;
+            if (!db || !currentUser || hasRunLocalRecovery) return;
+            hasRunLocalRecovery = true;
             try {
                 const rawLocal = localStorage.getItem("ap7_local_leaderboard");
                 if (!rawLocal) return;
                 const localList = JSON.parse(rawLocal);
-                if (!Array.isArray(localList)) return;
+                if (!Array.isArray(localList) || localList.length === 0) return;
 
-                const canonStudent = canonicalizeName(studentName);
-                const alreadyInCloud = cloudRankings.some(r => canonicalizeName(r.name) === canonStudent);
-                if (alreadyInCloud) return;
+                const cloudNames = new Set(cloudRankings.map(r => canonicalizeName(r.name)));
+                const toRecover = localList.filter(item => {
+                    const c = canonicalizeName(item.name);
+                    return c &&
+                        !isReservedAdminName(item.name) &&
+                        !cloudNames.has(c) &&
+                        item.hasActualQuiz !== false &&
+                        item.score !== undefined &&
+                        item.score !== null &&
+                        !String(item.id || "").startsWith("prof-");
+                });
 
-                const localMatches = localList.filter(item =>
-                    canonicalizeName(item.name) === canonStudent &&
-                    item.hasActualQuiz !== false &&
-                    item.score !== undefined &&
-                    item.score !== null &&
-                    !String(item.id || "").startsWith("prof-")
-                );
-
-                if (localMatches.length > 0) {
+                if (toRecover.length > 0) {
                     const scoresColRef = collection(db, 'artifacts', appId, 'public', 'data', 'quiz_rankings');
-                    for (const m of localMatches.slice(0, MAX_QUIZ_ATTEMPTS)) {
+                    const countPerStudent = {};
+                    let recoveredCount = 0;
+                    for (const m of toRecover) {
+                        const c = canonicalizeName(m.name);
+                        countPerStudent[c] = (countPerStudent[c] || 0) + 1;
+                        if (countPerStudent[c] > MAX_QUIZ_ATTEMPTS) continue;
                         await addDoc(scoresColRef, {
-                            name: studentName,
-                            section: normalizeSectionName(m.section || studentSection),
-                            avatar: m.avatar || playerAvatar || "ph-sword",
+                            name: formatProperName(m.name),
+                            section: normalizeSectionName(m.section),
+                            avatar: m.avatar || "ph-sword",
                             score: Number(m.score) || 0,
                             total: Number(m.total) || 15,
                             gamePoints: Number(m.gamePoints) || ((Number(m.score) || 0) * 100),
                             maxStreak: Number(m.maxStreak) || 0,
                             timeSeconds: Number(m.timeSeconds) || 60,
-                            attempt: Number(m.attempt) || 1,
+                            attempt: countPerStudent[c],
                             uid: currentUser.uid || "auto-recovered",
                             timestamp: Number(m.timestamp) || Date.now()
                         });
+                        recoveredCount++;
                     }
-                    showToast("Na-sync na sa Cloud ang iyong dating iskor sa quiz!");
+                    if (recoveredCount > 0) {
+                        showToast(`Na-recover at na-sync sa Cloud ang ${recoveredCount} iskor mula sa computer na ito!`);
+                    }
                 }
             } catch (err) {
                 console.warn("Local score recovery skipped:", err);
@@ -3232,6 +3242,7 @@
         function listenToLeaderboard() {
             if (!db || !currentUser) return;
             loadClassRoster();
+            setTimeout(() => syncLocalScoresToCloudOnVisit(), 1500);
             
             // Listen to quiz_rankings collection
             const scoresColRef = collection(db, 'artifacts', appId, 'public', 'data', 'quiz_rankings');
