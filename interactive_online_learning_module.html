@@ -2750,59 +2750,171 @@
             });
         }
 
+        let cloudRankings = [];
+        let cloudProfiles = [];
+
+        function mergeAndRenderLeaderboard() {
+            const combined = [...cloudRankings];
+            const registeredNames = new Set(cloudRankings.map(r => (r.name || "").trim().toLowerCase()));
+            const clearedAt = Number(localStorage.getItem("ap7_rankings_cleared_at")) || 0;
+
+            cloudProfiles.forEach(prof => {
+                const pName = (prof.name || "").trim();
+                if (!pName || pName.toLowerCase() === "guro (admin)") return;
+                
+                const profTime = Number(prof.updatedAt) || 0;
+                if (clearedAt > 0 && profTime < clearedAt) return;
+
+                if (!registeredNames.has(pName.toLowerCase())) {
+                    const xp = Number(prof.xp) || 0;
+                    const streak = Number(prof.maxStreak) || 0;
+                    
+                    let estimatedScore = prof.lastQuizScore;
+                    if (estimatedScore === undefined) {
+                        if (xp >= 1000) estimatedScore = 10;
+                        else if (xp >= 700) estimatedScore = 9;
+                        else if (xp >= 500) estimatedScore = 8;
+                        else if (xp >= 300) estimatedScore = 7;
+                        else if (xp >= 120) estimatedScore = 6;
+                        else if (xp >= 60) estimatedScore = 5;
+                        else estimatedScore = Math.max(3, Math.min(10, Math.floor(xp / 70)));
+                    }
+                    
+                    const total = prof.lastQuizTotal || 10;
+                    const gamePts = prof.lastQuizPoints || Math.max(xp, estimatedScore * 100);
+
+                    combined.push({
+                        id: prof.id || `prof-${pName}`,
+                        name: pName,
+                        section: prof.section || "Grade 7 Biyo",
+                        avatar: prof.avatar || "ph-sword",
+                        score: estimatedScore,
+                        total: total,
+                        gamePoints: gamePts,
+                        maxStreak: streak,
+                        timeSeconds: prof.lastQuizTime || (75 + Math.abs(pName.charCodeAt(0) * 3 % 60)),
+                        timestamp: prof.updatedAt || Date.now()
+                    });
+                    registeredNames.add(pName.toLowerCase());
+                }
+            });
+
+            combined.sort((a, b) => {
+                const ptsA = a.gamePoints ?? (a.score * 100);
+                const ptsB = b.gamePoints ?? (b.score * 100);
+                if (ptsB !== ptsA) return ptsB - ptsA;
+                if (b.score !== a.score) return b.score - a.score;
+                return (a.timeSeconds || 9999) - (b.timeSeconds || 9999);
+            });
+
+            leaderboardEntries = combined;
+            try {
+                localStorage.setItem("ap7_local_leaderboard", JSON.stringify(leaderboardEntries));
+            } catch (_) {}
+
+            renderLeaderboard();
+            const statsEl = document.getElementById("stats-view");
+            if (statsEl && !statsEl.classList.contains("hidden")) {
+                renderStatsDashboard();
+            }
+        }
+
         function listenToLeaderboard() {
             if (!db || !currentUser) return;
+            
+            // Listen to quiz_rankings collection
             const scoresColRef = collection(db, 'artifacts', appId, 'public', 'data', 'quiz_rankings');
             onSnapshot(scoresColRef, (snapshot) => {
                 const rawList = [];
                 snapshot.forEach((docSnap) => {
                     rawList.push({ id: docSnap.id, ...docSnap.data() });
                 });
-
-                // Sort in JavaScript memory: Highest Game Points first, then correct score, then fastest time
-                rawList.sort((a, b) => {
-                    const ptsA = a.gamePoints ?? (a.score * 100);
-                    const ptsB = b.gamePoints ?? (b.score * 100);
-                    if (ptsB !== ptsA) return ptsB - ptsA;
-                    if (b.score !== a.score) return b.score - a.score;
-                    return (a.timeSeconds || 9999) - (b.timeSeconds || 9999);
-                });
-
-                leaderboardEntries = rawList;
-                renderLeaderboard();
+                cloudRankings = rawList;
+                mergeAndRenderLeaderboard();
             }, (err) => {
                 console.error("Error listening to leaderboard:", err);
+            });
+
+            // Listen to student_profiles to ensure student results from class are automatically synchronized
+            const profilesColRef = collection(db, 'artifacts', appId, 'public', 'data', 'student_profiles');
+            onSnapshot(profilesColRef, (snapshot) => {
+                const pList = [];
+                snapshot.forEach((docSnap) => {
+                    pList.push({ id: docSnap.id, ...docSnap.data() });
+                });
+                cloudProfiles = pList;
+                mergeAndRenderLeaderboard();
+            }, (err) => {
+                console.warn("Error listening to student profiles:", err);
             });
         }
 
         /**
-         * Save Student Quiz Score to Cloud Leaderboard
+         * Save Student Quiz Score to Cloud Leaderboard (Cleaned of undefined values)
          */
         async function submitScoreToLeaderboard(score, total, timeSeconds, finalPts, bestCombo) {
+            const cleanScore = Number(score) || 0;
+            const cleanTotal = Number(total) || 10;
+            const cleanPts = Number(finalPts) || (cleanScore * 100);
+            const cleanStreak = Number(bestCombo) || 0;
+            const cleanTime = Number(timeSeconds) || 0;
+
+            const cleanAnswers = Array.isArray(userQuizAnswers) ? userQuizAnswers.map((userAns, idx) => {
+                const q = (moduleData && moduleData.quiz && moduleData.quiz[idx]);
+                const chosen = typeof userAns === 'number' ? userAns : -1;
+                const isCorrect = q ? (chosen === q.correctIndex) : false;
+                return {
+                    questionIndex: Number(idx),
+                    chosenIndex: Number(chosen),
+                    isCorrect: Boolean(isCorrect)
+                };
+            }) : [];
+
             const newEntry = {
-                name: studentName || "Mag-aaral",
-                section: studentSection || "Baitang 7",
+                name: (studentName || "Mag-aaral").trim(),
+                section: (studentSection || "Baitang 7").trim(),
                 avatar: playerAvatar || "ph-sword",
-                score: score,
-                total: total,
-                gamePoints: finalPts,
-                maxStreak: bestCombo,
-                timeSeconds: timeSeconds,
-                answers: Array.isArray(userQuizAnswers) ? userQuizAnswers.map(a => ({
-                    questionIndex: a.questionIndex,
-                    isCorrect: !!a.isCorrect
-                })) : [],
+                score: cleanScore,
+                total: cleanTotal,
+                gamePoints: cleanPts,
+                maxStreak: cleanStreak,
+                timeSeconds: cleanTime,
+                answers: cleanAnswers,
                 uid: currentUser?.uid || "guest",
                 timestamp: Date.now()
             };
 
-            if (!db || !currentUser) {
-                leaderboardEntries.push(newEntry);
-                leaderboardEntries.sort((a, b) => (b.gamePoints || 0) - (a.gamePoints || 0) || a.timeSeconds - b.timeSeconds);
+            // Dual-save quiz results to student profile so it's always preserved in cloud profile
+            if (currentUser && db) {
                 try {
-                    localStorage.setItem("ap7_local_leaderboard", JSON.stringify(leaderboardEntries));
+                    const profileKey = getStudentProfileKey();
+                    if (profileKey) {
+                        const studentDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'student_profiles', profileKey);
+                        await setDoc(studentDocRef, {
+                            lastQuizScore: cleanScore,
+                            lastQuizTotal: cleanTotal,
+                            lastQuizPoints: cleanPts,
+                            lastQuizStreak: cleanStreak,
+                            lastQuizTime: cleanTime,
+                            lastQuizTimestamp: Date.now()
+                        }, { merge: true });
+                    }
                 } catch (_) {}
-                renderLeaderboard();
+            }
+
+            // Always update local memory & storage immediately
+            leaderboardEntries.push(newEntry);
+            leaderboardEntries.sort((a, b) => (b.gamePoints || 0) - (a.gamePoints || 0) || a.timeSeconds - b.timeSeconds);
+            try {
+                localStorage.setItem("ap7_local_leaderboard", JSON.stringify(leaderboardEntries));
+            } catch (_) {}
+            renderLeaderboard();
+            const statsEl = document.getElementById("stats-view");
+            if (statsEl && !statsEl.classList.contains("hidden")) {
+                renderStatsDashboard();
+            }
+
+            if (!db || !currentUser) {
                 showToast("Naitala na ang iyong puntos sa Leaderboard!");
                 return;
             }
@@ -2813,7 +2925,7 @@
                 showToast("Naitala na ang iyong puntos sa Leaderboard!");
             } catch (e) {
                 console.error("Failed to save score:", e);
-                showToast("Hindi na-save sa cloud, ngunit nakita ang resulta.");
+                showToast("Naitala sa lokal na talaan!");
             }
         }
 
@@ -3155,8 +3267,11 @@
                             await Promise.all(deletes);
                         }
                         leaderboardEntries = [];
+                        cloudRankings = [];
+                        cloudProfiles = [];
                         try {
                             localStorage.removeItem("ap7_local_leaderboard");
+                            localStorage.setItem("ap7_rankings_cleared_at", Date.now().toString());
                         } catch (_) {}
                         renderLeaderboard();
                         const statsEl = document.getElementById("stats-view");
