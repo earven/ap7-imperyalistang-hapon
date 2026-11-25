@@ -2568,6 +2568,51 @@
             }
         }
 
+                // Auto-recover any locally stored quiz scores from a student's device that failed to upload earlier
+        async function syncLocalScoresToCloudOnVisit() {
+            if (!db || !currentUser || !studentName) return;
+            try {
+                const rawLocal = localStorage.getItem("ap7_local_leaderboard");
+                if (!rawLocal) return;
+                const localList = JSON.parse(rawLocal);
+                if (!Array.isArray(localList)) return;
+
+                const canonStudent = canonicalizeName(studentName);
+                const alreadyInCloud = cloudRankings.some(r => canonicalizeName(r.name) === canonStudent);
+                if (alreadyInCloud) return;
+
+                const localMatches = localList.filter(item =>
+                    canonicalizeName(item.name) === canonStudent &&
+                    item.hasActualQuiz !== false &&
+                    item.score !== undefined &&
+                    item.score !== null &&
+                    !String(item.id || "").startsWith("prof-")
+                );
+
+                if (localMatches.length > 0) {
+                    const scoresColRef = collection(db, 'artifacts', appId, 'public', 'data', 'quiz_rankings');
+                    for (const m of localMatches.slice(0, MAX_QUIZ_ATTEMPTS)) {
+                        await addDoc(scoresColRef, {
+                            name: studentName,
+                            section: normalizeSectionName(m.section || studentSection),
+                            avatar: m.avatar || playerAvatar || "ph-sword",
+                            score: Number(m.score) || 0,
+                            total: Number(m.total) || 15,
+                            gamePoints: Number(m.gamePoints) || ((Number(m.score) || 0) * 100),
+                            maxStreak: Number(m.maxStreak) || 0,
+                            timeSeconds: Number(m.timeSeconds) || 60,
+                            attempt: Number(m.attempt) || 1,
+                            uid: currentUser.uid || "auto-recovered",
+                            timestamp: Number(m.timestamp) || Date.now()
+                        });
+                    }
+                    showToast("Na-sync na sa Cloud ang iyong dating iskor sa quiz!");
+                }
+            } catch (err) {
+                console.warn("Local score recovery skipped:", err);
+            }
+        }
+
         async function loginOrRestoreStudent(name, section, pin, avatar = null) {
             const check = validateStudentFullName(name);
             if (!check.ok) {
@@ -2628,6 +2673,7 @@
                         renderLesson(currentLessonIndex);
                         updateProgressUI();
                         updateRankTitleAndBadges();
+                        syncLocalScoresToCloudOnVisit();
                         showToast(`Maligayang pagbabalik, ${studentName}! Naibalik ang ${playerXP} XP mo.`);
                         return { ok: true };
                     }
@@ -2656,6 +2702,7 @@
                         renderLesson(currentLessonIndex);
                         updateProgressUI();
                         updateRankTitleAndBadges();
+                        syncLocalScoresToCloudOnVisit();
                         showToast(`Maligayang pagbabalik, ${studentName}! Naibalik ang ${playerXP} XP mo.`);
                         return { ok: true };
                     }
@@ -3417,13 +3464,14 @@
             const totalScoreSum = filtered.reduce((acc, e) => acc + (Number(e.score) || 0), 0);
             const totalMaxSum = filtered.reduce((acc, e) => acc + (Number(e.total) || defaultQCount), 0);
 
-            // KPI 1: Total Unique Students & Total Attempts
-            const uniqueStudentsCount = leaderboardEntries.filter(e => e.hasActualQuiz !== false && (e.totalAttempts > 0 || e.score > 0)).length;
-            const totalAttemptsCount = allQuizAttempts.length;
-            document.getElementById("stat-total-students").textContent = uniqueStudentsCount;
+            // KPI 1: Total Quiz Takers vs Total Registered Students
+            const withQuizCount = leaderboardEntries.filter(e => e.hasActualQuiz !== false && (e.totalAttempts > 0 || e.score > 0)).length;
+            const totalRegisteredCount = leaderboardEntries.length;
+            const totalQuizAttemptsCount = allQuizAttempts.filter(e => e.hasActualQuiz !== false && (e.attempt > 0 || e.score > 0)).length;
+            document.getElementById("stat-total-students").textContent = `${withQuizCount} / ${totalRegisteredCount}`;
             const subBadge = document.getElementById("stat-total-students-sub");
             if (subBadge) {
-                subBadge.textContent = `${uniqueStudentsCount} natatanging bata • ${totalAttemptsCount} kabuuang subok`;
+                subBadge.textContent = `${withQuizCount} may quiz • ${totalRegisteredCount} nakarehistro (${totalQuizAttemptsCount} subok)`;
             }
 
             // KPI 2: Mean Score
