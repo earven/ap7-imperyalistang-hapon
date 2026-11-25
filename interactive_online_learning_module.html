@@ -962,7 +962,7 @@
                             <div class="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm"><i class="ph-fill ph-chart-line-up"></i></div>
                         </div>
                         <div id="stat-mean-score" class="text-2xl sm:text-3xl font-black text-emerald-600">0%</div>
-                        <p id="stat-mean-points" class="text-[11px] text-slate-500 mt-1">0.0 / 10 puntos</p>
+                        <p id="stat-mean-points" class="text-[11px] text-slate-500 mt-1">0.0 / 15 puntos</p>
                     </div>
 
                     <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 shadow-2xs">
@@ -2768,19 +2768,24 @@
                 if (!registeredNames.has(pName.toLowerCase())) {
                     const xp = Number(prof.xp) || 0;
                     const streak = Number(prof.maxStreak) || 0;
+                    const quizTotal = (moduleData && Array.isArray(moduleData.quiz) && moduleData.quiz.length) ? moduleData.quiz.length : 15;
                     
                     let estimatedScore = prof.lastQuizScore;
                     if (estimatedScore === undefined) {
-                        if (xp >= 1000) estimatedScore = 10;
-                        else if (xp >= 700) estimatedScore = 9;
-                        else if (xp >= 500) estimatedScore = 8;
-                        else if (xp >= 300) estimatedScore = 7;
-                        else if (xp >= 120) estimatedScore = 6;
-                        else if (xp >= 60) estimatedScore = 5;
-                        else estimatedScore = Math.max(3, Math.min(10, Math.floor(xp / 70)));
+                        if (xp >= 1000) estimatedScore = 15;
+                        else if (xp >= 800) estimatedScore = 14;
+                        else if (xp >= 700) estimatedScore = 13;
+                        else if (xp >= 600) estimatedScore = 12;
+                        else if (xp >= 500) estimatedScore = 11;
+                        else if (xp >= 400) estimatedScore = 10;
+                        else if (xp >= 300) estimatedScore = 9;
+                        else if (xp >= 200) estimatedScore = 8;
+                        else if (xp >= 100) estimatedScore = 7;
+                        else if (xp >= 50) estimatedScore = 6;
+                        else estimatedScore = Math.max(3, Math.min(quizTotal, Math.floor(xp / 50)));
                     }
                     
-                    const total = prof.lastQuizTotal || 10;
+                    const total = prof.lastQuizTotal || quizTotal;
                     const gamePts = prof.lastQuizPoints || Math.max(xp, estimatedScore * 100);
 
                     combined.push({
@@ -2854,7 +2859,7 @@
          */
         async function submitScoreToLeaderboard(score, total, timeSeconds, finalPts, bestCombo) {
             const cleanScore = Number(score) || 0;
-            const cleanTotal = Number(total) || 10;
+            const cleanTotal = Number(total) || ((moduleData && moduleData.quiz && moduleData.quiz.length) ? moduleData.quiz.length : 15);
             const cleanPts = Number(finalPts) || (cleanScore * 100);
             const cleanStreak = Number(bestCombo) || 0;
             const cleanTime = Number(timeSeconds) || 0;
@@ -3005,9 +3010,10 @@
                 countBadge.textContent = `${filtered.length} tala`;
             }
 
+            const defaultQCount = (moduleData && Array.isArray(moduleData.quiz) && moduleData.quiz.length) ? moduleData.quiz.length : 15;
             const totalStudents = filtered.length;
             const totalScoreSum = filtered.reduce((acc, e) => acc + (Number(e.score) || 0), 0);
-            const totalMaxSum = filtered.reduce((acc, e) => acc + (Number(e.total) || 10), 0);
+            const totalMaxSum = filtered.reduce((acc, e) => acc + (Number(e.total) || defaultQCount), 0);
 
             // KPI 1: Total Students
             document.getElementById("stat-total-students").textContent = totalStudents;
@@ -3015,13 +3021,13 @@
             // KPI 2: Mean Score
             const meanScorePct = (totalStudents && totalMaxSum) ? ((totalScoreSum / totalMaxSum) * 100).toFixed(1) : "0.0";
             const avgPts = totalStudents ? (totalScoreSum / totalStudents).toFixed(1) : "0.0";
-            const maxRef = totalStudents ? Math.round(totalMaxSum / totalStudents) : 10;
+            const maxRef = totalStudents ? Math.round(totalMaxSum / totalStudents) : defaultQCount;
             document.getElementById("stat-mean-score").textContent = `${meanScorePct}%`;
             document.getElementById("stat-mean-points").textContent = `${avgPts} / ${maxRef} puntos`;
 
             // KPI 3: Passing Rate (>= 70%)
             const passedStudents = filtered.filter(e => {
-                const tot = Number(e.total) || 10;
+                const tot = Number(e.total) || defaultQCount;
                 return (Number(e.score) / tot) >= 0.70;
             }).length;
             const passingRate = totalStudents ? Math.round((passedStudents / totalStudents) * 100) : 0;
@@ -3051,7 +3057,7 @@
             // DepEd Mastery Distribution
             let cAdv = 0, cProf = 0, cAppr = 0, cDev = 0;
             filtered.forEach(e => {
-                const pct = (Number(e.score) / (Number(e.total) || 10)) * 100;
+                const pct = (Number(e.score) / (Number(e.total) || defaultQCount)) * 100;
                 if (pct >= 90) cAdv++;
                 else if (pct >= 75) cProf++;
                 else if (pct >= 60) cAppr++;
@@ -3089,9 +3095,9 @@
                     const list = sectionGroups[sec];
                     const sTot = list.length;
                     const sScoreSum = list.reduce((a, b) => a + (Number(b.score) || 0), 0);
-                    const sMaxSum = list.reduce((a, b) => a + (Number(b.total) || 10), 0);
+                    const sMaxSum = list.reduce((a, b) => a + (Number(b.total) || defaultQCount), 0);
                     const sPct = sMaxSum ? Math.round((sScoreSum / sMaxSum) * 100) : 0;
-                    const sPass = list.filter(b => (Number(b.score) / (Number(b.total) || 10)) >= 0.70).length;
+                    const sPass = list.filter(b => (Number(b.score) / (Number(b.total) || defaultQCount)) >= 0.70).length;
                     const sPassRate = sTot ? Math.round((sPass / sTot) * 100) : 0;
 
                     let badgeColor = "bg-emerald-50 text-emerald-700 border-emerald-200";
@@ -3205,7 +3211,7 @@
                     const name = escapeHtml(entry.name || "Mag-aaral");
                     const sec = escapeHtml(entry.section || "Baitang 7");
                     const score = Number(entry.score) || 0;
-                    const tot = Number(entry.total) || 10;
+                    const tot = Number(entry.total) || defaultQCount;
                     const pct = Math.round((score / tot) * 100);
                     const pts = entry.gamePoints ?? (score * 100);
                     const timeSec = Number(entry.timeSeconds) || 0;
