@@ -3068,14 +3068,9 @@
         function mergeAndRenderLeaderboard() {
             const combined = [...cloudRankings];
             const registeredNames = new Set(cloudRankings.map(r => (r.name || "").trim().toLowerCase()));
-            const clearedAt = Number(localStorage.getItem("ap7_rankings_cleared_at")) || 0;
-
             cloudProfiles.forEach(prof => {
                 const pName = (prof.name || "").trim();
-                if (!pName || pName.toLowerCase() === "guro (admin)") return;
-                
-                const profTime = Number(prof.updatedAt) || 0;
-                if (clearedAt > 0 && profTime < clearedAt) return;
+                if (!pName || isReservedAdminName(pName)) return;
 
                 if (!registeredNames.has(pName.toLowerCase())) {
                     const streak = Number(prof.maxStreak) || 0;
@@ -3733,7 +3728,7 @@
                         cloudRankings = [];
                         try {
                             localStorage.removeItem("ap7_local_leaderboard");
-                            localStorage.setItem("ap7_rankings_cleared_at", Date.now().toString());
+                            localStorage.removeItem("ap7_rankings_cleared_at");
                         } catch (_) {}
                         renderLeaderboard();
                         const statsEl = document.getElementById("stats-view");
