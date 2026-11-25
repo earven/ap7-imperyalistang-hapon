@@ -1094,9 +1094,19 @@
                 <!-- Detailed Student Roster Table -->
                 <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-2xs space-y-4">
                     <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                        <h3 class="text-sm font-extrabold uppercase tracking-wider text-slate-800 flex items-center gap-2">
-                            <i class="ph-fill ph-identification-card text-indigo-600 text-lg"></i> Detalyadong Talaan ng mga Resulta
-                        </h3>
+                        <div class="flex flex-wrap items-center justify-between gap-3 w-full">
+                            <h3 class="text-sm font-extrabold uppercase tracking-wider text-slate-800 flex items-center gap-2">
+                                <i class="ph-fill ph-identification-card text-indigo-600 text-lg"></i> Detalyadong Talaan ng mga Resulta
+                            </h3>
+                            <div class="inline-flex p-0.5 bg-slate-100 rounded-lg text-xs font-semibold border border-slate-200">
+                                <button type="button" id="btn-stats-mode-best" onclick="setStatsViewMode('best')" class="px-2.5 py-1 rounded-md transition-all cursor-pointer font-bold bg-white text-indigo-700 shadow-2xs">
+                                    <i class="ph-bold ph-medal"></i> Pinakamataas na Iskor (1 bawat bata)
+                                </button>
+                                <button type="button" id="btn-stats-mode-all" onclick="setStatsViewMode('all')" class="px-2.5 py-1 rounded-md transition-all cursor-pointer text-slate-500 hover:text-slate-800">
+                                    <i class="ph-bold ph-list-numbers"></i> Lahat ng Subok (Kasaysayan)
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     <div class="overflow-x-auto rounded-xl border border-slate-200">
                         <table class="w-full text-left border-collapse text-xs">
@@ -2809,6 +2819,8 @@
 
         let cloudRankings = [];
         let cloudProfiles = [];
+        let allQuizAttempts = [];
+        let currentStatsViewMode = 'best'; // 'best' (1 per student) or 'all' (history)
 
         function mergeAndRenderLeaderboard() {
             const combined = [...cloudRankings];
@@ -2850,29 +2862,61 @@
                 }
             });
 
-            // Track attempt frequency per student
-            const nameAttemptsMap = {};
-            leaderboardEntries.forEach(e => {
-                const k = (e.name || "").trim().toLowerCase();
-                if (k) nameAttemptsMap[k] = (nameAttemptsMap[k] || 0) + 1;
-            });
-            cloudProfiles.forEach(p => {
-                const k = (p.name || "").trim().toLowerCase();
-                if (k && p.quizAttempts) {
-                    nameAttemptsMap[k] = Math.max(nameAttemptsMap[k] || 1, Number(p.quizAttempts) || 1);
+            // Group records by student name to prevent multiple duplicate rows
+            const studentGroups = {};
+            combined.forEach(item => {
+                const rawName = (item.name || "").trim();
+                if (!rawName || rawName.toLowerCase() === "guro (admin)") return;
+                const key = rawName.toLowerCase();
+                if (!studentGroups[key]) {
+                    studentGroups[key] = [];
                 }
+                studentGroups[key].push(item);
             });
 
-            combined.forEach(e => {
-                const k = (e.name || "").trim().toLowerCase();
-                if (!e.attempt) {
-                    e.attempt = nameAttemptsMap[k] || 1;
+            const uniqueStudents = [];
+            const allOrderedAttempts = [];
+
+            Object.keys(studentGroups).forEach(key => {
+                const list = studentGroups[key];
+                // Sort chronologically ascending to number attempts accurately
+                list.sort((a, b) => (Number(a.timestamp) || 0) - (Number(b.timestamp) || 0));
+
+                const totalAtt = list.length;
+                list.forEach((item, idx) => {
+                    item.attempt = idx + 1;
+                    allOrderedAttempts.push(item);
+                });
+
+                // Find BEST attempt for this student (highest score, highest points, fastest time)
+                const completedAttempts = list.filter(item => item.hasActualQuiz !== false && (item.score > 0 || totalAtt > 0));
+                let bestItem = completedAttempts.length > 0 ? completedAttempts[0] : list[list.length - 1];
+
+                if (completedAttempts.length > 1) {
+                    completedAttempts.sort((a, b) => {
+                        const sB = Number(b.score) || 0;
+                        const sA = Number(a.score) || 0;
+                        if (sB !== sA) return sB - sA;
+                        const pB = Number(b.gamePoints) || 0;
+                        const pA = Number(a.gamePoints) || 0;
+                        if (pB !== pA) return pB - pA;
+                        return (Number(a.timeSeconds) || 9999) - (Number(b.timeSeconds) || 9999);
+                    });
+                    bestItem = completedAttempts[0];
                 }
+
+                uniqueStudents.push({
+                    ...bestItem,
+                    attempt: totalAtt,
+                    totalAttempts: totalAtt,
+                    allAttempts: list
+                });
             });
 
-            combined.sort((a, b) => {
-                const hasA = a.hasActualQuiz !== false && (a.attempt > 0 || a.score > 0);
-                const hasB = b.hasActualQuiz !== false && (b.attempt > 0 || b.score > 0);
+            // Sort unique students: those with completed quiz first, then by PTS & Score
+            uniqueStudents.sort((a, b) => {
+                const hasA = a.hasActualQuiz !== false && (a.totalAttempts > 0 || a.score > 0);
+                const hasB = b.hasActualQuiz !== false && (b.totalAttempts > 0 || b.score > 0);
                 if (hasA !== hasB) return hasA ? -1 : 1;
                 const ptsA = a.gamePoints ?? (a.score * 100);
                 const ptsB = b.gamePoints ?? (b.score * 100);
@@ -2881,7 +2925,8 @@
                 return (a.timeSeconds || 9999) - (b.timeSeconds || 9999);
             });
 
-            leaderboardEntries = combined;
+            allQuizAttempts = allOrderedAttempts;
+            leaderboardEntries = uniqueStudents;
             try {
                 localStorage.setItem("ap7_local_leaderboard", JSON.stringify(leaderboardEntries));
             } catch (_) {}
@@ -2929,7 +2974,7 @@
         async function submitScoreToLeaderboard(score, total, timeSeconds, finalPts, bestCombo) {
             const cleanScore = Number(score) || 0;
             const studentKey = (studentName || "").trim().toLowerCase();
-            const pastAttempts = leaderboardEntries.filter(e => (e.name || "").trim().toLowerCase() === studentKey).length;
+            const pastAttempts = allQuizAttempts.filter(e => (e.name || "").trim().toLowerCase() === studentKey).length;
             const currentAttemptNum = pastAttempts + 1;
             const attemptEl = document.getElementById("result-attempt-number");
             if (attemptEl) attemptEl.textContent = currentAttemptNum;
@@ -3055,6 +3100,22 @@
         /**
          * Render Comprehensive Teacher & Admin Statistics Dashboard
          */
+                function setStatsViewMode(mode) {
+            currentStatsViewMode = mode;
+            const btnBest = document.getElementById("btn-stats-mode-best");
+            const btnAll = document.getElementById("btn-stats-mode-all");
+            if (btnBest && btnAll) {
+                if (mode === 'best') {
+                    btnBest.className = "px-2.5 py-1 rounded-md transition-all cursor-pointer font-bold bg-white text-indigo-700 shadow-2xs";
+                    btnAll.className = "px-2.5 py-1 rounded-md transition-all cursor-pointer text-slate-500 hover:text-slate-800";
+                } else {
+                    btnAll.className = "px-2.5 py-1 rounded-md transition-all cursor-pointer font-bold bg-white text-indigo-700 shadow-2xs";
+                    btnBest.className = "px-2.5 py-1 rounded-md transition-all cursor-pointer text-slate-500 hover:text-slate-800";
+                }
+            }
+            renderStatsDashboard();
+        }
+
         function renderStatsDashboard() {
             const sectionSelect = document.getElementById("stats-section-filter");
             const countBadge = document.getElementById("stats-record-count-badge");
@@ -3073,8 +3134,9 @@
                 sectionSelect.innerHTML = optHtml;
             }
 
-            // Filter entries
-            let filtered = [...leaderboardEntries];
+            // Filter entries based on active mode (best vs all)
+            const sourceDataset = (currentStatsViewMode === 'all') ? allQuizAttempts : leaderboardEntries;
+            let filtered = [...sourceDataset];
             if (currentStatsSectionFilter !== "all") {
                 filtered = filtered.filter(e => (e.section || "").trim().toLowerCase() === currentStatsSectionFilter.toLowerCase());
             }
@@ -3083,7 +3145,8 @@
             }
 
             if (countBadge) {
-                countBadge.textContent = `${filtered.length} tala`;
+                const modeLabel = currentStatsViewMode === 'all' ? 'kabuuang subok' : 'mag-aaral';
+                countBadge.textContent = `${filtered.length} ${modeLabel}`;
             }
 
             const defaultQCount = (moduleData && Array.isArray(moduleData.quiz) && moduleData.quiz.length) ? moduleData.quiz.length : 15;
@@ -3091,12 +3154,13 @@
             const totalScoreSum = filtered.reduce((acc, e) => acc + (Number(e.score) || 0), 0);
             const totalMaxSum = filtered.reduce((acc, e) => acc + (Number(e.total) || defaultQCount), 0);
 
-            // KPI 1: Total Students & Total Attempts
-            document.getElementById("stat-total-students").textContent = totalStudents;
-            const totalAttemptsSum = filtered.reduce((acc, e) => acc + (Number(e.attempt) || 1), 0);
+            // KPI 1: Total Unique Students & Total Attempts
+            const uniqueStudentsCount = leaderboardEntries.filter(e => e.hasActualQuiz !== false && (e.totalAttempts > 0 || e.score > 0)).length;
+            const totalAttemptsCount = allQuizAttempts.length;
+            document.getElementById("stat-total-students").textContent = uniqueStudentsCount;
             const subBadge = document.getElementById("stat-total-students-sub");
             if (subBadge) {
-                subBadge.textContent = `${totalStudents} mag-aaral • ${totalAttemptsSum} kabuuang subok`;
+                subBadge.textContent = `${uniqueStudentsCount} natatanging bata • ${totalAttemptsCount} kabuuang subok`;
             }
 
             // KPI 2: Mean Score
@@ -3719,8 +3783,9 @@
                 const timeSec = entry.timeSeconds || 0;
                 const streak = entry.maxStreak ? `${entry.maxStreak}x` : "0x";
                 const dateStr = entry.timestamp ? new Date(entry.timestamp).toLocaleString("en-PH") : "N/A";
-
-                const attemptStr = `"Subok ${entry.attempt || 1}"`;
+                const attNum = entry.attempt || 1;
+                const totalAtt = entry.totalAttempts || attNum;
+                const attemptStr = `"Subok ${attNum}${totalAtt > 1 ? ` (${totalAtt} subok)` : ''}"`;
                 return [rank, name, section, attemptStr, score, total, pct, pts, timeSec, streak, `"${dateStr}"`].join(",");
             });
 
