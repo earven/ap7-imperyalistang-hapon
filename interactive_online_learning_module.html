@@ -2300,6 +2300,23 @@
         let hasAnsweredCurrent = false;
         let leaderboardEntries = [];
         let editorActiveTab = "visual";
+        const MAX_QUIZ_ATTEMPTS = 3;
+        let isSubmittingScore = false;
+
+        function isReservedAdminName(name) {
+            const clean = (name || "").trim().toLowerCase();
+            return ["guro", "guro (admin)", "admin", "teacher", "faculty", "administrator"].includes(clean);
+        }
+
+        function getStudentAttemptCount(name) {
+            const key = (name || "").trim().toLowerCase();
+            if (!key) return 0;
+            const rankCount = cloudRankings.filter(e => (e.name || "").trim().toLowerCase() === key).length;
+            const lbCount = leaderboardEntries.filter(e => (e.name || "").trim().toLowerCase() === key && !String(e.id || "").startsWith("prof-")).length;
+            const prof = cloudProfiles.find(p => (p.name || "").trim().toLowerCase() === key);
+            const profCount = prof ? (Number(prof.quizAttempts) || 0) : 0;
+            return Math.max(rankCount, lbCount, profCount);
+        }
 
         /**
          * PWA & Offline Support Setup
@@ -2476,6 +2493,10 @@
         }
 
         async function loginOrRestoreStudent(name, section, pin, avatar = null) {
+            if (isReservedAdminName(name)) {
+                showToast("Hindi maaaring gamitin ang pangalan ng Guro/Admin. Ilagay ang iyong tunay na pangalan.");
+                return false;
+            }
             studentName = name.trim();
             studentSection = section.trim() || "Baitang 7";
             studentPin = pin.trim();
@@ -2906,6 +2927,8 @@
          * Save Student Quiz Score to Cloud Leaderboard (Cleaned of undefined values)
          */
         async function submitScoreToLeaderboard(score, total, timeSeconds, finalPts, bestCombo) {
+            if (isSubmittingScore) return;
+            isSubmittingScore = true;
             const cleanScore = Number(score) || 0;
             const studentKey = (studentName || "").trim().toLowerCase();
             const pastAttempts = leaderboardEntries.filter(e => (e.name || "").trim().toLowerCase() === studentKey).length;
@@ -2921,8 +2944,9 @@
                 const q = (moduleData && moduleData.quiz && moduleData.quiz[idx]);
                 const chosen = typeof userAns === 'number' ? userAns : -1;
                 const isCorrect = q ? (chosen === q.correctIndex) : false;
+                const origIdx = (q && q.originalIndex !== undefined) ? q.originalIndex : idx;
                 return {
-                    questionIndex: Number(idx),
+                    questionIndex: Number(origIdx),
                     chosenIndex: Number(chosen),
                     isCorrect: Boolean(isCorrect)
                 };
@@ -2979,6 +3003,19 @@
                 return;
             }
 
+            const retakeBtn = document.getElementById("retake-quiz-btn");
+            if (retakeBtn) {
+                if (currentAttemptNum >= MAX_QUIZ_ATTEMPTS) {
+                    retakeBtn.disabled = true;
+                    retakeBtn.classList.add("opacity-50", "cursor-not-allowed");
+                    retakeBtn.innerHTML = `<i class="ph-bold ph-lock"></i> Tapos na ang ${MAX_QUIZ_ATTEMPTS} Subok`;
+                } else {
+                    retakeBtn.disabled = false;
+                    retakeBtn.classList.remove("opacity-50", "cursor-not-allowed");
+                    retakeBtn.innerHTML = `<i class="ph-bold ph-arrow-counter-clockwise"></i> Maglaro Muli (${MAX_QUIZ_ATTEMPTS - currentAttemptNum} natitira)`;
+                }
+            }
+
             try {
                 const scoresColRef = collection(db, 'artifacts', appId, 'public', 'data', 'quiz_rankings');
                 await addDoc(scoresColRef, newEntry);
@@ -2986,6 +3023,8 @@
             } catch (e) {
                 console.error("Failed to save score:", e);
                 showToast("Naitala sa lokal na talaan!");
+            } finally {
+                isSubmittingScore = false;
             }
         }
 
@@ -5138,6 +5177,14 @@
                 openQuizPortal();
                 return;
             }
+            if (!studentName || isReservedAdminName(studentName)) {
+                showToast("Mag-login muna gamit ang iyong tunay na pangalan bago mag-quiz.");
+                return;
+            }
+            if (getStudentAttemptCount(studentName) >= MAX_QUIZ_ATTEMPTS) {
+                showToast(`Naabot mo na ang limitasyong ${MAX_QUIZ_ATTEMPTS} subok. Makipag-ugnayan sa iyong Guro.`);
+                return;
+            }
             currentQuestionIndex = 0;
             quizScore = 0;
             gamePoints = 0;
@@ -5148,12 +5195,14 @@
             usedHint = false;
             userQuizAnswers = [];
             hasAnsweredCurrent = false;
+            isSubmittingScore = false;
             quizStartTime = Date.now();
 
-            // Randomize Quiz Questions and Option Positions (A, B, C, D)
-            // Ensures correct answers are randomly distributed across all letters (A, B, C, D),
-            // completely eliminating predictable patterns!
+            // Preserve originalIndex for accurate Teacher Item Analysis, then randomize order
             if (Array.isArray(moduleData.quiz)) {
+                moduleData.quiz.forEach((q, i) => {
+                    if (q.originalIndex === undefined) q.originalIndex = i;
+                });
                 // Fisher-Yates shuffle for question order
                 for (let i = moduleData.quiz.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
@@ -5210,7 +5259,7 @@
 
         function startQuestionTimer() {
             clearInterval(questionTimerInterval);
-            questionSecondsLeft = 15;
+            questionSecondsLeft = 30;
             const secEl = document.getElementById("battle-timer-sec");
             const barEl = document.getElementById("battle-timer-bar");
             if (secEl) secEl.textContent = questionSecondsLeft;
@@ -5227,7 +5276,7 @@
                 questionSecondsLeft--;
                 if (secEl) secEl.textContent = Math.max(0, questionSecondsLeft);
                 if (barEl) {
-                    const pct = Math.max(0, (questionSecondsLeft / 15) * 100);
+                    const pct = Math.max(0, (questionSecondsLeft / 30) * 100);
                     barEl.style.width = `${pct}%`;
                     if (questionSecondsLeft <= 5) {
                         barEl.className = "h-full bg-rose-500 transition-all duration-1000 linear";
@@ -5362,7 +5411,7 @@
                 btn.classList.remove("hover:border-brand-400", "hover:bg-brand-50/40");
                 const icon = btn.querySelector(".status-icon");
 
-                if (idx === qData.correctIndex) {
+                if (isCorrect && idx === qData.correctIndex) {
                     btn.classList.remove("border-slate-200", "bg-white");
                     btn.classList.add("border-emerald-500", "bg-emerald-50/90");
                     icon.classList.remove("hidden");
@@ -5397,7 +5446,9 @@
                     : "Mali ang iyong sagot! Magpatuloy sa susunod na tanong.";
             }
 
-            feedbackExp.textContent = qData.explanation || `Ang tamang sagot ay: ${qData.options[qData.correctIndex]}`;
+            feedbackExp.textContent = isCorrect
+                ? (qData.explanation || "Mahusay! Tama ang iyong pinili.")
+                : "Pag-isipang mabuti at balikan ang aralin kung kinakailangan.";
             
             const nextBtn = document.getElementById("quiz-next-btn");
             if (currentQuestionIndex === moduleData.quiz.length - 1) {
@@ -5466,8 +5517,8 @@
                             <p class="text-xs ${isRight ? 'text-emerald-700' : 'text-rose-700'}">
                                 Iyong sagot: <span class="font-semibold">${escapeHtml(q.options[userAns] || 'Wala')}</span>
                             </p>
-                            ${!isRight ? `<p class="text-xs text-emerald-800">Tamang sagot: <span class="font-semibold">${escapeHtml(q.options[q.correctIndex])}</span></p>` : ''}
-                            ${q.explanation ? `
+                            ${(!isRight && (pct >= 70 || getStudentAttemptCount(studentName) >= MAX_QUIZ_ATTEMPTS)) ? `<p class="text-xs text-emerald-800">Tamang sagot: <span class="font-semibold">${escapeHtml(q.options[q.correctIndex])}</span></p>` : ''}
+                            ${(q.explanation && (isRight || pct >= 70 || getStudentAttemptCount(studentName) >= MAX_QUIZ_ATTEMPTS)) ? `
                                 <div class="mt-2.5 pt-2 border-t border-slate-200/70 text-xs text-slate-700 bg-white/80 p-2.5 rounded-lg flex items-start gap-2">
                                     <i class="ph-fill ph-lightbulb text-amber-500 text-sm mt-0.5 shrink-0"></i>
                                     <div>
@@ -6012,7 +6063,10 @@
 
             // Quiz Next & Navigation Buttons
             document.getElementById("quiz-next-btn").addEventListener("click", async () => {
+                const nextBtn = document.getElementById("quiz-next-btn");
                 if (currentQuestionIndex >= moduleData.quiz.length - 1) {
+                    if (isSubmittingScore) return;
+                    nextBtn.disabled = true;
                     await showQuizResults();
                 } else {
                     currentQuestionIndex++;
@@ -6034,6 +6088,10 @@
             });
 
             document.getElementById("retake-quiz-btn").addEventListener("click", () => {
+                if (getStudentAttemptCount(studentName) >= MAX_QUIZ_ATTEMPTS) {
+                    showToast(`Naabot mo na ang limitasyong ${MAX_QUIZ_ATTEMPTS} subok.`);
+                    return;
+                }
                 beginActualQuiz();
             });
 
@@ -6173,9 +6231,13 @@
             // Student Registration Form inside Quiz (fallback if needed)
             document.getElementById("student-info-form").addEventListener("submit", (e) => {
                 e.preventDefault();
-                studentName = document.getElementById("student-name-input").value.trim();
+                const rawN = document.getElementById("student-name-input").value.trim();
+                if (!rawN || isReservedAdminName(rawN)) {
+                    showToast("Maglagay ng tunay na pangalan ng mag-aaral.");
+                    return;
+                }
+                studentName = rawN;
                 studentSection = document.getElementById("student-section-input").value.trim();
-                if (!studentName) return;
                 document.getElementById("hud-student-name").textContent = studentName;
                 beginActualQuiz();
             });
@@ -6212,8 +6274,10 @@
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = `<i class="ph ph-spinner animate-spin text-lg"></i> <span>Binubuksan ang Modyul...</span>`;
 
-                await loginOrRestoreStudent(name, sec, pin, playerAvatar);
-                gateScreen.classList.add("hidden");
+                const loginOk = await loginOrRestoreStudent(name, sec, pin, playerAvatar);
+                if (loginOk !== false) {
+                    gateScreen.classList.add("hidden");
+                }
 
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = `<i class="ph-bold ph-sign-in text-lg"></i> <span>Pumasok sa Modyul</span>`;
