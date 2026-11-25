@@ -268,7 +268,7 @@
 
                 <div>
                     <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-600 mb-1">Buong Pangalan *</label>
-                    <input type="text" id="gate-name-input" required placeholder="Hal. Juan Dela Cruz" class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:outline-none focus:border-brand-500 text-sm font-semibold">
+                    <input type="text" id="gate-name-input" list="official-roster-datalist" required placeholder="Hal. Juan Dela Cruz" class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:outline-none focus:border-brand-500 text-sm font-semibold">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
@@ -279,6 +279,11 @@
                         <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-600 mb-1">4-Digit PIN *</label>
                         <input type="password" id="gate-pin-input" required maxlength="4" pattern="\d{4}" inputmode="numeric" placeholder="••••" class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:outline-none focus:border-brand-500 text-sm font-bold tracking-widest text-center">
                     </div>
+                </div>
+                <datalist id="official-roster-datalist"></datalist>
+                <div id="gate-student-error" class="hidden p-3 rounded-xl bg-rose-50 border border-rose-200 text-xs font-bold text-rose-700 flex items-start gap-2">
+                    <i class="ph-fill ph-warning-circle text-rose-600 text-base shrink-0 mt-0.5"></i>
+                    <span id="gate-student-error-text"></span>
                 </div>
                 <div class="p-3 rounded-xl bg-amber-50/80 border border-amber-200 text-[11px] text-amber-900 flex items-start gap-2">
                     <i class="ph-fill ph-key text-amber-600 text-base shrink-0 mt-0.5"></i>
@@ -917,6 +922,9 @@
                             <p class="text-xs sm:text-sm text-slate-500 mt-1">Komprehensibong pagsusuri sa resulta ng mga mag-aaral sa Boss Quiz at antas ng pagkaunawa sa bawat aralin.</p>
                         </div>
                         <div class="flex flex-wrap items-center gap-2 no-print">
+                            <button id="stats-roster-btn" type="button" onclick="openClassRosterModal()" class="px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 flex items-center gap-1.5 transition-colors cursor-pointer" title="Pamahalaan ang Opisyal na Listahan ng Klase (Name Verification)">
+                                <i class="ph-fill ph-users-three text-indigo-600 text-base"></i> Opisyal na Roster
+                            </button>
                             <button id="stats-clear-all-btn" class="px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 flex items-center gap-1.5 transition-colors cursor-pointer" title="Burahin ang lahat ng resulta upang magsimula ang bagong klase">
                                 <i class="ph-fill ph-trash text-rose-600 text-base"></i> Burahin ang Lahat ng Resulta
                             </button>
@@ -1144,7 +1152,52 @@
         </div>
     </div>
 
-        <!-- Modal: Guro Score Corrector / Encoder -->
+            <!-- Modal: Opisyal na Class Roster (Student Name Verification) -->
+    <div id="class-roster-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+        <div class="bg-white rounded-2xl max-w-lg w-full shadow-2xl border border-slate-200 overflow-hidden transform transition-all animate-scale-up">
+            <div class="px-6 py-4 bg-gradient-to-r from-indigo-700 to-slate-900 text-white flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i class="ph-fill ph-users-three text-xl text-amber-300"></i>
+                    <div>
+                        <h4 class="font-extrabold text-base leading-tight">Opisyal na Listahan ng Klase (Roster)</h4>
+                        <p class="text-[11px] text-indigo-200">Beripikasyon ng Pangalan ng Bawat Mag-aaral</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeClassRosterModal()" class="text-indigo-200 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors cursor-pointer">
+                    <i class="ph-bold ph-x text-lg"></i>
+                </button>
+            </div>
+            <form id="class-roster-form" onsubmit="handleSaveClassRoster(event)" class="p-6 space-y-4">
+                <div class="p-3 rounded-xl bg-indigo-50 border border-indigo-200 text-xs text-indigo-900 flex items-start gap-2">
+                    <i class="ph-fill ph-shield-check text-indigo-600 text-base shrink-0 mt-0.5"></i>
+                    <span>I-paste dito ang opisyal na listahan ng mga mag-aaral (isang pangalan bawat linya, hal. mula sa SF1 o Excel) upang hindi makagawa ng pekeng pangalan o duplicate account ang mga bata.</span>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Mga Pangalan ng Mag-aaral (1 pangalan bawat linya)</label>
+                    <textarea id="class-roster-textarea" rows="8" class="w-full px-3 py-2 text-xs sm:text-sm font-medium text-slate-800 border-2 border-slate-200 focus:border-indigo-600 rounded-xl focus:outline-hidden" placeholder="Juan Dela Cruz&#10;Maria Clara Santos&#10;Romel T. Loregas"></textarea>
+                    <p id="class-roster-count-info" class="text-[11px] text-slate-500 mt-1">0 pangalan ang nakalista</p>
+                </div>
+                <label class="flex items-center gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200 cursor-pointer">
+                    <input type="checkbox" id="class-roster-strict-checkbox" class="w-4 h-4 text-indigo-600 rounded focus:ring-indigo-500">
+                    <div class="text-xs">
+                        <span class="font-extrabold text-slate-900 block">Ipatupad ang Mahigpit na Beripikasyon</span>
+                        <span class="text-slate-500">Tanging mga pangalang nasa listahan lamang ang papayagang mag-login.</span>
+                    </div>
+                </label>
+                <div class="pt-2 flex items-center justify-end gap-2 border-t border-slate-100">
+                    <button type="button" onclick="closeClassRosterModal()" class="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer">
+                        Kanselahin
+                    </button>
+                    <button type="submit" id="btn-save-class-roster" class="px-5 py-2 text-xs font-black text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 cursor-pointer">
+                        <i class="ph-bold ph-floppy-disk"></i>
+                        <span>I-save ang Roster</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Guro Score Corrector / Encoder -->
     <div id="edit-score-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
         <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden transform transition-all animate-scale-up">
             <div class="px-6 py-4 bg-gradient-to-r from-indigo-700 to-indigo-900 text-white flex items-center justify-between">
@@ -2516,14 +2569,34 @@
         }
 
         async function loginOrRestoreStudent(name, section, pin, avatar = null) {
-            const trimmedName = (name || "").trim();
-            if (isReservedAdminName(trimmedName)) {
-                showToast("Hindi maaaring gamitin ang pangalang iyan. Gumamit ng tunay na pangalan ng mag-aaral.");
-                return false;
+            const check = validateStudentFullName(name);
+            if (!check.ok) {
+                showToast(check.msg);
+                return { ok: false, error: check.msg };
             }
-            studentName = trimmedName;
+            const cleanPin = (pin || "").trim();
+            if (!/^\d{4}$/.test(cleanPin)) {
+                const msg = "Ang Student PIN ay dapat eksaktong 4 na numero.";
+                showToast(msg);
+                return { ok: false, error: msg };
+            }
+
+            const canonInput = canonicalizeName(check.formattedName);
+
+            // Check if a profile with this canonical name already exists in cloudProfiles
+            const existingProf = cloudProfiles.find(p => canonicalizeName(p.name) === canonInput);
+            if (existingProf) {
+                const registeredPin = existingProf.pin || (existingProf.id ? existingProf.id.split("_").pop() : "");
+                if (registeredPin && /^\d{4}$/.test(registeredPin) && registeredPin !== cleanPin) {
+                    const msg = "May nakarehistro nang account para sa pangalang ito, ngunit mali ang iyong 4-Digit PIN. Humingi ng tulong sa Guro kung nakalimutan.";
+                    showToast(msg);
+                    return { ok: false, error: msg };
+                }
+            }
+
+            studentName = existingProf ? existingProf.name : check.formattedName;
             studentSection = normalizeSectionName(section);
-            studentPin = (pin || "").trim();
+            studentPin = cleanPin;
             if (avatar) playerAvatar = avatar;
 
             document.getElementById("hud-student-name").textContent = studentName;
@@ -2556,7 +2629,7 @@
                         updateProgressUI();
                         updateRankTitleAndBadges();
                         showToast(`Maligayang pagbabalik, ${studentName}! Naibalik ang ${playerXP} XP mo.`);
-                        return;
+                        return { ok: true };
                     }
                 } catch (e) {
                     console.error("Error restoring student profile from Firebase:", e);
@@ -2584,7 +2657,7 @@
                         updateProgressUI();
                         updateRankTitleAndBadges();
                         showToast(`Maligayang pagbabalik, ${studentName}! Naibalik ang ${playerXP} XP mo.`);
-                        return;
+                        return { ok: true };
                     }
                 } catch (err) {
                     console.warn("Error restoring student from localStorage:", err);
@@ -2695,6 +2768,7 @@
                     </div>
                 `;
             }).join("");
+                    return { ok: true };
         }
 
         /**
@@ -2829,9 +2903,147 @@
         const MAX_QUIZ_ATTEMPTS = 3;
         let isSubmittingScore = false;
 
+        let officialClassRoster = [];
+        let enforceRosterStrict = false;
+
         function isReservedAdminName(name) {
             const clean = (name || "").trim().toLowerCase();
-            return ["guro", "guro (admin)", "admin", "teacher", "faculty", "administrator"].includes(clean);
+            return ["guro", "guro (admin)", "admin", "teacher", "faculty", "administrator", "free trial", "test", "testing"].includes(clean);
+        }
+
+        function canonicalizeName(name) {
+            return (name || "")
+                .toLowerCase()
+                .replace(/[^a-z0-9\s]/g, " ")
+                .replace(/\s+/g, " ")
+                .trim();
+        }
+
+        function formatProperName(name) {
+            return (name || "")
+                .trim()
+                .replace(/\s+/g, " ")
+                .split(" ")
+                .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+                .join(" ");
+        }
+
+        function validateStudentFullName(name) {
+            const cleaned = (name || "").trim().replace(/\s+/g, " ");
+            if (cleaned.length < 5) {
+                return { ok: false, msg: "Ilagay ang iyong buong pangalan (Pangalan at Apelyido)." };
+            }
+            if (isReservedAdminName(cleaned)) {
+                return { ok: false, msg: "Hindi maaaring gamitin ang pangalang iyan. Ilagay ang iyong tunay na pangalan." };
+            }
+            if (/\d/.test(cleaned)) {
+                return { ok: false, msg: "Hindi dapat maglaman ng numero ang pangalan ng mag-aaral." };
+            }
+            const words = cleaned.split(" ").filter(w => w.length > 0);
+            if (words.length < 2) {
+                return { ok: false, msg: "Ilagay ang iyong Pangalan AT Apelyido (hal. Juan Dela Cruz)." };
+            }
+            if (enforceRosterStrict && officialClassRoster.length > 0) {
+                const canonInput = canonicalizeName(cleaned);
+                const matched = officialClassRoster.find(r => canonicalizeName(r) === canonInput);
+                if (!matched) {
+                    return { ok: false, msg: "Hindi natagpuan ang iyong pangalan sa opisyal na listahan ng klase. Tingnan ang tamang baybay o makipag-ugnayan sa Guro." };
+                }
+                return { ok: true, formattedName: matched.trim() };
+            }
+            return { ok: true, formattedName: formatProperName(cleaned) };
+        }
+
+        function updateRosterDatalist() {
+            const dl = document.getElementById("official-roster-datalist");
+            if (!dl) return;
+            dl.innerHTML = officialClassRoster.map(n => `<option value="${escapeHtml(n)}">`).join("");
+        }
+
+        async function loadClassRoster() {
+            if (!db || !currentUser) return;
+            try {
+                const rosterRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'class_roster');
+                const snap = await getDoc(rosterRef);
+                if (snap.exists()) {
+                    const data = snap.data();
+                    officialClassRoster = Array.isArray(data.names) ? data.names : [];
+                    enforceRosterStrict = Boolean(data.enforceStrict);
+                    updateRosterDatalist();
+                }
+            } catch (e) {
+                console.warn("Could not load class roster:", e);
+            }
+        }
+
+        function openClassRosterModal() {
+            const modal = document.getElementById("class-roster-modal");
+            const textarea = document.getElementById("class-roster-textarea");
+            const chk = document.getElementById("class-roster-strict-checkbox");
+            const info = document.getElementById("class-roster-count-info");
+            if (textarea) textarea.value = officialClassRoster.join("\n");
+            if (chk) chk.checked = enforceRosterStrict;
+            if (info) info.textContent = `${officialClassRoster.length} pangalan ang nakalista`;
+            if (modal) {
+                modal.classList.remove("hidden");
+                modal.classList.add("flex");
+            }
+        }
+
+        function closeClassRosterModal() {
+            const modal = document.getElementById("class-roster-modal");
+            if (modal) {
+                modal.classList.add("hidden");
+                modal.classList.remove("flex");
+            }
+        }
+
+        async function handleSaveClassRoster(e) {
+            e.preventDefault();
+            const textarea = document.getElementById("class-roster-textarea");
+            const chk = document.getElementById("class-roster-strict-checkbox");
+            const btn = document.getElementById("btn-save-class-roster");
+            const rawLines = (textarea.value || "").split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+            // Deduplicate names cleanly
+            const seen = new Set();
+            const cleanList = [];
+            rawLines.forEach(n => {
+                const c = canonicalizeName(n);
+                if (c && !seen.has(c)) {
+                    seen.add(c);
+                    cleanList.push(n);
+                }
+            });
+            const strictVal = Boolean(chk && chk.checked);
+
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = `<i class="ph ph-spinner animate-spin"></i> Sine-save...`;
+            }
+
+            try {
+                if (db && currentUser) {
+                    const rosterRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'class_roster');
+                    await setDoc(rosterRef, {
+                        names: cleanList,
+                        enforceStrict: strictVal,
+                        updatedAt: Date.now()
+                    }, { merge: true });
+                }
+                officialClassRoster = cleanList;
+                enforceRosterStrict = strictVal;
+                updateRosterDatalist();
+                closeClassRosterModal();
+                showToast(`Na-save ang ${cleanList.length} pangalan sa Opisyal na Roster!`);
+            } catch (err) {
+                console.error("Failed saving class roster:", err);
+                showToast("Nagkaroon ng error sa pag-save ng roster.");
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = `<i class="ph-bold ph-floppy-disk"></i> <span>I-save ang Roster</span>`;
+                }
+            }
         }
 
         function normalizeSectionName(sec) {
@@ -2971,6 +3183,7 @@
 
         function listenToLeaderboard() {
             if (!db || !currentUser) return;
+            loadClassRoster();
             
             // Listen to quiz_rankings collection
             const scoresColRef = collection(db, 'artifacts', appId, 'public', 'data', 'quiz_rankings');
@@ -6453,11 +6666,21 @@
                 const sec = document.getElementById("gate-section-input").value;
                 const pin = document.getElementById("gate-pin-input").value;
 
+                const errBox = document.getElementById("gate-student-error");
+                const errText = document.getElementById("gate-student-error-text");
+                if (errBox) errBox.classList.add("hidden");
                 submitBtn.disabled = true;
-                submitBtn.innerHTML = `<i class="ph ph-spinner animate-spin text-lg"></i> <span>Binubuksan ang Modyul...</span>`;
+                submitBtn.innerHTML = `<i class="ph ph-spinner animate-spin text-lg"></i> <span>Bineberipika ang Pangalan...</span>`;
 
-                await loginOrRestoreStudent(name, sec, pin, playerAvatar);
-                gateScreen.classList.add("hidden");
+                const res = await loginOrRestoreStudent(name, sec, pin, playerAvatar);
+                if (res && res.ok === false) {
+                    if (errBox && errText) {
+                        errText.textContent = res.error || "Hindi maberipika ang iyong pangalan o PIN.";
+                        errBox.classList.remove("hidden");
+                    }
+                } else {
+                    gateScreen.classList.add("hidden");
+                }
 
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = `<i class="ph-bold ph-sign-in text-lg"></i> <span>Pumasok sa Modyul</span>`;
