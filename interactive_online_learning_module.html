@@ -603,7 +603,7 @@
                             </div>
                             <h3 class="text-xl font-extrabold text-slate-900">Handa ka na ba sa Hamon?</h3>
                             <p class="text-sm text-slate-600">
-                                Mayroon kang <span class="font-bold text-rose-600">3 Buhay (Hearts)</span> at <span class="font-bold text-brand-600">2 Power-ups</span>. Ilagay ang iyong pangalan upang makasali sa <span class="font-bold text-amber-600">Top Leaderboard</span>!
+                                Sasagutin mo ang lahat ng <span class="font-bold text-rose-600">15 Tanong</span> gamit ang <span class="font-bold text-brand-600">2 Power-ups</span>. Ilagay ang iyong pangalan upang makasali sa <span class="font-bold text-amber-600">Top Leaderboard</span>!
                             </p>
                         </div>
 
@@ -637,10 +637,9 @@
                                         <span id="quiz-live-score" class="text-emerald-400 font-black">0 PTS</span>
                                     </div>
                                     <div class="flex items-center justify-between">
-                                        <div id="quiz-hearts-display" class="flex items-center gap-1 text-rose-500 text-lg">
-                                            <i class="ph-fill ph-heart"></i>
-                                            <i class="ph-fill ph-heart"></i>
-                                            <i class="ph-fill ph-heart"></i>
+                                        <div id="quiz-hearts-display" class="flex items-center gap-1.5 text-emerald-400 text-xs font-extrabold">
+                                            <i class="ph-fill ph-shield-check text-base"></i>
+                                            <span>15-Item Quest</span>
                                         </div>
                                         <div id="quiz-combo-badge" class="flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-[11px] font-extrabold">
                                             <i class="ph-fill ph-fire text-orange-400"></i>
@@ -5122,15 +5121,9 @@
 
         function updateHeartsAndStreakUI() {
             const heartsContainer = document.getElementById("quiz-hearts-display");
-            let heartsHtml = "";
-            for (let i = 0; i < 3; i++) {
-                if (i < hearts) {
-                    heartsHtml += `<i class="ph-fill ph-heart text-rose-500"></i>`;
-                } else {
-                    heartsHtml += `<i class="ph ph-heart text-slate-600"></i>`;
-                }
+            if (heartsContainer) {
+                heartsContainer.innerHTML = `<i class="ph-fill ph-shield-check text-base text-emerald-400"></i> <span class="text-xs font-extrabold text-emerald-300">15-Item Quest</span>`;
             }
-            heartsContainer.innerHTML = heartsHtml;
             document.getElementById("quiz-streak-text").textContent = `${currentStreak}x Combo`;
             document.getElementById("quiz-live-score").textContent = `${gamePoints.toLocaleString()} PTS`;
         }
@@ -5153,7 +5146,7 @@
             feedbackBox.classList.add("hidden");
             const nextBtn = document.getElementById("quiz-next-btn");
             nextBtn.disabled = true;
-            nextBtn.innerHTML = (currentQuestionIndex === totalQ - 1 || hearts <= 0)
+            nextBtn.innerHTML = (currentQuestionIndex === totalQ - 1)
                 ? `<span>Tapusin at Itala ang Ranggo</span> <i class="ph-fill ph-flag-checkered"></i>` 
                 : `<span>Susunod na Tanong</span> <i class="ph-bold ph-arrow-right"></i>`;
 
@@ -5221,7 +5214,6 @@
                     : `⚔️ TAMA ANG ATAKE! +${pointsEarnedThisTurn} PTS`;
             } else {
                 currentStreak = 0;
-                hearts = Math.max(0, hearts - 1);
                 playGameSound("wrong");
 
                 // Animate Boss Counter-Attacking Player
@@ -5233,8 +5225,8 @@
                 }, 450);
 
                 actionLog.textContent = isTimeout
-                    ? "⏰ NAUBOS ANG ORAS! Umatake ang Boss (-1 Buhay)!"
-                    : "💥 Umatake ang Boss! Nabawasan ka ng 1 Buhay!";
+                    ? "⏰ NAUBOS ANG ORAS! Naputol ang Combo."
+                    : "💥 Mali ang atake! Naputol ang Combo.";
             }
 
             updateHeartsAndStreakUI();
@@ -5276,14 +5268,14 @@
                 feedbackBox.classList.add("bg-rose-50", "border-rose-300", "text-rose-950");
                 feedbackIcon.classList.add("ph-x-circle", "text-rose-600");
                 feedbackTitle.textContent = isTimeout
-                    ? "Naubos ang 15 segundo! Nabawasan ng 1 Buhay (-1 Heart)."
-                    : (hearts > 0 ? "Mali! Umatake ang Boss (-1 Heart)." : "Mali! Naubos na ang iyong 3 Buhay.");
+                    ? "Naubos ang oras sa tanong na ito!"
+                    : "Mali ang iyong sagot! Magpatuloy sa susunod na tanong.";
             }
 
             feedbackExp.textContent = qData.explanation || `Ang tamang sagot ay: ${qData.options[qData.correctIndex]}`;
             
             const nextBtn = document.getElementById("quiz-next-btn");
-            if (hearts <= 0 || currentQuestionIndex === moduleData.quiz.length - 1) {
+            if (currentQuestionIndex === moduleData.quiz.length - 1) {
                 nextBtn.innerHTML = `<span>Tingnan ang Resulta at Ranggo</span> <i class="ph-fill ph-flag-checkered"></i>`;
             }
             nextBtn.disabled = false;
@@ -5296,7 +5288,7 @@
             const totalQ = moduleData.quiz.length;
             const pct = Math.round((quizScore / totalQ) * 100);
             const elapsedSeconds = Math.max(1, Math.round((Date.now() - quizStartTime) / 1000));
-            const isGameOverByHearts = hearts <= 0;
+            const isGameOverByHearts = false;
 
             // Speed Bonus if completed all questions with hearts remaining
             let speedBonus = 0;
@@ -5895,7 +5887,7 @@
 
             // Quiz Next & Navigation Buttons
             document.getElementById("quiz-next-btn").addEventListener("click", async () => {
-                if (hearts <= 0 || currentQuestionIndex >= moduleData.quiz.length - 1) {
+                if (currentQuestionIndex >= moduleData.quiz.length - 1) {
                     await showQuizResults();
                 } else {
                     currentQuestionIndex++;
